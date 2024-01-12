@@ -12,19 +12,6 @@ module.exports = {
       tahun: {
         type: Sequelize.DATE,
       },
-      semester: {
-        type: Sequelize.STRING,
-      },
-      prodi_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Prodis",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
-      },
       status: {
         type: Sequelize.BOOLEAN,
       },

@@ -13,13 +13,13 @@ module.exports = {
         },
         {
           id: 2,
-          name: "TU",
+          name: "Prodi",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           id: 3,
-          name: "Prodi",
+          name: "TU",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
