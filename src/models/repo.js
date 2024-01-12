@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       judul: DataTypes.STRING,
       user_id: DataTypes.INTEGER,
       tanggal: DataTypes.DATE,
-      lokasi_surat: DataTypes.STRING,
+      url: DataTypes.STRING,
     },
     {
       sequelize,

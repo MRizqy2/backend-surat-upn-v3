@@ -2,12 +2,18 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Komentars", {
+    await queryInterface.createTable("Tampilans", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
+      },
+      bin: {
+        type: Sequelize.BOOLEAN,
+      },
+      dibaca: {
+        type: Sequelize.BOOLEAN,
       },
       role_id: {
         type: Sequelize.INTEGER,
@@ -19,8 +25,15 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      komentar: {
-        type: Sequelize.TEXT,
+      surat_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Daftar_surats",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
       createdAt: {
         allowNull: false,
@@ -33,6 +46,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Komentars");
+    await queryInterface.dropTable("Tampilans");
   },
 };

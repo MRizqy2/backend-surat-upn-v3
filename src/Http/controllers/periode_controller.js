@@ -9,16 +9,10 @@ app
     res.send(await Periode.findAll({ order: [["id", "ASC"]] }));
   })
   .post("/", isAdmin, async function (req, res) {
-    const { tahun, semester, prodi_id } = req.body;
+    const { tahun } = req.body;
     try {
-      const prodi_periode = Prodi.findOne({ where: { id: prodi_id } });
-      if (!prodi_periode) {
-        res.json("Prodi not found");
-      }
       const periode = await Periode.create({
         tahun,
-        semester,
-        prodi_id,
         status: true,
       });
       res.status(StatusCodes.CREATED).json({
@@ -35,7 +29,7 @@ app
   })
   .put("/", isAdmin, async (req, res) => {
     try {
-      const { tahun, status, semester, prodi_id } = req.body;
+      const { tahun, status } = req.body;
       const { id } = req.query;
       if (!id) {
         return res
@@ -51,18 +45,9 @@ app
           .json({ error: "Periode not found" });
       }
 
-      // periode.tahun = tahun;
-      // periode.semester = semester;
-      // periode.prodi_id = prodi_id;
-      // periode.status = status;
-
-      // await periode.save();
-
       const periode = await Periode.update(
         {
           tahun,
-          semester,
-          prodi_id,
           status,
         },
         {

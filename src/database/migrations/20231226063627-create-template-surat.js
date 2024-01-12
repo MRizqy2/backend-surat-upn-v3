@@ -12,11 +12,18 @@ module.exports = {
       judul: {
         type: Sequelize.STRING,
       },
-      lokasi: {
+      url: {
         type: Sequelize.STRING,
       },
-      jenis: {
-        type: Sequelize.STRING,
+      jenis_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Jenis_surats",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
       thumbnail: {
         type: Sequelize.STRING,

@@ -5,24 +5,36 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Daftar_surat.belongsTo(models.Users, {
         foreignKey: "user_id",
-        as: "user",
+        as: "user", // buat opo as?
       });
-      Daftar_surat.belongsTo(models.Komentar, {
-        foreignKey: "komentar_id",
-        as: "komentar",
+      Daftar_surat.belongsTo(models.Jenis_surat, {
+        foreignKey: "jenis_id",
       });
-
+      // Daftar_surat.belongsTo(models.Komentar, {
+      //   foreignKey: "komentar_id",
+      //   as: "komentar",
+      // });
+      Daftar_surat.hasMany(models.Komentar, { foreignKey: "surat_id" });
       Daftar_surat.hasMany(models.Notifikasi, { foreignKey: "surat_id" });
       Daftar_surat.hasMany(models.Nomor_surat, { foreignKey: "surat_id" });
+      Daftar_surat.hasMany(models.Tampilan, { foreignKey: "surat_id" });
+      Daftar_surat.hasMany(models.Status, { foreignKey: "surat_id" });
     }
   }
   Daftar_surat.init(
     {
-      pin: DataTypes.BOOLEAN,
-      dibaca: DataTypes.BOOLEAN,
       judul: DataTypes.STRING,
       thumbnail: DataTypes.STRING,
-      jenis: DataTypes.STRING,
+      jenis_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Jenis_surat",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
+      },
       user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -34,19 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "SET NULL",
       },
       tanggal: DataTypes.DATE,
-      lokasi_surat: DataTypes.STRING,
-      status: DataTypes.STRING,
-      persetujuan: DataTypes.STRING,
-      komentar_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-          model: "Komentar",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
-      },
+      url: DataTypes.STRING,
     },
     {
       sequelize,
