@@ -1,5 +1,13 @@
 const express = require("express");
-const { Repo, Daftar_surat } = require("../../models");
+const router = express.Router();
+const {
+  Repo,
+  Daftar_surat,
+  Users,
+  Role_user,
+  Fakultas,
+  Prodi,
+} = require("../../models");
 const { StatusCodes } = require("http-status-codes");
 // const app = express.Router();
 
@@ -17,12 +25,26 @@ const repo = async (req, res) => {
         .json({ error: "Surat not found" });
     }
 
+    const user = await Users.findOne({
+      where: { id: surat.user_id },
+    });
+    const role = await Role_user.findOne({
+      where: { id: user.role_id },
+    });
+    const prodi = await Prodi.findOne({
+      where: { id: u.user_id },
+    });
+    const fakultas = await Fakultas.findOne({
+      where: { id: user.fakultas_id },
+    });
+    const data_user = `${user.id}/${user.name}/${role.name}/${prodi.name}/${fakultas.name}`;
+
     const repo = await Repo.create({
       judul: surat.judul,
       jenis: surat.jenis,
-      user_id: surat.user_id,
+      data_user: data_user,
       tanggal: surat.tanggal,
-      lokasi_surat: surat.lokasi_surat,
+      url: surat.url,
     });
 
     return res
@@ -33,7 +55,9 @@ const repo = async (req, res) => {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Internal Server Error" });
-  }//pindah nak branch master sek
-};//okeh
+  }
+};
 
-module.exports = { repo };
+router.post("/", repo);
+
+module.exports = { repo, router };

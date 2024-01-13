@@ -12,6 +12,9 @@ module.exports = {
       judul: {
         type: Sequelize.STRING,
       },
+      jenis: {
+        type: Sequelize.STRING,
+      },
       data_user: {
         type: Sequelize.STRING,
       },

@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   Repo.init(
     {
       judul: DataTypes.STRING,
-      user_id: DataTypes.INTEGER,
+      data_user: DataTypes.STRING,
       tanggal: DataTypes.DATE,
       url: DataTypes.STRING,
     },

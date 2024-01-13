@@ -3,6 +3,7 @@ const app = express.Router();
 const router = express.Router();
 const { Tampilan, Daftar_surat, Users, Role_user } = require("../../models");
 const getStatus = require("../controllers/daftar_surat_controller/status_controller");
+const { putStatus } = require("./status_surat_controller");
 const { StatusCodes } = require("http-status-codes");
 const { Sequelize } = require("sequelize");
 
@@ -15,7 +16,7 @@ const postTampilan = async (req, res) => {
       const { surat_id } = req.body;
     }
     const surat = await Daftar_surat.findOne({
-      where: { id: req.save.surat_id || surat_id },
+      where: { id: req.save.surat_id ? req.save.surat_id : surat_id },
     });
     const user = await Users.findOne({
       where: { id: req.save.surat_id ? req.save.surat_id : req.token.id },
@@ -98,7 +99,7 @@ app.put("/tampilan", async (req, res) => {
     const tampilan = await Tampilan.update(
       {
         pin: pin,
-        dibaca: dibaca,
+        dibaca: dibaca, //
       },
       {
         where: {
@@ -109,7 +110,21 @@ app.put("/tampilan", async (req, res) => {
       }
     );
 
-    res.status(StatusCodes.OK).json({ tampilan });
+    let saveStatus;
+    if (dibaca) {
+      const reqStatus = {
+        save: {
+          surat_id: surat_id,
+          dibaca: dibaca,
+          user: user,
+          from: "tampilan_surat_controller",
+        },
+        token: req.token,
+      };
+      saveStatus = await putStatus(reqStatus);
+    }
+
+    res.status(StatusCodes.OK).json({ tampilan, saveStatus });
   } catch (error) {
     console.error("Error:", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

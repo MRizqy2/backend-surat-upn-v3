@@ -8,137 +8,12 @@ const { StatusCodes } = require("http-status-codes");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", async function (req, res) {
-  const user = await Users.findOne({
-    where: { id: req.token.id },
-  });
-  const role = await Role_user.findOne({
-    where: { id: user.role_id },
-  });
-
-  if (role.id !== 2) {
-    //TU
-    if (role.id === 4 && role.id === 5) {
-      //dekan && admin dekan
-      return res.send(
-        await Daftar_surat.findAll({
-          where: {
-            status: {
-              [Op.or]: ["disetujui TU", "disetujui Dekan", "ditolak Dekan"],
-            },
-          },
-          include: [
-            {
-              model: Users,
-              as: "user",
-              attributes: ["name", "email", "aktif"],
-              include: [
-                {
-                  model: Prodi,
-                  as: "prodi",
-                  attributes: ["id", "name"],
-                },
-                {
-                  model: Role_user,
-                  as: "role",
-                  attributes: ["id", "name"],
-                },
-                {
-                  model: Fakultas,
-                  as: "fakultas",
-                  attributes: ["id", "name"],
-                },
-              ],
-            },
-          ],
-          order: [["id", "ASC"]],
-        })
-      );
-    }
-    res.send(
-      //get all
-      await Daftar_surat.findAll({
-        include: [
-          {
-            model: Users, // nek get all e daftar surat okeeh sek
-            // include: [
-            //     {
-            //       model: Status,
-            //       as: 'status', // asumsikan 'status' adalah nama relasi yang Anda definisikan di model
-            //     },
-            //   ],
-            as: "user",
-            attributes: ["name", "email", "aktif"],
-            include: [
-              {
-                model: Prodi,
-                as: "prodi",
-                attributes: ["id", "name"],
-              },
-              {
-                model: Role_user,
-                as: "role",
-                attributes: ["id", "name"],
-              },
-              {
-                model: Fakultas,
-                as: "fakultas",
-                attributes: ["id", "name"],
-              },
-            ],
-          },
-        ],
-        order: [["id", "ASC"]],
-      })
-    );
-  } else {
-    //prodi
-    const prodi = await Prodi.findOne({
-      where: { id: user.prodi_id },
-    });
-    res.send(
-      await Daftar_surat.findAll({
-        include: [
-          {
-            model: Users,
-            as: "user",
-            attributes: ["name", "email", "aktif"],
-            where: { prodi_id: prodi.id },
-            include: [
-              {
-                model: Prodi,
-                as: "prodi",
-                attributes: ["id", "name"],
-              },
-              {
-                model: Role_user,
-                as: "role",
-                attributes: ["id", "name"],
-              },
-              {
-                model: Fakultas,
-                as: "fakultas",
-                attributes: ["id", "name"],
-              },
-            ],
-          },
-        ],
-      })
-    );
-  }
-});
 //   .post("/awal", async (req, res) => {
 const postStatus = async (req, res) => {
   try {
     if (req.body) {
       const { surat_id } = req.body;
     }
-    // const { id } = req.query;
-    // console.log("testing ", req.user.id);
-    // const user = await Users.findOne({
-    //   where: { id: req.user.id },
-    // });
-    // console.log("testing ", req.save.surat_id); //Error: ReferenceError: role is not defined
     const surat = await Daftar_surat.findOne({
       where: { id: req.save.surat_id || surat_id },
     });
@@ -157,11 +32,8 @@ const postStatus = async (req, res) => {
     }
 
     const status = getStatus(role.id, false, null);
-    // console.log("testing ", status);
-    const statusString = status.join(", "); // Convert array to string//aman tp log eror njir/ ha/ opoe
-    // console.log("testing ", statusString); // INSERT INTO "Statuses"
+    const statusString = status.join(", ");
     const surat_kesetujuan = await Status.create({
-      // error client
       surat_id: surat.id,
       persetujuan: "",
       status: statusString,
@@ -179,16 +51,33 @@ const postStatus = async (req, res) => {
     });
   }
 };
-app.put("/update", async (req, res) => {
+const putStatus = async (req, res) => {
   try {
-    const { persetujuan, status } = req.body;
-    const { id } = req.query;
+    let persetujuan,
+      status = "",
+      surat_id;
+    let surat, isiStatus;
+    if (req.body) {
+      ({ persetujuan, status } = req.body);
+      ({ surat_id } = req.query);
+    }
+    // console.log("asdawd", surat_id);
+    // console.log("btrbr", req.save.surat_id);
     const user = await Users.findOne({
       where: { id: req.token.id },
     });
 
-    const surat = await Daftar_surat.findOne({
-      where: { id: user.surat_id },
+    if (!req.body) {
+      surat = await Daftar_surat.findOne({
+        where: { id: req.save.surat_id },
+      });
+    } else {
+      surat = await Daftar_surat.findOne({
+        where: { id: surat_id },
+      });
+    }
+    const status_surat = await Status.findOne({
+      where: { surat_id: surat.id },
     });
 
     if (!surat) {
@@ -196,32 +85,55 @@ app.put("/update", async (req, res) => {
         error: "Daftar surat not found",
       });
     }
-    // const statusArray = getStatus(role.id, true, persetujuan);
-    // const status = statusArray.join(", ");
-    const surat_per = await Daftar_surat.update(
+
+    if (!req.body) {
+      isiStatus = getStatus(
+        req.save.user.role_id,
+        req.save.dibaca,
+        status_surat.status
+      );
+    } else {
+      isiStatus = getStatus(
+        user.role_id,
+        true,
+        status_surat.status,
+        persetujuan
+      );
+    }
+    if (isiStatus.length == 0) {
+      isiStatus = null;
+    }
+
+    const surat_per = await Status.update(
       {
-        persetujuan,
-        status: status,
+        persetujuan: persetujuan || "",
+        status: isiStatus || status || status_surat.status,
       },
       {
-        where: { id: id },
+        where: { surat_id: surat.id ? surat.id : surat_id },
         returning: true,
       }
     );
 
-    res.status(StatusCodes.OK).json({ surat: surat_per });
+    if (!req.body) {
+      return { surat_per };
+    } else {
+      res.status(StatusCodes.OK).json({ surat: surat_per });
+    }
   } catch (error) {
     console.error("Error:", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       error: "Internal Server Error",
     });
   }
-});
+};
 
 router.post("/awal", postStatus);
+router.put("/update", putStatus);
 
 module.exports = {
   router,
-  postStatus, // export this function so it can be used elsewhere
+  postStatus,
+  putStatus, // export this function so it can be used elsewhere
   app,
 };

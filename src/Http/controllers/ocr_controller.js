@@ -20,13 +20,20 @@ app.post("/fusion", upload.single("file"), async (req, res) => {
   const inputPath = `daftar_surat/${req.file.filename}`;
   const outputPath = `daftar_surat/${req.file.originalname.replace(
     ".pdf",
-    "_modified.pdf"
+    "-acc.pdf"
   )}`;
   const searchText = "xxxxx";
-  const newText = "Januari 9, 2024";
+  const newText = await Nomor_surat.findOne({
+    where: { surat_id: surat_id },
+  });
 
   try {
-    await changeTextInPdfV2(inputPath, outputPath, searchText, newText);
+    await changeTextInPdfV2(
+      inputPath,
+      outputPath,
+      searchText,
+      newText.nomor_surat
+    );
 
     console.log("Perubahan teks pada PDF berhasil disimpan ke", outputPath);
     res.json(`Perubahan teks pada PDF berhasil disimpan ke ${outputPath}`);

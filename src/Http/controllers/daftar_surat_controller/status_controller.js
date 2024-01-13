@@ -5,6 +5,88 @@ const {
   Users,
 } = require("../../../models");
 
+const isiStatus = [
+  "didaftar tunggu TU",
+  "dibaca TU",
+  "disetujui TU",
+  "didaftar tunggu Dekan",
+  "dibaca Dekan",
+  "disetujui Dekan",
+  "ditolak TU",
+  "ditolak Dekan",
+];
+
+function getStatus(role_user, isRead, latestStatus, persetujuan) {
+  const statusMap = {
+    2: isiStatus[0],
+    3: !isRead ? isiStatus[0] : isiStatus[1],
+    4: !isRead ? isiStatus[3] : isiStatus[4],
+  };
+  console.log("adkawind");
+  let i, j;
+  const updatedStatusMap = { ...statusMap }; // Create a copy of statusMap
+
+  if (persetujuan) {
+    if (persetujuan.includes("setuju")) {
+      updatedStatusMap[3] = isiStatus[2];
+      updatedStatusMap[4] = isiStatus[5];
+    } else if (persetujuan.includes("tolak")) {
+      updatedStatusMap[3] = isiStatus[6];
+      updatedStatusMap[4] = isiStatus[7];
+    }
+  }
+  console.log("tytntm");
+
+  for (i = 0; i <= isiStatus.length; i++) {
+    if (updatedStatusMap[role_user] == isiStatus[i]) {
+      j = i;
+      break;
+    }
+  }
+
+  console.log(latestStatus);
+  for (i = 0; i <= isiStatus.length; i++) {
+    if (
+      String(latestStatus).toLocaleLowerCase() ==
+      String(isiStatus[i]).toLocaleLowerCase()
+    ) {
+      break;
+    }
+  }
+  console.log("sssssssd");
+  if (j <= i) {
+    return [];
+  }
+  console.log("hhhhyyyy");
+  return updatedStatusMap[role_user] || "";
+}
+
+module.exports = getStatus;
+
+// function getStatus(role_user, isRead, status, persetujuan) {
+//   const statusMap = {
+//     2: ["didaftar tunggu tu"],
+//     3: !isRead ? ["didaftar tunggu tu"] : ["dibaca tu"],
+//     4: !isRead ? ["didaftar tunggu dekan"] : ["dibaca dekan"],
+//   };
+
+//   const updatedStatusMap = { ...statusMap }; // Create a copy of statusMap
+
+//   if (persetujuan) {
+//     if (persetujuan.includes("setuju")) {
+//       updatedStatusMap[3] = ["disetujui TU"];
+//       updatedStatusMap[4] = ["disetujui Dekan"];
+//     } else if (persetujuan.includes("tolak")) {
+//       updatedStatusMap[3] = ["ditolak TU"];
+//       updatedStatusMap[4] = ["ditolak Dekan"];
+//     }
+//   }
+
+//   return updatedStatusMap[role_user] || [];
+// }
+
+// module.exports = getStatus;
+
 // function getStatus(role_user) {
 //   console.log(role_user);
 //   if (role_user == 2) {
@@ -30,27 +112,6 @@ const {
 //   }
 // }
 
-function getStatus(role_user, isRead, persetujuan) {
-  const statusMap = {
-    3: ["didaftar tunggu tu"],
-    2: !isRead ? ["didaftar tunggu tu"] : ["dibaca tu"],
-    4: !isRead ? ["didaftar tunggu dekan"] : ["dibaca dekan"],
-  };
-
-  const updatedStatusMap = { ...statusMap }; // Create a copy of statusMap
-
-  if (persetujuan) {
-    if (persetujuan.includes("setuju")) {
-      updatedStatusMap[2] = ["disetujui TU"];
-      updatedStatusMap[4] = ["disetujui Dekan"];
-    } else if (persetujuan.includes("tolak")) {
-      updatedStatusMap[2] = ["ditolak TU"];
-      updatedStatusMap[4] = ["ditolak Dekan"];
-    }
-  }
-
-  return updatedStatusMap[role_user] || [];
-}
 // const status = [
 //   "didaftar tunggu tu",
 //   "dibaca tu",
@@ -86,5 +147,3 @@ function getStatus(role_user, isRead, persetujuan) {
 //   } else if (user.role_id == 2 && i < 2) {
 //   }
 // }
-
-module.exports = getStatus;
