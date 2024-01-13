@@ -13,7 +13,7 @@ module.exports = function (req, res, next) {
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    req.user = decoded;
+    req.token = decoded;
     next();
   } catch (error) {
     res.status(400).send("Access Denied: Invalid Token!");

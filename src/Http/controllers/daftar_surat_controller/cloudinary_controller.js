@@ -10,8 +10,11 @@ const {
   Template_surat,
   Role_user,
   Users,
+  Jenis_surat,
 } = require("../../../models");
-const getStatus = require("./status_controller");
+// const getStatus = require("./status_controller");
+const { postStatus } = require("../status_surat_controller");
+const { postTampilan } = require("../tampilan_surat_controller");
 // const status = getStatus();
 
 const fs = require("fs");
@@ -58,9 +61,9 @@ app
 
     // const fileName = "newFileName.pdf"; // Ganti dengan nama file yang diinginkan/
     const fileName = daftar_surat.judul;
-    const downloadUrl = `${
-      daftar_surat.lokasi_surat
-    }?attachment=${encodeURIComponent(fileName)}`;
+    const downloadUrl = `${daftar_surat.url}?attachment=${encodeURIComponent(
+      fileName
+    )}`;
 
     // Download file dari Cloudinary
     const response = await fetch(downloadUrl);
@@ -85,7 +88,7 @@ app
     try {
       const { daftar_surat_id } = req.body;
       const user = await Users.findOne({
-        where: { id: req.user.id },
+        where: { id: req.token.id },
       });
       const role = await Role_user.findOne({
         where: { id: user.role_id },
@@ -136,27 +139,25 @@ app
     ]),
     async function (req, res, next) {
       try {
-        const { judul, jenis } = req.body;
+        const { judul, jenis_id } = req.body;
         const judulExt =
           judul + path.extname(req.files["surat"][0].originalname);
-        // const judulCheck = await Daftar_surat.findOne({
-        //   where: { judul: judulExt },
-        // });
+        const jenis = await Jenis_surat.findOne({
+          where: { id: jenis_id },
+        });
         // const jenisExists = await Template_surat.findOne({ where: { jenis } });
 
         // if (!jenisExists) {
         //   return res.status(400).json({ error: "Jenis tidak ditemukan" });
         // }
+        console.log("testing ", req.token.id);
         const user = await Users.findOne({
-          where: { id: req.user.id },
+          //belum buat akun
+          where: { id: req.token.id },
         });
         const role = await Role_user.findOne({
           where: { id: user.role_id },
         });
-
-        // if (judulCheck) {
-        //   return res.json("judul/file sudah ada");
-        // }
 
         let suratUrl;
         let thumbnailUrl;
@@ -206,25 +207,40 @@ app
           });
         }
 
-        const status = getStatus(role.id, false, null);
-        const statusString = status.join(", "); // Convert array to string
         const daftar_surat = await Daftar_surat.create({
-          pin: 0,
-          dibaca: 0,
           judul: judulExt,
           thumbnail: thumbnailUrl || "",
-          jenis: jenis || "",
-          user_id: req.user.id,
+          jenis_id: jenis.id || "",
+          user_id: req.token.id,
           tanggal: Date(),
-          status: statusString,
-          lokasi_surat: suratUrl,
-          persetujuan: "",
-          komentar_id: null,
+          url: suratUrl,
         });
+        const reqStatus = {
+          save: {
+            user_id: user.id,
+            surat_id: daftar_surat.id,
+            from: `daftar_surat_controller/cloudinary_controller`,
+          },
+        };
+        const saveStatus = await postStatus(reqStatus);
 
-        res
-          .status(StatusCodes.CREATED)
-          .json({ message: "File successfully uploaded", daftar_surat });
+        const reqTampilan = {
+          save: {
+            role_id: role.id,
+            // role_id2: role.id,
+            surat_id: daftar_surat.id,
+            from: "daftar_surat_controller/cloudinary_controller",
+          },
+        };
+
+        const saveTampilan = await postTampilan(reqTampilan); //saveTampilan.tamp_surat_prodi&&saveTampilan.tamp_surat_tu
+
+        res.status(StatusCodes.CREATED).json({
+          message: "File successfully uploaded",
+          daftar_surat,
+          status: saveStatus,
+          // tampilan: saveTampilan,
+        }); //
       } catch (error) {
         console.error("Error:", error);
         res
@@ -232,7 +248,6 @@ app
           .json({ error: "Internal Server Error" });
       }
     }
-  )
-  .put("/", async function (req, res) {});
+  );
 
 module.exports = app;

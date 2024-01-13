@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Daftar_surat.belongsTo(models.Users, {
         foreignKey: "user_id",
-        as: "user", // buat opo as?
+        as: "user",
       });
       Daftar_surat.belongsTo(models.Jenis_surat, {
         foreignKey: "jenis_id",
@@ -17,8 +17,14 @@ module.exports = (sequelize, DataTypes) => {
       Daftar_surat.hasMany(models.Komentar, { foreignKey: "surat_id" });
       Daftar_surat.hasMany(models.Notifikasi, { foreignKey: "surat_id" });
       Daftar_surat.hasMany(models.Nomor_surat, { foreignKey: "surat_id" });
-      Daftar_surat.hasMany(models.Tampilan, { foreignKey: "surat_id" });
-      Daftar_surat.hasMany(models.Status, { foreignKey: "surat_id" });
+      Daftar_surat.hasMany(models.Tampilan, {
+        as: "tampilan",
+        foreignKey: "surat_id",
+      });
+      Daftar_surat.hasMany(models.Status, {
+        as: "status",
+        foreignKey: "surat_id",
+      });
     }
   }
   Daftar_surat.init(

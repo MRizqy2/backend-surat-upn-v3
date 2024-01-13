@@ -67,7 +67,7 @@ app.put("/password", async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
 
-    const user = await Users.findOne({ where: { id: req.user.id } });
+    const user = await Users.findOne({ where: { id: req.token.id } });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -83,7 +83,7 @@ app.put("/password", async (req, res) => {
     const [updated] = await Users.update(
       { password: hashedPassword },
       {
-        where: { id: req.user.id },
+        where: { id: req.token.id },
       }
     );
 

@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Tampilan.init(
     {
-      bin: DataTypes.BOOLEAN,
+      pin: DataTypes.BOOLEAN,
       dibaca: DataTypes.BOOLEAN,
       role_id: {
         type: DataTypes.INTEGER,

@@ -5,9 +5,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Komentar.belongsTo(models.Role_user, { foreignKey: "role_id" });
       Komentar.belongsTo(models.Daftar_surat, { foreignKey: "surat_id" });
-      // Komentar.hasMany(models.Daftar_surat, {
-      //   foreignKey: "komentar_id",
-      // });
     }
   }
   Komentar.init(
@@ -22,9 +19,6 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      komentar: DataTypes.TEXT,
-    },
-    {
       role_id: {
         type: DataTypes.INTEGER,
         allowNull: false,

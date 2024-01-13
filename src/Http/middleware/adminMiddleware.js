@@ -2,7 +2,7 @@ const { Users } = require("../../models"); // Adjust the path to fit your projec
 
 module.exports = async function isAdmin(req, res, next) {
   try {
-    const user = await Users.findOne({ where: { id: req.user.id } });
+    const user = await Users.findOne({ where: { id: req.token.id } });
 
     if (user && user.role_id === 1) {
       next();

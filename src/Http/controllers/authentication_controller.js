@@ -7,7 +7,6 @@ const crypto = require("crypto");
 const isAdmin = require("../middleware/adminMiddleware");
 const authMiddleware = require("../middleware/authMiddleware.js");
 const express = require("express");
-// const { error } = require("console");
 const app = express.Router();
 
 const environment = "development";
@@ -62,14 +61,14 @@ app
           .json({ error: "No such fakultas_user exists" });
       }
 
-      if (role_id != 3) {
+      if (role_id != 2) {
         if (prodi_id != 1) {
           return res
             .status(StatusCodes.BAD_REQUEST)
             .json({ error: "Not Prodi, Change Prodi to 1" });
         }
       }
-      if (role_id == 3) {
+      if (role_id == 2) {
         if (prodi_id == 1) {
           return res
             .status(StatusCodes.BAD_REQUEST)
@@ -120,38 +119,20 @@ app
             {
               model: Prodi,
               as: "prodi",
-              attributes: {
-                exclude: [
-                  "kode_prodi",
-                  "fakultas_id",
-                  "createdAt",
-                  "updatedAt",
-                ],
-              },
+              attributes: ["id", "name"],
             },
             {
               model: Role_user,
               as: "role",
-              attributes: { exclude: ["createdAt", "updatedAt"] },
+              attributes: ["id", "name"],
             },
             {
               model: Fakultas,
               as: "fakultas",
-              attributes: {
-                exclude: ["jenjang", "kode_fakultas", "createdAt", "updatedAt"],
-              },
+              attributes: ["id", "name"],
             },
           ],
-          attributes: {
-            exclude: [
-              "password",
-              "role_id",
-              "prodi_id",
-              "fakultas_id",
-              "createdAt",
-              "updatedAt",
-            ],
-          },
+          attributes: ["id", "name", "email", "aktif"],
           where: { email: req.body.email },
         });
         res.json({
@@ -174,8 +155,8 @@ app
 
   .put("/reset-password", authMiddleware, isAdmin, async (req, res) => {
     try {
-      const { id } = req.query;
-      if (id == 1) {
+      const { user_id } = req.query;
+      if (user_id == 1) {
         res.json("Error : The User is Admin");
       }
       const password = crypto.randomBytes(10).toString("hex");
@@ -183,12 +164,18 @@ app
       const updated = await Users.update(
         { password: hashedPassword },
         {
-          where: { id: id },
+          where: { id: user_id },
         }
       );
+      const search_user = await Users.findOne({
+        where: { id: user_id },
+        attributes: ["id", "name", "password"],
+      });
+      let user = search_user;
+      user.password = password;
 
       if (updated) {
-        res.json({ message: "Password reset successfully", password });
+        res.json({ message: "Password reset successfully", user });
       } else {
         res.status(StatusCodes.NOT_FOUND).json({ error: "User not found" });
       }
@@ -202,21 +189,23 @@ app
   .put("/aktivasi", authMiddleware, isAdmin, async (req, res) => {
     try {
       const { aktif } = req.body;
-      const { id } = req.query;
-      if (id == 1) {
+      const { user_id } = req.query;
+      if (user_id == 1) {
         return res.json("Error : The User is Admin");
       }
       const [updated] = await Users.update(
         { aktif },
         {
-          where: { id: id },
+          where: { id: user_id },
         }
       );
-
+      let message;
       if (updated) {
-        const message = aktif
-          ? "User activated successfully"
-          : "User deactivated successfully";
+        if (aktif === true) {
+          message = "User activated successfully";
+        } else {
+          message = "User deactivated successfully"; // bug message
+        }
         res.json({ message });
       } else {
         res.status(StatusCodes.NOT_FOUND).json({ error: "User not found" });

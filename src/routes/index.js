@@ -12,7 +12,10 @@ const komentarController = require("../Http/controllers/komentar_controller");
 const fakultasController = require("../Http/controllers/fakultas_controller");
 const periodeController = require("../Http/controllers/periode_controller");
 const nomorController = require("../Http/controllers/nomor_surat_controller");
-
+const {
+  app: tampilanController,
+} = require("../Http/controllers/tampilan_surat_controller");
+//masalah e export e objek
 const router = express.Router();
 
 router.use(express.json());
@@ -27,9 +30,11 @@ router.use("/daftar-surat", authMiddleware, daftarSuratController);
 router.use("/prodi", authMiddleware, prodiController);
 router.use("/role-user", authMiddleware, roleUserController);
 router.use("/fakultas", authMiddleware, fakultasController);
-router.use("/template-surat", templateController);
+router.use("/template-surat", authMiddleware, templateController);
 router.use("/notifikasi", authMiddleware, notifikasiController);
 router.use("/komentar", authMiddleware, komentarController);
 router.use("/nomor-surat", authMiddleware, nomorController);
+router.use("/tampilan", authMiddleware, tampilanController);
+// router.put("/tampilan", authMiddleware, app);
 
 module.exports = router;

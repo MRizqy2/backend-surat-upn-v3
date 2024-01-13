@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   Template_surat.init(
     {
       judul: DataTypes.STRING,
-      lokasi: DataTypes.STRING,
+      url: DataTypes.STRING,
       jenis_id: {
         type: DataTypes.INTEGER,
         allowNull: false,

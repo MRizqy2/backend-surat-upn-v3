@@ -36,7 +36,7 @@ app.post("/", async (req, res) => {
     // }
 
     const user_dekan = await Users.findOne({
-      where: { id: req.user.id }, //token
+      where: { id: req.token.id }, //token
     });
 
     const surat = await Daftar_surat.findOne({

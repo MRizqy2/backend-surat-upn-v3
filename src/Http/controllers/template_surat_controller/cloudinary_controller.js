@@ -2,7 +2,7 @@ const cloudinary = require("../../../../config/cloudinaryConfig");
 const express = require("express");
 const app = express.Router();
 const { StatusCodes } = require("http-status-codes");
-const { Template_surat } = require("../../../models");
+const { Template_surat, Jenis_surat } = require("../../../models");
 const isAdmin = require("../../middleware/adminMiddleware");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
@@ -51,9 +51,9 @@ app
 
     // const fileName = "newFileName.pdf"; // Ganti dengan nama file yang diinginkan
     const fileName = template_surat.judul;
-    const downloadUrl = `${
-      template_surat.lokasi
-    }?attachment=${encodeURIComponent(fileName)}`;
+    const downloadUrl = `${template_surat.url}?attachment=${encodeURIComponent(
+      fileName
+    )}`;
 
     // Download file dari Cloudinary
     const response = await fetch(downloadUrl);
@@ -99,7 +99,7 @@ app
       { name: "surat", maxCount: 1 },
       { name: "thumbnail", maxCount: 1 },
     ]),
-    // isAdmin,
+    isAdmin,
     async function (req, res, next) {
       try {
         if (!req.files["surat"]) {
@@ -107,7 +107,11 @@ app
             .status(StatusCodes.BAD_REQUEST)
             .json({ error: "Missing files in request" });
         }
-        const { judul, jenis, deskripsi } = req.body;
+        const { judul, deskripsi, jenis_id } = req.body;
+        const jenis = await Jenis_surat.findOne({
+          where: { id: jenis_id },
+        });
+
         const judulEx =
           judul + path.extname(req.files["surat"][0].originalname);
         // const judul = req.files["surat"][0].originalname;
@@ -165,8 +169,8 @@ app
 
         const template_surat = await Template_surat.create({
           judul: judulEx,
-          lokasi: suratUrl,
-          jenis: jenis || "",
+          url: suratUrl,
+          jenis_id: jenis.id || "",
           deskripsi: deskripsi || "",
           thumbnail: thumbnailUrl || "",
         });
@@ -192,11 +196,14 @@ app
     isAdmin,
     async function (req, res, next) {
       try {
-        const { judul, jenis, deskripsi } = req.body;
+        const { judul, deskripsi } = req.body;
         const { id } = req.query;
         // const judul = req.files["surat"][0].originalname;
         const judulEx =
           judul + path.extname(req.files["surat"][0].originalname);
+        const jenis = await Jenis_surat.findOne({
+          where: { id: jenis_id },
+        });
         // const judulCheck = await Template_surat.findOne({ where: { judul } });
 
         // if (judulCheck) {
@@ -261,8 +268,8 @@ app
         const template_surat = await Template_surat.update(
           {
             judul: judulEx,
-            lokasi: suratUrl || data_template_surat.lokasi,
-            jenis: jenis || "",
+            url: suratUrl || data_template_surat.url,
+            jenis_id: jenis.id || "",
             deskripsi: deskripsi || "",
             thumbnail: thumbnailUrl || "",
           },
