@@ -44,14 +44,16 @@ function getResourceType(filename) {
 
 app
   .get("/download/cloudinary", async function (req, res) {
-    const { id } = req.query;
-    if (!id) {
+    const { surat_id } = req.query;
+    if (!surat_id) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Invalid params" });
     }
 
-    const daftar_surat = await Daftar_surat.findOne({ where: { id: id } });
+    const daftar_surat = await Daftar_surat.findOne({
+      where: { id: surat_id },
+    });
 
     if (!daftar_surat) {
       return res

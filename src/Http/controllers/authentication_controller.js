@@ -169,7 +169,7 @@ app
       );
       const search_user = await Users.findOne({
         where: { id: user_id },
-        attributes: ["id", "name", "password"],
+        attributes: ["id", "email", "password"],
       });
       let user = search_user;
       user.password = password;

@@ -8,6 +8,8 @@ const {
   Periode,
 } = require("../../models");
 const { StatusCodes } = require("http-status-codes");
+const { OCR } = require("./ocr_controller");
+const { repo } = require("./repo_controller");
 const app = express.Router();
 
 app.post("/", async (req, res) => {
@@ -108,10 +110,26 @@ app.post("/", async (req, res) => {
       periode_id: active_periodes[0].id,
     });
 
-    if (saveNomorSurat) {
+    const reqOcr = {
+      save: {
+        nomor_surat_id: saveNomorSurat.id,
+        surat_id: saveNomorSurat.surat_id,
+        from: `nomor_surat_controller`,
+      },
+    };
+    const saveOcr = await OCR(reqOcr);
+    const reqRepo = {
+      save: {
+        surat_id: saveNomorSurat.surat_id,
+        from: `nomor_surat_controller`,
+      },
+    };
+    const saveRepo = await repo(reqRepo);
+
+    if (saveNomorSurat && saveOcr) {
       return res
         .status(StatusCodes.OK)
-        .json({ message: "Success", saveNomorSurat });
+        .json({ message: "Success", saveNomorSurat, saveOcr, saveRepo });
     } else {
       return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
