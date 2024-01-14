@@ -154,7 +154,6 @@ app
         // }
         console.log("testing ", req.token.id);
         const user = await Users.findOne({
-          //belum buat akun
           where: { id: req.token.id },
         });
         const role = await Role_user.findOne({
@@ -229,7 +228,7 @@ app
         const reqTampilan = {
           save: {
             role_id: role.id,
-            // role_id2: role.id,
+            user_id: user.id,
             surat_id: daftar_surat.id,
             from: "daftar_surat_controller/cloudinary_controller",
           },

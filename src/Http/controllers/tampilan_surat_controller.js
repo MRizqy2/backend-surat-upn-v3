@@ -3,7 +3,7 @@ const app = express.Router();
 const router = express.Router();
 const { Tampilan, Daftar_surat, Users, Role_user } = require("../../models");
 const getStatus = require("../controllers/daftar_surat_controller/status_controller");
-const { putStatus } = require("./status_surat_controller");
+const putStatus = require("./status_surat_controller");
 const { StatusCodes } = require("http-status-codes");
 const { Sequelize } = require("sequelize");
 
@@ -19,11 +19,11 @@ const postTampilan = async (req, res) => {
       where: { id: req.save.surat_id ? req.save.surat_id : surat_id },
     });
     const user = await Users.findOne({
-      where: { id: req.save.surat_id ? req.save.surat_id : req.token.id },
+      where: { id: req.save.user_id ? req.save.user_id : req.token.id },
     });
 
     const role_user = await Role_user.findOne({
-      where: { id: req.save.role_id ? req.save.role_id : user.role_id }, // ws aman iki/ ganti bawah
+      where: { id: req.save.role_id ? req.save.role_id : user.role_id },
     });
 
     if (!surat) {
@@ -60,6 +60,25 @@ const postTampilan = async (req, res) => {
         dibaca: false,
         surat_id: surat.id,
         role_id: role_tu.id,
+      });
+    } else if (req.save.from === "status_surat_controller") {
+      const role_dekan = await Role_user.findOne({
+        // attributes: [[Sequelize.fn("LOWER", Sequelize.col("name")), "TU"]],
+        where: Sequelize.where(
+          Sequelize.fn("LOWER", Sequelize.col("name")),
+          "dekan"
+        ),
+      });
+      if (!role_dekan) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          error: "Role_user (Dekan) not found",
+        });
+      }
+      tamp_surat_dekan = await Tampilan.create({
+        pin: false,
+        dibaca: false,
+        surat_id: surat.id,
+        role_id: role_dekan.id,
       });
     } else {
       tamp_surat = await Tampilan.create({
@@ -99,7 +118,7 @@ app.put("/tampilan", async (req, res) => {
     const tampilan = await Tampilan.update(
       {
         pin: pin,
-        dibaca: dibaca, //
+        dibaca: dibaca,
       },
       {
         where: {
@@ -121,17 +140,17 @@ app.put("/tampilan", async (req, res) => {
         },
         token: req.token,
       };
-      saveStatus = await putStatus(reqStatus);
+      saveStatus = putStatus.putStatus(reqStatus, null);
     }
 
-    res.status(StatusCodes.OK).json({ tampilan, saveStatus });
+    res.status(StatusCodes.OK).json({ tampilan, saveStatus }); // iyo di pisah per put post// wkwk
   } catch (error) {
     console.error("Error:", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       error: "Internal Server Error",
     });
   }
-});
+}); //sek tak commit sek
 
 router.post("/tampilan", postTampilan);
 

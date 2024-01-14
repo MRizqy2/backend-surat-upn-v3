@@ -4,6 +4,7 @@ const router = express.Router();
 const { Status, Daftar_surat, Users, Role_user } = require("../../models");
 const getStatus = require("../controllers/daftar_surat_controller/status_controller");
 const { StatusCodes } = require("http-status-codes");
+const { postTampilan } = require("./tampilan_surat_controller");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,12 +32,14 @@ const postStatus = async (req, res) => {
       });
     }
 
-    const status = getStatus(role.id, false, null);
-    const statusString = status.join(", ");
+    const status = getStatus(role.id, false, null, null);
+    console.log("asdnvni", status);
+    // const statusString = status.join(", ");
+    // console.log("dwadawdaw", statusString);
     const surat_kesetujuan = await Status.create({
       surat_id: surat.id,
       persetujuan: "",
-      status: statusString,
+      status: status,
     });
 
     if (!req.save.from) {
@@ -51,11 +54,13 @@ const postStatus = async (req, res) => {
     });
   }
 };
+
 const putStatus = async (req, res) => {
   try {
     let persetujuan,
       status = "",
-      surat_id;
+      surat_id,
+      reqTampilan;
     let surat, isiStatus;
     if (req.body) {
       ({ persetujuan, status } = req.body);
@@ -106,7 +111,7 @@ const putStatus = async (req, res) => {
 
     const surat_per = await Status.update(
       {
-        persetujuan: persetujuan || "",
+        persetujuan: status_surat.persetujuan || persetujuan || "",
         status: isiStatus || status || status_surat.status,
       },
       {
@@ -115,8 +120,20 @@ const putStatus = async (req, res) => {
       }
     );
 
+    if (persetujuan === "Disetujui TU") {
+      reqTampilan = {
+        save: {
+          surat_id: surat_id,
+          // dibaca: dibaca,
+          user_id: user.id,
+          from: "status_surat_controller",
+        },
+      };
+      const saveTampilan = await postTampilan(reqTampilan);
+    }
+
     if (!req.body) {
-      return { surat_per };
+      return surat_per;
     } else {
       res.status(StatusCodes.OK).json({ surat: surat_per });
     }
@@ -133,7 +150,7 @@ router.put("/update", putStatus);
 
 module.exports = {
   router,
+  putStatus,
   postStatus,
-  putStatus, // export this function so it can be used elsewhere
   app,
 };

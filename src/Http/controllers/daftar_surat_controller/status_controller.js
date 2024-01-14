@@ -6,33 +6,41 @@ const {
 } = require("../../../models");
 
 const isiStatus = [
-  "didaftar tunggu TU",
-  "dibaca TU",
-  "disetujui TU",
-  "didaftar tunggu Dekan",
-  "dibaca Dekan",
-  "disetujui Dekan",
-  "ditolak TU",
-  "ditolak Dekan",
+  "",
+  "Di Daftar Tunggu TU",
+  "Diproses TU",
+  "Di Daftar Tunggu Dekan",
+  "Diproses Dekan",
+  "Di Daftar Tunggu Admin Dekan",
+  "Diproses Admin Dekan",
+  "Surat Telah diTandangan",
+  "Ditolak TU",
+  "Ditolak Dekan",
 ];
 
 function getStatus(role_user, isRead, latestStatus, persetujuan) {
   const statusMap = {
-    2: isiStatus[0],
-    3: !isRead ? isiStatus[0] : isiStatus[1],
+    2: isiStatus[1],
+    3: !isRead ? isiStatus[1] : isiStatus[2],
     4: !isRead ? isiStatus[3] : isiStatus[4],
   };
-  console.log("adkawind");
+  console.log("adkawind", latestStatus);
   let i, j;
   const updatedStatusMap = { ...statusMap }; // Create a copy of statusMap
 
   if (persetujuan) {
-    if (persetujuan.includes("setuju")) {
-      updatedStatusMap[3] = isiStatus[2];
-      updatedStatusMap[4] = isiStatus[5];
-    } else if (persetujuan.includes("tolak")) {
-      updatedStatusMap[3] = isiStatus[6];
-      updatedStatusMap[4] = isiStatus[7];
+    if (
+      persetujuan.includes("Disetujui TU") ||
+      persetujuan.includes("Disetujui Dekan")
+    ) {
+      updatedStatusMap[3] = isiStatus[3];
+      updatedStatusMap[4] = isiStatus[6];
+    } else if (
+      persetujuan.includes("Ditolak TU") ||
+      persetujuan.includes("Ditolak TU")
+    ) {
+      updatedStatusMap[3] = isiStatus[7];
+      updatedStatusMap[4] = isiStatus[8];
     }
   }
   console.log("tytntm");
@@ -44,7 +52,6 @@ function getStatus(role_user, isRead, latestStatus, persetujuan) {
     }
   }
 
-  console.log(latestStatus);
   for (i = 0; i <= isiStatus.length; i++) {
     if (
       String(latestStatus).toLocaleLowerCase() ==
@@ -53,9 +60,9 @@ function getStatus(role_user, isRead, latestStatus, persetujuan) {
       break;
     }
   }
-  console.log("sssssssd");
-  if (j <= i) {
-    return [];
+  console.log("lmvpomr", j, i);
+  if (j <= i && latestStatus) {
+    return "";
   }
   console.log("hhhhyyyy");
   return updatedStatusMap[role_user] || "";
