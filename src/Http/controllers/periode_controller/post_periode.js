@@ -7,6 +7,15 @@ const router = express.Router();
 const postPeriode = async (req, res) => {
   const { tahun } = req.body;
   try {
+    const activePeriode = await Periode.findOne({ where: { status: true } });
+
+    if (activePeriode) {
+      await Periode.update(
+        { status: false },
+        { where: { id: activePeriode.id } }
+      );
+    }
+
     const periode = await Periode.create({
       tahun,
       status: true,

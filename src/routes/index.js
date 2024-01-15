@@ -31,14 +31,13 @@ router.use(express.urlencoded({ extended: true }));
 
 router.use("/auth", authController);
 router.use("/daftar-surat", authMiddleware, daftarSuratController);
+router.use("/template-surat", authMiddleware, templateController);
+router.use("/periode", authMiddleware, periodeController);
 
 router.use("/fakultas", authMiddleware, fakultasController);
 router.use("/role-user", authMiddleware, roleUserController);
 router.use("/prodi", authMiddleware, prodiController);
 router.use("/user", authMiddleware, usersController);
-
-router.use("/template-surat", authMiddleware, templateController);
-// router.use("/periode", authMiddleware, periodeController);
 
 // router.use("/notifikasi", authMiddleware, notifikasiController);
 // router.use("/komentar", authMiddleware, komentarController);

@@ -13,6 +13,19 @@ const putPeriode = async (req, res) => {
         .json({ error: "Invalid params" });
     }
 
+    const activePeriodes = await Periode.findAll({ where: { status: true } });
+
+    if (activePeriodes.length > 0) {
+      // Mendapatkan id dari semua periode yang memiliki status true
+      const activePeriodeIds = activePeriodes.map((periode) => periode.id);
+
+      // Melakukan update status menjadi false pada semua periode yang memiliki status true
+      await Periode.update(
+        { status: false },
+        { where: { id: activePeriodeIds } }
+      );
+    }
+
     const data_periode = await Periode.findOne({ where: { id: id } });
 
     if (!data_periode) {
