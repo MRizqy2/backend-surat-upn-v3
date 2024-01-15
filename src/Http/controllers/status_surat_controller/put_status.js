@@ -67,7 +67,7 @@ const putStatus = async (req, res) => {
 
     const surat_per = await Status.update(
       {
-        persetujuan: status_surat.persetujuan || persetujuan || "",
+        persetujuan: persetujuan || status_surat.persetujuan || "",
         status: isiStatus || status || status_surat.status,
       },
       {

@@ -5,7 +5,7 @@ const router = express.Router();
 const getAll = async function (req, res) {
   res.send(
     await Jenis_surat.findAll({
-      attributes: ["id", "name"],
+      attributes: ["id", "jenis"],
       order: [["id", "ASC"]],
     })
   );
