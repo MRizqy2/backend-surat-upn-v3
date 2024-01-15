@@ -7,12 +7,15 @@ const router = express.Router();
 const postPeriode = async (req, res) => {
   const { tahun } = req.body;
   try {
-    const activePeriode = await Periode.findOne({ where: { status: true } });
+    const activePeriodes = await Periode.findAll({ where: { status: true } });
 
-    if (activePeriode) {
+    if (activePeriodes.length > 0) {
+      // Mendapatkan id dari semua periode yang memiliki status true
+      const activePeriodeIds = activePeriodes.map((periode) => periode.id);
+
       await Periode.update(
         { status: false },
-        { where: { id: activePeriode.id } }
+        { where: { id: activePeriodeIds } }
       );
     }
 
