@@ -2,6 +2,7 @@ const express = require("express");
 const { Periode } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const isAdmin = require("./../../middleware/adminMiddleware");
+const router = express.Router();
 
 const putPeriode = async (req, res) => {
   try {
@@ -56,7 +57,7 @@ const putPeriode = async (req, res) => {
   }
 };
 
-router.put("/", putPeriode, isAdmin);
+router.put("/", isAdmin, putPeriode);
 
 module.exports = {
   putPeriode,

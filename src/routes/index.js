@@ -8,12 +8,11 @@ const roleUserController = require("../Http/controllers/role_user_controller/rol
 const prodiController = require("../Http/controllers/prodi_controller/prodi_controller");
 const usersController = require("../Http/controllers/user_controller/user_controller");
 const templateController = require("../Http/controllers/template_surat_controller/template_surat_controller");
+const periodeController = require("../Http/controllers/periode_controller/periode_controller");
 
 // const komentarController = require("../Http/controllers/komentar_controller");
 // const nomorController = require("../Http/controllers/nomor_surat_controller");
 // const notifikasiController = require("../Http/controllers/notifikasi_controller");
-
-// const periodeController = require("../Http/controllers/periode_controller");
 
 // const {
 //   router: statusController,
