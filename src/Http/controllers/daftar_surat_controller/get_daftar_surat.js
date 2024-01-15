@@ -19,7 +19,7 @@ const { Op, Sequelize } = require("sequelize");
 app.use(express.json()); //
 app.use(express.urlencoded({ extended: true }));
 
-const getDaftarSurat = async function (req, res) {
+const getDaftarSurat = async (req, res) => {
   const user = await Users.findOne({
     where: { id: req.token.id },
   });

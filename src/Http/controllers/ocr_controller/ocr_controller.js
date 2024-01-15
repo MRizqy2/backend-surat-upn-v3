@@ -4,11 +4,9 @@ const multer = require("multer");
 const fetch = require("node-fetch");
 const fs = require("fs");
 const path = require("path");
-const {
-  changeTextInPdfV2,
-} = require("../controllers/ocr_controller/post_coordinate_controller");
+const { changeTextInPdfV2 } = require("./post_coordinate_controller");
 
-const { Nomor_surat, Daftar_surat } = require("../../models");
+const { Nomor_surat, Daftar_surat } = require("../../../models");
 
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {

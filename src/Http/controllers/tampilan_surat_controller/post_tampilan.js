@@ -1,9 +1,7 @@
 const express = require("express");
 const app = express.Router();
 const router = express.Router();
-const { Tampilan, Daftar_surat, Users, Role_user } = require("../../models");
-const getStatus = require("../controllers/daftar_surat_controller/status_controller");
-const putStatus = require("./status_surat_controller");
+const { Tampilan, Daftar_surat, Users, Role_user } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const { Sequelize } = require("sequelize");
 
@@ -111,6 +109,6 @@ router.post("/", postTampilan);
 
 module.exports = {
   router,
-  postTampilan, // export this function so it can be used elsewhere
+  postTampilan,
   app,
 };

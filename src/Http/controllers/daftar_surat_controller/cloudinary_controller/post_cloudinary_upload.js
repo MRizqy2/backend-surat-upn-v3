@@ -106,13 +106,15 @@ const postUpload = async (req, res, next) => {
       });
     }
 
+    const suratUrlHttps = suratUrl.replace(/^http:/, "https:");
+
     const daftar_surat = await Daftar_surat.create({
       judul: judulExt,
       thumbnail: thumbnailUrl || "",
       jenis_id: jenis.id || "",
       user_id: req.token.id,
       tanggal: Date(),
-      url: suratUrl,
+      url: suratUrlHttps,
     });
 
     const reqStatus = {
