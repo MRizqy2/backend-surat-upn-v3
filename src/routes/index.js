@@ -9,6 +9,7 @@ const prodiController = require("../Http/controllers/prodi_controller/prodi_cont
 const usersController = require("../Http/controllers/user_controller/user_controller");
 const templateController = require("../Http/controllers/template_surat_controller/template_surat_controller");
 const periodeController = require("../Http/controllers/periode_controller/periode_controller");
+const jenisController = require("../Http/controllers/jenis_controller/jenis_controller");
 
 // const komentarController = require("../Http/controllers/komentar_controller");
 // const nomorController = require("../Http/controllers/nomor_surat_controller");
@@ -32,7 +33,7 @@ router.use("/auth", authController);
 router.use("/daftar-surat", authMiddleware, daftarSuratController);
 router.use("/template-surat", authMiddleware, templateController);
 router.use("/periode", authMiddleware, periodeController);
-
+router.use("/jenis", authMiddleware, jenisController);
 router.use("/fakultas", authMiddleware, fakultasController);
 router.use("/role-user", authMiddleware, roleUserController);
 router.use("/prodi", authMiddleware, prodiController);

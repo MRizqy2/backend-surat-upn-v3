@@ -1,9 +1,9 @@
 const express = require("express");
-const { Jenis } = require("../../../models");
+const { Jenis_surat } = require("../../../models");
 const router = express.Router();
 
 const getAll = async function (req, res) {
-  res.send(await Jenis.findAll({ order: [["id", "ASC"]] }));
+  res.send(await Jenis_surat.findAll({ order: [["id", "ASC"]] }));
 };
 
 router.get("/", getAll);

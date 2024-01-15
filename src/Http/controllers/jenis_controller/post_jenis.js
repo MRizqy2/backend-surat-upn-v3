@@ -1,16 +1,18 @@
 const express = require("express");
-const { Jenis, Users, Role_user, Daftar_surat } = require("../../../models");
-const { StatusCodes } = require("http-status-codes");
+const { Jenis_surat } = require("../../../models");
 const router = express.Router();
 
 const postJenis = async function (req, res) {
   try {
     const { jenis } = req.body;
-
-    const jenis_surat = await Jenis.create({
+    const latestJenis = await Jenis_surat.findAll({
+      limit: 1,
+      order: [["id", "DESC"]],
+    });
+    const latestJenisId = parseInt(latestJenis[0].id, 10);
+    const jenis_surat = await Jenis_surat.create({
+      id: latestJenisId + 1,
       jenis,
-      role_id: role_user.id,
-      komentar,
     });
 
     return res.json({ message: "Berhasil", jenis_surat });

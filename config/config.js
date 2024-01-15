@@ -39,12 +39,12 @@ module.exports = {
     // host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
     secret_key: process.env.SECRET_KEY,
-    // dialectOptions: {
-    //   ssl: {
-    //     require: true,
-    //     rejectUnauthorized: false,
-    //   },
-    // },
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
   production: {
     url: `postgres://${stringUser}:${stringPassword}@${process.env.POSTGRES_HOST}:5432/${process.env.POSTGRES_DATABASE}`,

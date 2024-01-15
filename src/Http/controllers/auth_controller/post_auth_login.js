@@ -22,7 +22,7 @@ const secretKey = config[environment].secret_key;
 const postLogin = async (req, res) => {
   try {
     const user = await Users.findOne({
-      where: { email: req.body.email },
+      where: { email: req.body.email.toLowerCase() },
     });
     if (user && !user.aktif) {
       return res

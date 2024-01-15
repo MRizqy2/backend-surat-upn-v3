@@ -1,5 +1,5 @@
 const express = require("express");
-const { Jenis } = require("../../../models");
+const { Jenis_surat } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -8,7 +8,7 @@ const putJenis = async function (req, res) {
     const { jenis } = req.body;
     const { id } = req.query;
 
-    const jenis_id = await Jenis.findOne({ where: { id: id } });
+    const jenis_id = await Jenis_surat.findOne({ where: { id: id } });
 
     if (!jenis_id) {
       return res
@@ -35,6 +35,6 @@ const putJenis = async function (req, res) {
 router.put("/", putJenis);
 
 module.exports = {
-  postJenis,
+  putJenis,
   router,
 };
