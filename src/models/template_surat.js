@@ -3,7 +3,10 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Template_surat extends Model {
     static associate(models) {
-      Template_surat.belongsTo(models.Jenis_surat, { foreignKey: "jenis_id" });
+      Template_surat.belongsTo(models.Jenis_surat, {
+        foreignKey: "jenis_id",
+        as: "jenis",
+      });
     }
   }
   Template_surat.init(

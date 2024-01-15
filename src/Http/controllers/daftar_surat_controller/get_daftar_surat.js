@@ -73,7 +73,7 @@ const getDaftarSurat = async (req, res) => {
         order: [["id", "ASC"]],
       })
     );
-  } else if (role.name === "Dekan" || role.name === "Admin Dekan") {
+  } else if (role.name === "Dekan") {
     return res.send(
       await Daftar_surat.findAll({
         include: [
@@ -120,7 +120,61 @@ const getDaftarSurat = async (req, res) => {
             [Op.in]: Sequelize.literal(`(
               SELECT "surat_id"
               FROM "Status"
-              WHERE "persetujuan" IN ('disetujui TU', 'disetujui Dekan', 'ditolak Dekan')
+              WHERE "persetujuan" IN ('Disetujui TU', 'Disetujui Dekan', 'Ditolak Dekan')
+            )`),
+          },
+        },
+        order: [["id", "ASC"]],
+      })
+    );
+  } else if (role.name === "Admin Dekan") {
+    return res.send(
+      await Daftar_surat.findAll({
+        include: [
+          {
+            model: Tampilan,
+            as: "tampilan",
+            attributes: ["pin", "dibaca"],
+          },
+          {
+            model: Users,
+            as: "user",
+            attributes: ["name", "email", "aktif"],
+            include: [
+              {
+                model: Prodi,
+                as: "prodi",
+                attributes: ["id", "name"],
+              },
+              {
+                model: Role_user,
+                as: "role",
+                attributes: ["id", "name"],
+              },
+              {
+                model: Fakultas,
+                as: "fakultas",
+                attributes: ["id", "name"],
+              },
+            ],
+          },
+          {
+            model: Jenis_surat,
+            as: "jenis",
+            attributes: ["id", "jenis"],
+          },
+          {
+            model: Status,
+            as: "status",
+            attributes: ["status", "persetujuan"],
+          },
+        ],
+        where: {
+          id: {
+            [Op.in]: Sequelize.literal(`(
+              SELECT "surat_id"
+              FROM "Status"
+              WHERE "persetujuan" IN ('Disetujui Dekan')
             )`),
           },
         },

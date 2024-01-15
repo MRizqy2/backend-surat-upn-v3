@@ -6,15 +6,20 @@ const {
   Prodi,
   Fakultas,
   Periode,
-} = require("../../models");
+} = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
-const { OCR } = require("./ocr_controller");
-const { repo } = require("./repo_controller");
-const app = express.Router();
+const { OCR } = require("./../ocr_controller/ocr_controller");
+const { repo } = require("./../repo_controller/repo_controller");
+const router = express.Router();
 
-app.post("/", async (req, res) => {
+const postNomorSurat = async (req, res) => {
   try {
-    const { surat_id } = req.body; //
+    let surat_id;
+    if (req.body) {
+      surat_id = req.body.surat_id;
+    } else {
+      surat_id = req.save.surat_id;
+    }
 
     let nomor;
     let nomor_surat;
@@ -141,6 +146,10 @@ app.post("/", async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Internal Server Error" });
   }
-});
+};
 
-module.exports = app;
+router.post("/", postNomorSurat);
+module.exports = {
+  postNomorSurat,
+  router,
+};

@@ -6,6 +6,9 @@ const { StatusCodes } = require("http-status-codes");
 const {
   postTampilan,
 } = require("./../tampilan_surat_controller/post_tampilan");
+const {
+  postNomorSurat,
+} = require("./../nomor_surat_controller/post_nomor_surat");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,7 +32,7 @@ const putStatus = async (req, res) => {
 
     if (!req.body) {
       surat = await Daftar_surat.findOne({
-        where: { id: req.save.surat_id },
+        where: { id: req.save.surat_id }, //tampilan
       });
     } else {
       surat = await Daftar_surat.findOne({
@@ -63,7 +66,7 @@ const putStatus = async (req, res) => {
     if (isiStatus.length == 0) {
       isiStatus = null;
     }
-    console.log("nkpkm ", persetujuan);
+    // console.log("nkpkm ", persetujuan);
 
     const surat_per = await Status.update(
       {
@@ -76,7 +79,8 @@ const putStatus = async (req, res) => {
       }
     );
     console.log("sdawdawd", persetujuan);
-    if (persetujuan === "Disetujui TU") {
+    if (persetujuan === `Disetujui TU` || persetujuan === `Disetujui Dekan`) {
+      console.log("dawdawd", persetujuan);
       reqTampilan = {
         save: {
           surat_id: surat_id,
@@ -86,6 +90,7 @@ const putStatus = async (req, res) => {
         },
       };
       const saveTampilan = await postTampilan(reqTampilan);
+      const savenomorSurat = await postNomorSurat(reqTampilan); //surat_id
     }
 
     if (!req.body) {
