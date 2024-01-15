@@ -9,7 +9,7 @@ const {
 } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const { OCR } = require("./../ocr_controller/ocr_controller");
-const { repo } = require("./../repo_controller/repo_controller");
+// const { repo } = require("./../repo_controller/repo_controller");
 const router = express.Router();
 
 const postNomorSurat = async (req, res) => {
@@ -122,22 +122,28 @@ const postNomorSurat = async (req, res) => {
         from: `nomor_surat_controller`,
       },
     };
-    const saveOcr = await OCR(reqOcr);
-    const reqRepo = {
-      save: {
-        surat_id: saveNomorSurat.surat_id,
-        from: `nomor_surat_controller`,
-      },
-    };
-    const saveRepo = await repo(reqRepo);
+    console.log("ompo[k");
+    const saveOcr = await OCR(reqOcr); // coba mad pdf sing mok upload bener kah// maksud e ga crash//
+    if (!saveOcr) {
+      //sek/ crash anjir/ kok tiba2 crash?cloudmu penuhkha?/ kosongin ta?
+      return res // nek cloudinary kok ga iso delok file sing ke upload yo
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Failed to save OCR" });
+    }
+    // const reqRepo = {
+    //   save: {
+    //     surat_id: saveNomorSurat.surat_id,
+    //     from: `nomor_surat_controller`,
+    //   },
+    // };
+    // const saveRepo = await repo(reqRepo);
+    console.log("l;mmkoo[k");
 
     if (saveNomorSurat && saveOcr) {
-      return res
-        .status(StatusCodes.OK)
-        .json({ message: "Success", saveNomorSurat, saveOcr, saveRepo });
+      return (res = { message: "Success", saveNomorSurat, saveOcr });
     } else {
       return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .status(StatusCodes.INTERNAL_SERVER_ERROR) //
         .json({ error: "Failed to save nomor surat" });
     }
   } catch (error) {

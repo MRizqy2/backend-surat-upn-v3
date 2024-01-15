@@ -13,12 +13,10 @@ const {
   Jenis_surat,
 } = require("../../../../models");
 // const getStatus = require("./status_controller");
-const {
-  postStatus,
-} = require("../../status_surat_controller/status_surat_controller");
-const {
-  postTampilan,
-} = require("../../tampilan_surat_controller/tampilan_surat_controller");
+// const { postStatus } = require("../../status_surat_controller/post_status");
+// const {
+//   postTampilan,
+// } = require("../../tampilan_surat_controller/tampilan_surat_controller");
 // const status = getStatus();
 
 const fs = require("fs");

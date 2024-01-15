@@ -7,7 +7,7 @@ async function changeTextInPdfV2(inputPath, outputPath, searchText, newText) {
   try {
     const dataBuffer = fs.readFileSync(inputPath);
     const data = await pdfParse(dataBuffer);
-
+    console.log("l;mvepm");
     const textIndex = data.text.indexOf(searchText);
 
     if (textIndex !== -1) {
@@ -20,7 +20,7 @@ async function changeTextInPdfV2(inputPath, outputPath, searchText, newText) {
 
       const pdfBytes = fs.readFileSync(inputPath);
       const pdfDoc = await PDFDocument.load(pdfBytes);
-
+      console.log("mkpmqwmdd");
       const pages = pdfDoc.getPages();
       const firstPage = pages[0];
       // const x = startPosition;

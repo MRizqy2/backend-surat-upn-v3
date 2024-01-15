@@ -43,6 +43,12 @@ const putStatus = async (req, res) => {
       where: { surat_id: surat.id },
     });
 
+    if (!status_surat) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        error: "Status not found",
+      });
+    }
+
     if (!surat) {
       return res.status(StatusCodes.NOT_FOUND).json({
         error: "Daftar surat not found",
@@ -88,9 +94,12 @@ const putStatus = async (req, res) => {
           user_id: user.id,
           from: "status_surat_controller",
         },
+        token: { id: req.token.id },
       };
       const saveTampilan = await postTampilan(reqTampilan);
-      const savenomorSurat = await postNomorSurat(reqTampilan); //surat_id
+      if (persetujuan === `Disetujui Dekan`) {
+        await postNomorSurat(reqTampilan);
+      } //surat_id
     }
 
     if (!req.body) {

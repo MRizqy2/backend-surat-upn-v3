@@ -1,26 +1,19 @@
 const cloudinary = require("../../../../../config/cloudinaryConfig");
 const express = require("express");
-const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
+const {
+  Template_surat,
+  Jenis_surat,
+  Daftar_surat,
+} = require("../../../../models");
+// const isAdmin = require("../../../../Http/middleware/adminMiddleware");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 const path = require("path");
-const { StatusCodes } = require("http-status-codes");
-const {
-  Daftar_surat,
-  Template_surat,
-  Role_user,
-  Users,
-  Jenis_surat,
-} = require("../../../../models");
-// const getStatus = require("./status_controller");// kukirim yo cuy
-const { postStatus } = require("../../status_surat_controller/post_status");
-const {
-  postTampilan,
-} = require("../../tampilan_surat_controller/post_tampilan");
-// const status = getStatus();
-
 const fs = require("fs");
 const fetch = require("node-fetch");
+const router = express.Router();
+const { putStatus } = require("../../status_surat_controller/put_status");
 
 function getResourceType(filename) {
   const extension = path.extname(filename).toLowerCase();
@@ -44,25 +37,40 @@ function getResourceType(filename) {
   }
 }
 
-const postUpload = async (req, res, next) => {
+const putCloudinary = async (req, res, next) => {
   try {
-    const { judul, jenis_id } = req.body;
-    const judulExt = judul + path.extname(req.files["surat"][0].originalname);
-    const jenis = await Jenis_surat.findOne({
-      where: { id: jenis_id },
-    });
+    //   const {  } = req.body;
+    const { surat_id } = req.query;
+    if (!req.files["surat"]) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Missing files in request" });
+    }
+    // const judul = req.files["surat"][0].originalname;
+    //   where: { id: jenis_id },
+    // };
+    // const judulCheck = await Template_surat.findOne({ where: { judul } });
+    //   const jenis = await Jenis_surat.findOne({
+    //     where: { id: jenis_id },
+    //   });
 
-    const user = await Users.findOne({
-      where: { id: req.token.id },
-    });
-    const role = await Role_user.findOne({
-      where: { id: user.role_id },
-    });
-
+    // if (judulCheck) {
+    //   return res.json("judul/file sudah ada");
+    // }
+    // let judul;
     let suratUrl;
     let thumbnailUrl;
-
+    let judulEx;
+    let data_surat;
+    // if (!req.files["surat"]) {
+    //   data_template_surat = Template_surat.findOne({
+    //     where: { id: id },
+    //   });
+    // }
     if (req.files["surat"]) {
+      // judulEx = judul + path.extname(req.files["surat"][0].originalname);
+      // const jenis = await Jenis_surat.findOne({
+      // judul = req.files["surat"][0].originalname;
       await new Promise((resolve, reject) => {
         cloudinary.uploader
           .upload_stream(
@@ -82,6 +90,7 @@ const postUpload = async (req, res, next) => {
       });
     }
 
+    // Upload thumbnail to Cloudinary
     if (req.files["thumbnail"]) {
       await new Promise((resolve, reject) => {
         cloudinary.uploader
@@ -104,42 +113,43 @@ const postUpload = async (req, res, next) => {
       });
     }
 
+    data_surat = await Daftar_surat.findOne({
+      where: { id: surat_id },
+    });
+    if (!data_surat) {
+      return res.status(404).json({ error: "Template surat not found" });
+    }
+
     const suratUrlHttps = suratUrl.replace(/^http:/, "https:");
 
-    const daftar_surat = await Daftar_surat.create({
-      judul: judulExt,
-      thumbnail: thumbnailUrl || "",
-      jenis_id: jenis.id || "",
-      user_id: req.token.id,
-      tanggal: Date(),
-      url: suratUrlHttps,
-    });
+    const saveSurat = await Daftar_surat.update(
+      {
+        // judul: data_surat.judul,
+        url: suratUrlHttps,
+        // jenis_id: jenis.id || "",
+        // deskripsi: deskripsi || "",
+        thumbnail: thumbnailUrl || "",
+      },
+      {
+        where: { id: surat_id }, // Gantilah dengan kriteria yang sesuai
+        returning: true, // Menambahkan opsi returning
+      }
+    );
 
     const reqStatus = {
       save: {
-        user_id: user.id,
-        surat_id: daftar_surat.id,
-        from: `daftar_surat_controller/cloudinary_controller`,
+        surat_id: surat_id,
+        dibaca: dibaca,
+        user: user,
+        from: "tampilan_surat_controller",
       },
+      token: req.token,
     };
-    const saveStatus = await postStatus(reqStatus);
+    const saveStatus = await putStatus(reqStatus);
 
-    const reqTampilan = {
-      save: {
-        role_id: role.id,
-        user_id: user.id,
-        surat_id: daftar_surat.id,
-        from: "daftar_surat_controller/cloudinary_controller",
-      },
-    };
-
-    const saveTampilan = await postTampilan(reqTampilan);
-
-    res.status(StatusCodes.CREATED).json({
-      message: "File successfully uploaded",
-      daftar_surat,
-      status: saveStatus,
-    });
+    return res
+      .status(StatusCodes.CREATED)
+      .json({ message: "File successfully uploaded", saveSurat });
   } catch (error) {
     console.error("Error:", error);
     res
@@ -148,13 +158,13 @@ const postUpload = async (req, res, next) => {
   }
 };
 
-router.post(
+router.put(
   "/",
   upload.fields([
     { name: "surat", maxCount: 1 },
     { name: "thumbnail", maxCount: 1 },
-  ]), //okeeh
-  postUpload
+  ]),
+  putCloudinary
 );
 
 module.exports = router;

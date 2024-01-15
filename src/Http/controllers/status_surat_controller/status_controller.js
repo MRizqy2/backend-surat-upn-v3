@@ -23,6 +23,7 @@ function getStatus(role_user, isRead, latestStatus, persetujuan) {
     2: isiStatus[1],
     3: !isRead ? isiStatus[1] : isiStatus[2],
     4: !isRead ? isiStatus[3] : isiStatus[4],
+    5: !isRead ? isiStatus[5] : isiStatus[6],
   };
   console.log("adkawind", latestStatus);
   let i, j;
@@ -42,7 +43,10 @@ function getStatus(role_user, isRead, latestStatus, persetujuan) {
       updatedStatusMap[3] = isiStatus[8];
       updatedStatusMap[4] = isiStatus[9];
     }
+  } else if (latestStatus === isiStatus[6]) {
+    return isiStatus[7];
   }
+
   console.log("tytntm");
 
   for (i = 0; i <= isiStatus.length; i++) {

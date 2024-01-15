@@ -9,7 +9,7 @@ const {
 } = require("../../models");
 const { StatusCodes } = require("http-status-codes");
 const { OCR } = require("./ocr_controller");
-const { repo } = require("./repo_controller");
+// const { repo } = require("./repo_controller");
 const app = express.Router();
 
 app.post("/", async (req, res) => {
