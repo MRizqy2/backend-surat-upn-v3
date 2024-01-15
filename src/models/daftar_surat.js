@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Daftar_surat.belongsTo(models.Jenis_surat, {
         foreignKey: "jenis_id",
+        as: "jenis",
       });
       // Daftar_surat.belongsTo(models.Komentar, {
       //   foreignKey: "komentar_id",

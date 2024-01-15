@@ -33,7 +33,7 @@ const postStatus = async (req, res) => {
     const status = getStatus(role.id, false, null, null);
     console.log("asdnvni", status);
     // const statusString = status.join(", ");
-    // console.log("dwadawdaw", statusString);
+    // console.log("dwadawdaw", status);
     const surat_kesetujuan = await Status.create({
       surat_id: surat.id,
       persetujuan: "",

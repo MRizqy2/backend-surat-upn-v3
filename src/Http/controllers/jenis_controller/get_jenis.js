@@ -3,7 +3,12 @@ const { Jenis_surat } = require("../../../models");
 const router = express.Router();
 
 const getAll = async function (req, res) {
-  res.send(await Jenis_surat.findAll({ order: [["id", "ASC"]] }));
+  res.send(
+    await Jenis_surat.findAll({
+      attributes: ["id", "name"],
+      order: [["id", "ASC"]],
+    })
+  );
 };
 
 router.get("/", getAll);

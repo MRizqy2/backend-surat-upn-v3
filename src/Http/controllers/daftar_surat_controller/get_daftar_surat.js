@@ -9,6 +9,7 @@ const {
   Fakultas,
   Status,
   Tampilan,
+  Jenis_surat,
 } = require("../../../models");
 const auth = require("../../middleware/authMiddleware");
 const cloudinaryController = require("./cloudinary_controller/cloudinary_controller");
@@ -59,6 +60,11 @@ const getDaftarSurat = async (req, res) => {
             ],
           },
           {
+            model: Jenis_surat,
+            as: "jenis",
+            attributes: ["id", "jenis"],
+          },
+          {
             model: Status,
             as: "status",
             attributes: ["status", "persetujuan"],
@@ -97,6 +103,11 @@ const getDaftarSurat = async (req, res) => {
                 attributes: ["id", "name"],
               },
             ],
+          },
+          {
+            model: Jenis_surat,
+            as: "jenis",
+            attributes: ["id", "jenis"],
           },
           {
             model: Status,
@@ -151,6 +162,11 @@ const getDaftarSurat = async (req, res) => {
                 attributes: ["id", "name"],
               },
             ],
+          },
+          {
+            model: Jenis_surat,
+            as: "jenis",
+            attributes: ["id", "jenis"],
           },
           {
             model: Status,

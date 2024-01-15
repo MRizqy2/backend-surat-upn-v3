@@ -37,10 +37,10 @@ function getStatus(role_user, isRead, latestStatus, persetujuan) {
       updatedStatusMap[4] = isiStatus[6];
     } else if (
       persetujuan.includes("Ditolak TU") ||
-      persetujuan.includes("Ditolak TU")
+      persetujuan.includes("Ditolak Dekan")
     ) {
-      updatedStatusMap[3] = isiStatus[7];
-      updatedStatusMap[4] = isiStatus[8];
+      updatedStatusMap[3] = isiStatus[8];
+      updatedStatusMap[4] = isiStatus[9];
     }
   }
   console.log("tytntm");

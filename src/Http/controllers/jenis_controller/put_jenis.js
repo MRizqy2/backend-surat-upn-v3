@@ -15,9 +15,9 @@ const putJenis = async function (req, res) {
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Invalid params" });
     }
-    const jenis_surat = await Jenis.update(
+    const jenis_surat = await Jenis_surat.update(
       {
-        jenis: jenis,
+        jenis,
       },
       {
         where: { id: id },

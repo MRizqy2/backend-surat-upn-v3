@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express.Router();
-const router = express.Router();
 const { Status, Daftar_surat, Users, Role_user } = require("../../../models");
 const getStatus = require("./status_controller");
 const { StatusCodes } = require("http-status-codes");
@@ -22,7 +21,7 @@ const putStatus = async (req, res) => {
       ({ persetujuan, status } = req.body);
       ({ surat_id } = req.query);
     }
-    // console.log("asdawd", surat_id);
+    console.log("asdawd");
     // console.log("btrbr", req.save.surat_id);
     const user = await Users.findOne({
       where: { id: req.token.id },
@@ -64,6 +63,7 @@ const putStatus = async (req, res) => {
     if (isiStatus.length == 0) {
       isiStatus = null;
     }
+    console.log("nkpkm ", persetujuan);
 
     const surat_per = await Status.update(
       {
@@ -75,7 +75,7 @@ const putStatus = async (req, res) => {
         returning: true,
       }
     );
-
+    console.log("sdawdawd", persetujuan);
     if (persetujuan === "Disetujui TU") {
       reqTampilan = {
         save: {
@@ -101,10 +101,9 @@ const putStatus = async (req, res) => {
   }
 };
 
-router.put("/update", putStatus);
+app.put("/update", putStatus);
 
 module.exports = {
-  router,
   putStatus,
   app,
 };

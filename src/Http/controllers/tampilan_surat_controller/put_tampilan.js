@@ -2,9 +2,7 @@ const express = require("express");
 const app = express.Router();
 const router = express.Router();
 const { Tampilan, Daftar_surat, Users, Role_user } = require("../../../models");
-const {
-  putStatus,
-} = require("../status_surat_controller/status_surat_controller");
+const { putStatus } = require("../status_surat_controller/put_status");
 const { StatusCodes } = require("http-status-codes");
 
 app.use(express.json());
@@ -43,10 +41,10 @@ const putTampilan = async (req, res) => {
         },
         token: req.token,
       };
-      saveStatus = putStatus(reqStatus, null);
+      saveStatus = await putStatus(reqStatus, null);
     }
 
-    res.status(StatusCodes.OK).json({ tampilan, saveStatus }); // iyo di pisah per put post// wkwk
+    res.status(StatusCodes.OK).json({ tampilan, saveStatus });
   } catch (error) {
     console.error("Error:", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
