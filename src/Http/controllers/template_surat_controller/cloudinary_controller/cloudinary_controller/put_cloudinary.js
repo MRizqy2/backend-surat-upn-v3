@@ -118,10 +118,12 @@ const putCloudinary =
         return res.status(404).json({ error: "Template surat not found" });
       }
 
+      const suratUrlHttps = suratUrl.replace(/^http:/, "https:");
+
       const template_surat = await Template_surat.update(
         {
           judul: judulEx || data_template_surat.judul,
-          url: suratUrl || data_template_surat.url,
+          url: suratUrlHttps || data_template_surat.url,
           jenis_id: jenis.id || "",
           deskripsi: deskripsi || "",
           thumbnail: thumbnailUrl || "",

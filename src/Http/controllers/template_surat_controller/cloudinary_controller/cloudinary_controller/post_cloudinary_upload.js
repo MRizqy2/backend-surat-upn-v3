@@ -100,9 +100,11 @@ const postCloudinary =
         });
       }
 
+      const suratUrlHttps = suratUrl.replace(/^http:/, "https:");
+
       const template_surat = await Template_surat.create({
         judul: judulEx,
-        url: suratUrl,
+        url: suratUrlHttps,
         jenis_id: jenis.id || "",
         deskripsi: deskripsi || "",
         thumbnail: thumbnailUrl || "",
