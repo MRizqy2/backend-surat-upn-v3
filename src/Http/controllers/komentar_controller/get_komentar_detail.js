@@ -6,12 +6,18 @@ const router = express.Router();
 const getDetail = async function (req, res) {
   try {
     const komen = await Komentar.findOne({
-      where: { id: req.query.id },
+      where: { surat_id: req.query.surat_id },
+      include: [
+        {
+          model: Role_user,
+          as: "role",
+          attributes: ["name"],
+        },
+      ],
     });
     if (komen) {
       res.status(StatusCodes.OK).json({
         komen: {
-          role_id: komen.role_id,
           komentar: komen.komentar,
         },
       });

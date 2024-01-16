@@ -5,7 +5,14 @@ const router = express.Router();
 const getAll = async function (req, res) {
   res.send(
     await Komentar.findAll({
-      attributes: ["role_id", "komentar"],
+      include: [
+        {
+          model: Role_user,
+          as: "role",
+          attributes: ["name"],
+        },
+      ],
+      attributes: ["komentar", "surat_id"],
       order: [["id", "ASC"]],
     })
   );

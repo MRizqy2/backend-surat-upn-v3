@@ -106,7 +106,9 @@ const putSuratUrl = async (req, res, next) => {
     const fileBuffer = fs.readFileSync(outputPath);
     const surat_judul = path.resolve(outputPath);
     console.log("dadwawdaw", surat_judul);
-    const judulFinal = outputPath.split("\\").pop();
+    // const judulFinal = outputPath.split("\\").pop();
+    // const judul = path.basename(surat_judul);
+    const judulFinal = path.basename(surat_judul);
     // const judulFinal = surat.judul.split("/").pop();
     console.log("ssssssasda", judulFinal); //uji15-acc.pdf.pdf// tak cek e/ gk, tetp ae
     // await new Promise((resolve, reject) => {
