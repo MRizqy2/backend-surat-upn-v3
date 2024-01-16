@@ -8,7 +8,18 @@ const getDetail = async function (req, res) {
     const komen = await Komentar.findOne({
       where: { id: req.query.id },
     });
-    res.status(StatusCodes.OK).json({ komen });
+    if (komen) {
+      res.status(StatusCodes.OK).json({
+        komen: {
+          role_id: komen.role_id,
+          komentar: komen.komentar,
+        },
+      });
+    } else {
+      res.status(StatusCodes.NOT_FOUND).json({
+        error: "Komentar not found",
+      });
+    }
   } catch (error) {}
 };
 

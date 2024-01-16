@@ -80,6 +80,10 @@ const postNomorSurat = async (req, res) => {
         .json({ error: "User not found" });
     }
 
+    const role_user_surat = await Role_user.findOne({
+      where: { id: user_surat.id },
+    });
+
     const prodi = await Prodi.findOne({
       where: { id: user_surat.prodi_id },
     });
@@ -105,7 +109,11 @@ const postNomorSurat = async (req, res) => {
     const temp_tahun_periode = String(active_periodes[0].tahun);
     const tahun_periode = temp_tahun_periode.split(" ")[3];
 
-    nomor_surat = `${nomor_surat}/${kode_fakultas}/TU_${kode_prodi}/${tahun_periode}`;
+    if (role_user_surat === `TU`) {
+      nomor_surat = `${nomor_surat}/${kode_fakultas}/TU_${kode_prodi}/${tahun_periode}`;
+    } else {
+      nomor_surat = `${nomor_surat}/${kode_fakultas}/TU_${kode_prodi}/${tahun_periode}`;
+    }
     nomor_surat = String(nomor_surat);
     // console.log("testitn 2", nomor_surat);
 
