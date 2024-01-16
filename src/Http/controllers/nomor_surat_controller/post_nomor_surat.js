@@ -5,6 +5,7 @@ const {
   Users,
   Prodi,
   Fakultas,
+  Role_user,
   Periode,
 } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
