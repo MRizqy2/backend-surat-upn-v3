@@ -110,7 +110,7 @@ const postNomorSurat = async (req, res) => {
     const tahun_periode = temp_tahun_periode.split(" ")[3];
 
     if (role_user_surat === `TU`) {
-      nomor_surat = `${nomor_surat}/${kode_fakultas}/TU_${kode_prodi}/${tahun_periode}`;
+      nomor_surat = `${nomor_surat}/${kode_fakultas}/TU/${tahun_periode}`;
     } else {
       nomor_surat = `${nomor_surat}/${kode_fakultas}/TU_${kode_prodi}/${tahun_periode}`;
     }
