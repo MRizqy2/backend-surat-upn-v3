@@ -101,28 +101,55 @@ const putSuratUrl = async (req, res, next) => {
       // coba run ciy p//inpo run
       where: { id: surat_id }, // inpu run maneh bang
     });
-    const judulFinal = surat.judul + path.extname(surat.judul);
+    // console.log("ssssssasda", surat.judul);
+    // const surat_judul = path.resolve(outputPath,surat.judul);
+    const fileBuffer = fs.readFileSync(outputPath);
+    const surat_judul = path.resolve(outputPath);
+    console.log("dadwawdaw", surat_judul);
+    const judulFinal = outputPath.split("\\").pop();
+    // const judulFinal = surat.judul.split("/").pop();
+    console.log("ssssssasda", judulFinal); //uji15-acc.pdf.pdf// tak cek e/ gk, tetp ae
+    // await new Promise((resolve, reject) => {
+    //error tapi wes masuk yo//
+    //   const stream = cloudinary.uploader.upload_stream(
+    //     {
+    //       resource_type: getResourceType(outputPath),
+    //       public_id: path.parse(outputPath),
+    //     },
+    //     (error, result) => {
+    //       if (error) {
+    //         reject(error);
+    //       } else {
+    //         suratUrl = result.url; //
+    //         suratUrl = suratUrl.replace(/^http:/, "https:"); //lek ngene iso ga
+    //         resolve(result);
+    //       }
+    //     }
+    //   );
+
+    //   const fileStream = fs.createReadStream(outputPath);
+    //   fileStream.pipe(stream);
+    // });
 
     await new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: getResourceType(surat.judul),
-          public_id: path.parse(surat.judul),
-        },
-        (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            suratUrl = result.url;
-            suratUrl = suratUrl.replace(/^http:/, "https:");
-            resolve(result);
+      cloudinary.uploader
+        .upload_stream(
+          {
+            resource_type: getResourceType(outputPath),
+            public_id: path.parse(outputPath),
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else {
+              suratUrl = result.url; //
+              suratUrl = suratUrl.replace(/^http:/, "https:"); //lek ngene iso ga
+              resolve(result);
+            }
           }
-        }
-      );
-
-      const fileStream = fs.createReadStream(surat.judul);
-      fileStream.pipe(stream);
+        )
+        .end(fileBuffer);
     });
+    console.log("mdfvlp", judulFinal);
 
     const update_surat = await Daftar_surat.update(
       {

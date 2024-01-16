@@ -85,21 +85,41 @@ const putStatus = async (req, res) => {
       }
     );
     console.log("sdawdawd", persetujuan);
-    if (persetujuan === `Disetujui TU` || persetujuan === `Disetujui Dekan`) {
-      console.log("dawdawd", persetujuan);
-      reqTampilan = {
-        save: {
-          surat_id: surat_id,
-          // dibaca: dibaca,
-          user_id: user.id,
-          from: "status_surat_controller",
-        },
-        token: { id: req.token.id },
-      };
-      const saveTampilan = await postTampilan(reqTampilan);
-      if (persetujuan === `Disetujui Dekan`) {
-        await postNomorSurat(reqTampilan);
-      } //surat_id
+    const ON = 1;
+    if (ON === 1) {
+      if (persetujuan === `Disetujui TU` || persetujuan === `Disetujui Dekan`) {
+        console.log("dawdawd", persetujuan);
+        reqTampilan = {
+          save: {
+            surat_id: surat_id,
+            // dibaca: dibaca,
+            user_id: user.id,
+            from: "status_surat_controller",
+          },
+          token: { id: req.token.id },
+        };
+        const saveTampilan = await postTampilan(reqTampilan);
+        if (persetujuan === `Disetujui Dekan`) {
+          await postNomorSurat(reqTampilan);
+        } //surat_id
+      }
+    } else if (ON === 2) {
+      if (persetujuan === `Disetujui TU` || persetujuan === `Disetujui Dekan`) {
+        console.log("dawdawd", persetujuan);
+        reqTampilan = {
+          save: {
+            surat_id: surat_id,
+            // dibaca: dibaca,
+            user_id: user.id,
+            from: "status_surat_controller",
+          },
+          token: { id: req.token.id },
+        };
+        const saveTampilan = await postTampilan(reqTampilan);
+        if (persetujuan === `Disetujui Dekan`) {
+          await postNomorSurat(reqTampilan);
+        } //surat_id
+      }
     }
 
     if (!req.body) {

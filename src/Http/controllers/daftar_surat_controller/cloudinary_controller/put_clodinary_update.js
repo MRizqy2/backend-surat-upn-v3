@@ -5,6 +5,7 @@ const {
   Template_surat,
   Jenis_surat,
   Daftar_surat,
+  Users,
 } = require("../../../../models");
 // const isAdmin = require("../../../../Http/middleware/adminMiddleware");
 const multer = require("multer");
@@ -14,6 +15,7 @@ const fs = require("fs");
 const fetch = require("node-fetch");
 const router = express.Router();
 const { putStatus } = require("../../status_surat_controller/put_status");
+const { postRepo } = require("../../repo_controller/post_repo");
 
 function getResourceType(filename) {
   const extension = path.extname(filename).toLowerCase();
@@ -34,8 +36,8 @@ function getResourceType(filename) {
     return "video";
   } else {
     return "raw";
-  }
-}
+  } // mad lek misal pindah surat id iso ga// jalan ni setuju e pindah id :v
+} // hah/hah
 
 const putCloudinary = async (req, res, next) => {
   try {
@@ -122,6 +124,10 @@ const putCloudinary = async (req, res, next) => {
 
     const suratUrlHttps = suratUrl.replace(/^http:/, "https:");
 
+    const user = await Users.findOne({
+      where: { id: req.token.id },
+    });
+
     const saveSurat = await Daftar_surat.update(
       {
         // judul: data_surat.judul,
@@ -139,17 +145,23 @@ const putCloudinary = async (req, res, next) => {
     const reqStatus = {
       save: {
         surat_id: surat_id,
-        dibaca: dibaca,
+        // dibaca: dibaca,
         user: user,
         from: "tampilan_surat_controller",
       },
       token: req.token,
     };
     const saveStatus = await putStatus(reqStatus);
+    const reqRepo = {
+      save: {
+        surat_id: surat_id,
+      },
+    };
+    const saveRepo = await postRepo(reqRepo);
 
     return res
       .status(StatusCodes.CREATED)
-      .json({ message: "File successfully uploaded", saveSurat });
+      .json({ message: "File successfully uploaded", saveSurat, saveRepo });
   } catch (error) {
     console.error("Error:", error);
     res

@@ -43,7 +43,7 @@ function getStatus(role_user, isRead, latestStatus, persetujuan) {
       updatedStatusMap[3] = isiStatus[8];
       updatedStatusMap[4] = isiStatus[9];
     }
-  } else if (latestStatus === isiStatus[6]) {
+  } else if (latestStatus === isiStatus[6] || latestStatus === isiStatus[5]) {
     return isiStatus[7];
   }
 

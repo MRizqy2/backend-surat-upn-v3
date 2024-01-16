@@ -13,6 +13,7 @@ const jenisController = require("../Http/controllers/jenis_controller/jenis_cont
 const tampilanController = require("../Http/controllers/tampilan_surat_controller/tampilan_surat_controller");
 const statusController = require("../Http/controllers/status_surat_controller/status_surat_controller");
 const komentarController = require("../Http/controllers/komentar_controller/komentar_controller");
+const repoController = require("../Http/controllers/repo_controller/repo_controller");
 
 // const nomorController = require("../Http/controllers/nomor_surat_controller");
 // const notifikasiController = require("../Http/controllers/notifikasi_controller");
@@ -41,6 +42,8 @@ router.use("/template-surat", authMiddleware, templateController);
 router.use("/tampilan", authMiddleware, tampilanController);
 router.use("/status", authMiddleware, statusController);
 router.use("/komentar", authMiddleware, komentarController);
+
+router.use("/repo", authMiddleware, repoController);
 
 // router.use("/notifikasi", authMiddleware, notifikasiController);
 
