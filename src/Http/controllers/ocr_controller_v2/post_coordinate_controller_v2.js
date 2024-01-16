@@ -5,7 +5,9 @@ const pdfParse = require("pdf-parse");
 
 async function changeTextInPdfV2(inputPath, outputPath, searchText, newText) {
   try {
+    console.log("fnlnfkok", inputPath);
     const dataBuffer = fs.readFileSync(inputPath);
+
     const data = await pdfParse(dataBuffer);
     console.log("l;mvepm");
     const textIndex = data.text.indexOf(searchText);

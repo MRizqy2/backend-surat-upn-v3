@@ -33,10 +33,9 @@ const OCR = async (req, res) => {
     const response = await fetch(downloadUrl);
     const fileBuffer = await response.buffer();
 
-    const tempDir = path.resolve(__dirname, "../../../../daftar_surat");
-    console.log("tempDir = ", tempDir); //D:\Rizal\PENS\Semester 6\Magang KP\Sejahtera Mandiri Solusindo\upn\backend-surat-upn-v3\backend-surat-upn-v3\daftar_surat
-    // const tempDir = `../../../../daftar_surat`;
-    //D:\Rizal\PENS\Semester 6\Magang KP\Sejahtera Mandiri Solusindo\upn\backend-surat-upn-v3\backend-surat-upn-v3\mbkm2.pdf
+    const tempDir = path.resolve("/tmp/daftar_surat");
+    console.log("tempDir = ", tempDir);
+
     // Check if the directory exists
     if (!fs.existsSync(tempDir)) {
       // If not, create the directory
