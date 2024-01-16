@@ -3,7 +3,12 @@ const { Komentar, Users, Role_user, Daftar_surat } = require("../../../models");
 const router = express.Router();
 
 const getAll = async function (req, res) {
-  res.send(await Komentar.findAll({ order: [["id", "ASC"]] }));
+  res.send(
+    await Komentar.findAll({
+      attributes: ["role_id", "komentar"],
+      order: [["id", "ASC"]],
+    })
+  );
 };
 
 router.get("/", getAll);
