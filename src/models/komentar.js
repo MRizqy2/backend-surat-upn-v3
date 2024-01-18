@@ -3,9 +3,13 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Komentar extends Model {
     static associate(models) {
-      Komentar.belongsTo(models.Role_user, {
-        foreignKey: "role_id",
-        as: "role",
+      Komentar.belongsTo(models.Jabatan, {
+        foreignKey: "jabatan_id_ke",
+        as: "jabatan_ke",
+      });
+      Komentar.belongsTo(models.Jabatan, {
+        foreignKey: "jabatan_id_dari",
+        as: "jabatan_dari",
       });
       Komentar.belongsTo(models.Daftar_surat, { foreignKey: "surat_id" });
     }
@@ -22,11 +26,21 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      role_id: {
+      jabatan_id_ke: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Role_user",
+          model: "Jabatan",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
+      },
+      jabatan_id_dari: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Jabatan",
           key: "id",
         },
         onUpdate: "CASCADE",

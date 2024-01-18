@@ -2,24 +2,14 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Komentars", {
+    await queryInterface.createTable("Permisions", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      surat_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Daftar_surats",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
-      },
-      jabatan_id_ke: {
+      jabatan_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -29,18 +19,20 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      jabatan_id_dari: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Jabatans",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
+      buat_surat: {
+        type: Sequelize.BOOLEAN,
       },
-      komentar: {
-        type: Sequelize.TEXT,
+      download_surat: {
+        type: Sequelize.BOOLEAN,
+      },
+      generate_nomor_surat: {
+        type: Sequelize.BOOLEAN,
+      },
+      upload_tandatangan: {
+        type: Sequelize.BOOLEAN,
+      },
+      persetujuan: {
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,
@@ -53,6 +45,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Komentars");
+    await queryInterface.dropTable("Permisions");
   },
 };

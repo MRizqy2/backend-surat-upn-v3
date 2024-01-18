@@ -11,10 +11,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "jenis_id",
         as: "jenis",
       });
-      // Daftar_surat.belongsTo(models.Komentar, {
-      //   foreignKey: "komentar_id",
-      //   as: "komentar",
-      // });
       Daftar_surat.hasMany(models.Komentar, { foreignKey: "surat_id" });
       Daftar_surat.hasMany(models.Notifikasi, { foreignKey: "surat_id" });
       Daftar_surat.hasMany(models.Nomor_surat, { foreignKey: "surat_id" });
@@ -26,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "status",
         foreignKey: "surat_id",
       });
+      Daftar_surat.hasMany(models.Akses_surat, { foreignKey: "surat_id" });
     }
   }
   Daftar_surat.init(
@@ -52,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
+      deskripsi: DataTypes.STRING,
       tanggal: DataTypes.DATE,
       url: DataTypes.STRING,
     },

@@ -1,11 +1,6 @@
 const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
-const {
-  Users,
-  Role_user,
-  Prodi,
-  Fakultas,
-} = require("../../../models/index.js");
+const { Users, Jabatan, Prodi, Fakultas } = require("../../../models/index.js");
 const config = require("../../../../config/config.js");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
@@ -31,7 +26,7 @@ const postLogin = async (req, res) => {
     }
     if (user && (await bcrypt.compare(req.body.password, user.password))) {
       const token = jwt.sign({ id: user.id, aktif: user.aktif }, secretKey, {
-        expiresIn: "1d",
+        expiresIn: "7d",
       });
       const user_response = await Users.findOne({
         include: [
@@ -41,8 +36,8 @@ const postLogin = async (req, res) => {
             attributes: ["id", "name"],
           },
           {
-            model: Role_user,
-            as: "role",
+            model: Jabatan,
+            as: "jabatan",
             attributes: ["id", "name"],
           },
           {

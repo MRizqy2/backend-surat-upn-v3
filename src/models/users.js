@@ -3,7 +3,10 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Users extends Model {
     static associate(models) {
-      Users.belongsTo(models.Role_user, { foreignKey: "role_id", as: "role" });
+      Users.belongsTo(models.Jabatan, {
+        foreignKey: "jabatan_id",
+        as: "jabatan",
+      });
       Users.belongsTo(models.Prodi, { foreignKey: "prodi_id", as: "prodi" });
       Users.belongsTo(models.Fakultas, {
         foreignKey: "fakultas_id",
@@ -20,11 +23,11 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
       },
       password: DataTypes.STRING,
-      role_id: {
+      jabatan_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Role_user",
+          model: "Jabatan",
           key: "id",
         },
         onUpdate: "CASCADE",

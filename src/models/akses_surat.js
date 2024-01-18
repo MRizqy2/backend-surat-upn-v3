@@ -1,26 +1,16 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Tampilan extends Model {
+  class Akses_surat extends Model {
     static associate(models) {
-      Tampilan.belongsTo(models.Jabatan, { foreignKey: "jabatan_id" });
-      Tampilan.belongsTo(models.Daftar_surat, { foreignKey: "surat_id" });
+      Akses_surat.belongsTo(models.Daftar_surat, {
+        foreignKey: "surat_id",
+      });
+      Akses_surat.belongsTo(models.Jabatan, { foreignKey: "jabatan_id" });
     }
   }
-  Tampilan.init(
+  Akses_surat.init(
     {
-      pin: DataTypes.BOOLEAN,
-      dibaca: DataTypes.BOOLEAN,
-      jabatan_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Jabatan",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
-      },
       surat_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -31,11 +21,21 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
+      jabatan_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Jabatan",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
+      },
     },
     {
       sequelize,
-      modelName: "Tampilan",
+      modelName: "Akses_surat",
     }
   );
-  return Tampilan;
+  return Akses_surat;
 };

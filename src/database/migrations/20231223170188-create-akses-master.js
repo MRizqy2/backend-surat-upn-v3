@@ -2,45 +2,40 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Komentars", {
+    await queryInterface.createTable("Akses_masters", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      surat_id: {
+      permision_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Daftar_surats",
+          model: "Permisions",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      jabatan_id_ke: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Jabatans",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
+      prodi: {
+        type: Sequelize.BOOLEAN,
       },
-      jabatan_id_dari: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Jabatans",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
+      template: {
+        type: Sequelize.BOOLEAN,
       },
-      komentar: {
-        type: Sequelize.TEXT,
+      periode: {
+        type: Sequelize.BOOLEAN,
+      },
+      fakultas: {
+        type: Sequelize.BOOLEAN,
+      },
+      jabatan: {
+        type: Sequelize.BOOLEAN,
+      },
+      jenis_surat: {
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,
@@ -53,6 +48,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Komentars");
+    await queryInterface.dropTable("Akses_masters");
   },
 };

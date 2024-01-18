@@ -35,6 +35,9 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
+      deskripsi: {
+        type: Sequelize.STRING,
+      },
       tanggal: {
         type: Sequelize.DATE,
       },

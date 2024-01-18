@@ -14,7 +14,7 @@ module.exports = {
           name: "Super Admin",
           email: "admin",
           password: hashedPassword,
-          role_id: 1,
+          jabatan_id: 1,
           prodi_id: 1,
           fakultas_id: 1,
           aktif: true,

@@ -2,26 +2,19 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Komentars", {
+    await queryInterface.createTable("Jabatans", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      surat_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "Daftar_surats",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
+      name: {
+        type: Sequelize.STRING,
       },
-      jabatan_id_ke: {
+      jabatan_atas_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "Jabatans",
           key: "id",
@@ -29,18 +22,15 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      jabatan_id_dari: {
+      jabatan_bawah_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "Jabatans",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
-      },
-      komentar: {
-        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,
@@ -53,6 +43,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Komentars");
+    await queryInterface.dropTable("Jabatans");
   },
 };

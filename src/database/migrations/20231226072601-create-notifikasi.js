@@ -19,21 +19,21 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      role_id_dari: {
+      jabatan_id_dari: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Role_users",
+          model: "Jabatans",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      role_id_ke: {
+      jabatan_id_ke: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Role_users",
+          model: "Jabatans",
           key: "id",
         },
         onUpdate: "CASCADE",

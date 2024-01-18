@@ -1,9 +1,9 @@
 const express = require("express");
-const { Role_user } = require("../../../models");
+const { Permision } = require("../../../models");
 const isAdmin = require("../../middleware/adminMiddleware");
 const router = express.Router();
 
-const deleteRole =
+const deletePermision =
   (isAdmin,
   async (req, res) => {
     try {
@@ -13,14 +13,14 @@ const deleteRole =
         return res.status(400).json({ error: "Parameter 'id' is required" });
       }
 
-      const deletedRole = await Role_user.destroy({
+      const deletedPermision = await Permision.destroy({
         where: { id: id },
       });
 
-      if (deletedRole) {
-        res.status(200).json({ message: "Role deleted successfully" });
+      if (deletedPermision) {
+        res.status(200).json({ message: "Permision deleted successfully" });
       } else {
-        res.status(404).json({ error: "Role not found" });
+        res.status(404).json({ error: "Permision not found" });
       }
     } catch (error) {
       console.error("Error:", error);
@@ -28,9 +28,9 @@ const deleteRole =
     }
   });
 
-router.delete("/", deleteRole, isAdmin);
+router.delete("/", deletePermision, isAdmin);
 
 module.exports = {
-  deleteRole,
+  deletePermision,
   router,
 };

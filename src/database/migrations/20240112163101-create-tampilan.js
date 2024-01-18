@@ -15,11 +15,11 @@ module.exports = {
       dibaca: {
         type: Sequelize.BOOLEAN,
       },
-      role_id: {
+      jabatan_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Role_users",
+          model: "Jabatans",
           key: "id",
         },
         onUpdate: "CASCADE",
