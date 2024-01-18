@@ -8,7 +8,7 @@ const { StatusCodes } = require("http-status-codes");
 const {
   Daftar_surat,
   Template_surat,
-  Role_user,
+  Jabatan,
   Users,
   Jenis_surat,
 } = require("../../../../models");
@@ -18,9 +18,11 @@ const {
   postTampilan,
 } = require("../../tampilan_surat_controller/post_tampilan");
 // const status = getStatus();
+const { send } = require("./../send_controller");
 
 const fs = require("fs");
 const fetch = require("node-fetch");
+const jabatan = require("../../../../models/jabatan");
 
 function getResourceType(filename) {
   const extension = path.extname(filename).toLowerCase();
@@ -46,7 +48,7 @@ function getResourceType(filename) {
 
 const postUpload = async (req, res, next) => {
   try {
-    const { judul, jenis_id } = req.body;
+    const { judul, jenis_id, deskripsi } = req.body;
     const judulExt = judul + path.extname(req.files["surat"][0].originalname);
     const jenis = await Jenis_surat.findOne({
       where: { id: jenis_id },
@@ -55,8 +57,8 @@ const postUpload = async (req, res, next) => {
     const user = await Users.findOne({
       where: { id: req.token.id },
     });
-    const role = await Role_user.findOne({
-      where: { id: user.role_id },
+    const jabatan = await Jabatan.findOne({
+      where: { id: user.jabatan_id },
     });
 
     let suratUrl;
@@ -111,6 +113,7 @@ const postUpload = async (req, res, next) => {
       thumbnail: thumbnailUrl || "",
       jenis_id: jenis.id || "",
       user_id: req.token.id,
+      deskripsi: deskripsi || "",
       tanggal: Date(),
       url: suratUrlHttps,
     });
@@ -126,7 +129,7 @@ const postUpload = async (req, res, next) => {
 
     const reqTampilan = {
       save: {
-        role_id: role.id,
+        jabatan_id: jabatan.id,
         user_id: user.id,
         surat_id: daftar_surat.id,
         from: "daftar_surat_controller/cloudinary_controller",
@@ -134,6 +137,25 @@ const postUpload = async (req, res, next) => {
     };
 
     const saveTampilan = await postTampilan(reqTampilan);
+
+    let reqSend;
+    reqSend = {
+      body: {
+        surat_id: daftar_surat.id,
+        jabatan_id: jabatan.jabatan_atas_id,
+        from: "daftar_surat_controller/cloudinary_controller",
+      },
+    };
+    await send(reqSend);
+
+    reqSend = {
+      body: {
+        surat_id: daftar_surat.id,
+        jabatan_id: jabatan.id,
+        from: "daftar_surat_controller/cloudinary_controller",
+      },
+    };
+    await send(reqSend);
 
     res.status(StatusCodes.CREATED).json({
       message: "File successfully uploaded",

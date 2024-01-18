@@ -6,11 +6,11 @@ const router = express.Router();
 const putJenis = async function (req, res) {
   try {
     const { jenis } = req.body;
-    const { id } = req.query;
+    const { jenis_id } = req.query;
 
-    const jenis_id = await Jenis_surat.findOne({ where: { id: id } });
+    const searchJenis = await Jenis_surat.findOne({ where: { id: jenis_id } });
 
-    if (!jenis_id) {
+    if (!searchJenis) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Invalid params" });
@@ -20,7 +20,7 @@ const putJenis = async function (req, res) {
         jenis,
       },
       {
-        where: { id: id },
+        where: { id: jenis_id },
         returning: true,
       }
     );

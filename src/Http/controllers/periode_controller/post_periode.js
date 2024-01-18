@@ -1,7 +1,6 @@
 const express = require("express");
 const { Periode } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
-const isAdmin = require("./../../middleware/adminMiddleware");
 const router = express.Router();
 
 const postPeriode = async (req, res) => {
@@ -36,7 +35,7 @@ const postPeriode = async (req, res) => {
   }
 };
 
-router.post("/", postPeriode, isAdmin);
+router.post("/", postPeriode);
 
 module.exports = {
   postPeriode,

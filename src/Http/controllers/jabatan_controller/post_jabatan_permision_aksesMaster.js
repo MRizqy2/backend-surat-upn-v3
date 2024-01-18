@@ -1,7 +1,6 @@
 const express = require("express");
 const { Jabatan, Permision, Akses_master } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
-const isAdmin = require("../../middleware/adminMiddleware");
 const { postPermision } = require("../permision_controller/post_permision");
 const {
   postAksesMaster,
@@ -9,101 +8,103 @@ const {
 const { getJabatan } = require("./get_jabatan");
 const router = express.Router();
 
-const postJabatanPermisionAksesMaster =
-  (isAdmin,
-  async (req, res) => {
-    const {
+const postJabatanPermisionAksesMaster = async (req, res) => {
+  const {
+    name,
+    jabatan_atas_id,
+    //req permision
+    buat_surat,
+    download_surat,
+    generate_nomor_surat,
+    upload_tandatangan,
+    persetujuan,
+    // req akses master
+    prodi,
+    template,
+    periode,
+    fakultas,
+    jabatan,
+    jenis_surat,
+  } = req.body;
+  try {
+    // const latestJabatan = await Jabatan.findAll({
+    //   limit: 1,
+    //   order: [["id", "DESC"]],
+    // });
+
+    // const latestJabatanId = parseInt(latestJabatan[0].id, 10);
+
+    const saveJabatan = await Jabatan.create({
+      // id: latestJabatanId + 1,
       name,
-      jabatan_atas_id,
-      jabatan_bawah_id,
-      //req permision
-      buat_surat,
-      download_surat,
-      generate_nomor_surat,
-      upload_tandatangan,
-      persetujuan,
-      // req akses master
-      prodi,
-      template,
-      periode,
-      fakultas,
-      jabatan,
-      jenis_surat,
-    } = req.body;
-    try {
-      // const latestJabatan = await Jabatan.findAll({
-      //   limit: 1,
-      //   order: [["id", "DESC"]],
-      // });
+      jabatan_atas_id: jabatan_atas_id || null,
+    });
 
-      // const latestJabatanId = parseInt(latestJabatan[0].id, 10);
+    // const checkJabatanAtas = await Jabatan.findAll({
+    //   where: { id: saveJabatan.jabatan_atas_id },
+    // });
+    // if (checkJabatanAtas[0].jabatan_bawah_id != saveJabatan.jabatan_atas_id) {
+    //   await Jabatan.update(
+    //     {
+    //       jabatan_bawah_id: saveJabatan.jabatan_atas_id,
+    //     },
+    //     {
+    //       where: {
+    //         id: checkJabatanAtas[0].id,
+    //       },
+    //     }
+    //   );
+    // }
 
-      const saveJabatan = await Jabatan.create({
-        // id: latestJabatanId + 1,
-        name,
-        jabatan_atas_id: jabatan_atas_id || null,
-        jabatan_bawah_id: jabatan_bawah_id || null,
-      });
+    const reqPermision = {
+      body: {
+        from: `jabatan_controller/post_jabatan_permision_aksesMaster`,
+        jabatan_id: saveJabatan.id,
+        buat_surat,
+        download_surat,
+        generate_nomor_surat,
+        upload_tandatangan,
+        persetujuan,
+      },
+    };
+    const savePermision = await postPermision(reqPermision);
 
-      const reqPermision = {
-        body: {
-          jabatan_id: saveJabatan.id,
-          buat_surat,
-          download_surat,
-          generate_nomor_surat,
-          upload_tandatangan,
-          persetujuan,
-        },
-      };
-      // const savePermision = await postPermision(reqPermision);
+    const reqAksesMaster = {
+      body: {
+        from: `jabatan_controller/post_jabatan_permision_aksesMaster`,
+        permision_id: savePermision.id,
+        prodi,
+        template,
+        periode,
+        fakultas,
+        jabatan,
+        jenis_surat,
+      },
+    };
+    const saveAksesMaster = await postAksesMaster(reqAksesMaster);
 
-      const reqAksesMaster = {
-        body: {
-          permision_id: savePermision.id,
-          prodi,
-          template,
-          periode,
-          fakultas,
-          jabatan,
-          jenis_surat,
-        },
-      };
-      // const saveAksesMaster = await postAksesMaster(reqAksesMaster);
+    const reqJabatan = {
+      query: {
+        from: `jabatan_controller/post_jabatan_permision_aksesMaster`,
+        jabatan_id: saveJabatan.id,
+      },
+    };
+    const getDataJabatan = await getJabatan(reqJabatan);
 
-      const reqJabatan = {
-        query: {
-          jabatan_id: saveJabatan.id,
-        },
-      };
+    res.status(StatusCodes.CREATED).json({
+      message: " created successfully",
+      getDataJabatan,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: "Internal Server Error",
+      message: error.message,
+    });
+  }
+};
 
-      async function createPermision(data) {
-        const permision = await Permision.create(data);
-        return permision;
-      }
-
-      // Utility function to create an AksesMaster
-      async function createAksesMaster(data) {
-        const aksesMaster = await Akses_master.create(data);
-        return aksesMaster;
-      }
-
-      // Then in your controller function
-      const savePermision = await createPermision(reqPermision.body);
-      const saveAksesMaster = await createAksesMaster(reqAksesMaster.body);
-
-      res.status(StatusCodes.CREATED).json({
-        message: `${await getJabatan(reqJabatan)} created successfully`,
-      });
-    } catch (error) {
-      console.error("Error:", error);
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        error: "Internal Server Error",
-        message: error.message,
-      });
-    }
-  });
-
-router.post("/", postJabatanPermisionAksesMaster, isAdmin);
+router.post("/", postJabatanPermisionAksesMaster);
 
 module.exports = {
   postJabatanPermisionAksesMaster,

@@ -8,7 +8,7 @@ const { StatusCodes } = require("http-status-codes");
 const {
   Daftar_surat,
   Template_surat,
-  Role_user,
+  Jabatan,
   Users,
   Jenis_surat,
 } = require("../../../../models");
@@ -52,11 +52,11 @@ const getDetail = async (req, res) => {
     const user = await Users.findOne({
       where: { id: req.token.id },
     });
-    const role = await Role_user.findOne({
-      where: { id: user.role_id },
+    const jabatan = await Jabatan.findOne({
+      where: { id: user.jabatan_id },
     });
 
-    const statusArray = getStatus(role.id, true);
+    const statusArray = getStatus(jabatan.id, true);
     const status = statusArray.join(", ");
 
     const surat = await Daftar_surat.findOne({

@@ -2,14 +2,12 @@ const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
 const { Users } = require("../../../models/index.js");
 const config = require("../../../../config/config.js");
-const isAdmin = require("../../middleware/adminMiddleware.js");
 const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");
 const router = express.Router();
 
 const putAktivasi =
   (authMiddleware,
-  isAdmin,
   async (req, res) => {
     try {
       const { aktif } = req.body;
@@ -42,7 +40,7 @@ const putAktivasi =
     }
   });
 
-router.put("/aktivasi", authMiddleware, isAdmin, putAktivasi);
+router.put("/aktivasi", authMiddleware, putAktivasi);
 
 module.exports = {
   router,

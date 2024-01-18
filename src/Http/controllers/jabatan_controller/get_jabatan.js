@@ -1,6 +1,5 @@
 const express = require("express");
 const { Akses_master, Permision, Jabatan, Users } = require("../../../models");
-const isAdmin = require("../../middleware/adminMiddleware");
 const { where } = require("sequelize");
 const jabatan = require("../../../models/jabatan");
 const router = express.Router();
@@ -27,6 +26,13 @@ const getJabatan = async (req, res) => {
               },
             ],
           },
+          {
+            model: Jabatan,
+            as: "jabatan_atas",
+            attributes: {
+              exclude: ["jabatan_id", "createdAt", "UpdatedAt"],
+            },
+          },
         ],
         order: [["id", "ASC"]],
       });
@@ -38,7 +44,15 @@ const getJabatan = async (req, res) => {
           {
             model: Permision,
             as: "permision",
-            attributes: { exclude: ["jabatan_id", "createdAt", "UpdatedAt"] },
+            attributes: {
+              exclude: [
+                "jabatan_id",
+                "jabatan_atas_id",
+                "createdAt",
+                "UpdatedAt",
+              ],
+            },
+
             include: [
               {
                 model: Akses_master,
@@ -49,15 +63,25 @@ const getJabatan = async (req, res) => {
               },
             ],
           },
+          {
+            model: Jabatan,
+            as: "jabatan_atas",
+            attributes: {
+              exclude: ["jabatan_id", "createdAt", "UpdatedAt"],
+            },
+          },
         ],
         order: [["id", "ASC"]],
         where: { id: jabatan_id },
       });
-
-      if (findOneData) {
-        res.send(findOneData);
+      if (req.query.from) {
+        return findOneData;
       } else {
-        res.status(404).json({ error: "Data not found" });
+        if (findOneData) {
+          res.send(findOneData);
+        } else {
+          res.status(404).json({ error: "Data not found" });
+        }
       }
     } else {
       res.status(400).json({ error: "Invalid parameters" });
@@ -68,7 +92,7 @@ const getJabatan = async (req, res) => {
   }
 };
 
-router.get("/", isAdmin, getJabatan);
+router.get("/", getJabatan);
 module.exports = {
   getJabatan,
   router,

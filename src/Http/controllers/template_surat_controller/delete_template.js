@@ -4,14 +4,16 @@ const router = express.Router();
 
 const deleteTemplate = async (req, res) => {
   try {
-    const { id } = req.query;
+    const { template_id } = req.query;
 
-    if (!id) {
-      return res.status(400).json({ error: "Parameter 'id' is required" });
+    if (!template_id) {
+      return res
+        .status(400)
+        .json({ error: "Parameter 'template_id' is required" });
     }
 
     const deleteSurat = await Template_surat.destroy({
-      where: { id: id },
+      where: { id: template_id },
     });
 
     if (deleteSurat) {

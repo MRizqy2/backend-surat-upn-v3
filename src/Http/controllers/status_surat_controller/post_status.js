@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express.Router();
 const router = express.Router();
-const { Status, Daftar_surat, Users, Role_user } = require("../../../models");
+const { Status, Daftar_surat, Users, Jabatan } = require("../../../models");
 const getStatus = require("./status_controller");
 const { StatusCodes } = require("http-status-codes");
 
@@ -20,8 +20,8 @@ const postStatus = async (req, res) => {
       where: { id: req.save.user_id || req.token.id },
     });
 
-    const role = await Role_user.findOne({
-      where: { id: user.role_id },
+    const jabatan = await Jabatan.findOne({
+      where: { id: user.jabatan_id },
     });
 
     if (!surat) {
@@ -30,7 +30,7 @@ const postStatus = async (req, res) => {
       });
     }
 
-    const status = getStatus(role.id, false, null, null);
+    const status = getStatus(jabatan.id, false, null, null);
     console.log("asdnvni", status);
     // const statusString = status.join(", ");
     // console.log("dwadawdaw", status);

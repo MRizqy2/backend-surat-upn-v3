@@ -1,7 +1,6 @@
 const express = require("express");
 const { Prodi } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
-const isAdmin = require("../../middleware/adminMiddleware");
 const { Op } = require("sequelize");
 const router = express.Router();
 

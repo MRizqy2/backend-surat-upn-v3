@@ -4,7 +4,7 @@ const router = express.Router();
 const {
   Daftar_surat,
   Users,
-  Role_user,
+  Jabatan,
   Prodi,
   Fakultas,
   Status,
@@ -27,14 +27,14 @@ const putStatus = async (req, res) => {
   const user = await Users.findOne({
     where: { id: req.token.id },
   });
-  const role = await Role_user.findOne({
-    where: { id: user.role_id }, //
+  const jabatan = await Jabatan.findOne({
+    where: { id: user.jabatan_id }, //
   });
 
   if (persetujuan) {
-    setStatus = getStatus(role.id, status, persetujuan);
+    setStatus = getStatus(jabatan.id, status, persetujuan);
   } else {
-    setStatus = getStatus(role.id, status);
+    setStatus = getStatus(jabatan.id, status);
   }
 
   surat.status = setStatus;

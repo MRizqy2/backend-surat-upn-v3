@@ -3,14 +3,12 @@ const { StatusCodes } = require("http-status-codes");
 const { Users } = require("../../../models/index.js");
 const config = require("../../../../config/config.js");
 const crypto = require("crypto");
-const isAdmin = require("../../middleware/adminMiddleware.js");
 const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");
 const router = express.Router();
 
 const putResetPassword =
   (authMiddleware,
-  isAdmin,
   async (req, res) => {
     try {
       const { user_id } = req.query;
@@ -44,7 +42,7 @@ const putResetPassword =
     }
   });
 
-router.put("/reset-password", authMiddleware, isAdmin, putResetPassword);
+router.put("/reset-password", authMiddleware, putResetPassword);
 
 module.exports = {
   router,

@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express.Router();
-const { Status, Daftar_surat, Users, Role_user } = require("../../../models");
+const { Status, Daftar_surat, Users, Jabatan } = require("../../../models");
 const getStatus = require("./status_controller");
 const { StatusCodes } = require("http-status-codes");
 const {
@@ -57,13 +57,13 @@ const putStatus = async (req, res) => {
 
     if (!req.body) {
       isiStatus = getStatus(
-        req.save.user.role_id,
+        req.save.user.jabatan_id,
         req.save.dibaca,
         status_surat.status
       );
     } else {
       isiStatus = getStatus(
-        user.role_id,
+        user.jabatan_id,
         true,
         status_surat.status,
         persetujuan

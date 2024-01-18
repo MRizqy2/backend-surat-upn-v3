@@ -1,7 +1,6 @@
 const express = require("express");
 const { Fakultas } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
-const isAdmin = require("../../middleware/adminMiddleware");
 const router = express.Router();
 
 const postFakultas = async (req, res) => {
@@ -35,7 +34,7 @@ const postFakultas = async (req, res) => {
   }
 };
 
-router.post("/", isAdmin, postFakultas);
+router.post("/", postFakultas);
 
 module.exports = {
   postFakultas,

@@ -1,7 +1,7 @@
 const {
   Daftar_surat,
   Template_surat,
-  Role_user,
+  Jabatan,
   Users,
 } = require("../../../models");
 
@@ -18,7 +18,7 @@ const isiStatus = [
   "Ditolak Dekan",
 ];
 
-function getStatus(role_user, isRead, latestStatus, persetujuan) {
+function getStatus(jabatan, isRead, latestStatus, persetujuan) {
   const statusMap = {
     2: isiStatus[1],
     3: !isRead ? isiStatus[1] : isiStatus[2],
@@ -50,7 +50,7 @@ function getStatus(role_user, isRead, latestStatus, persetujuan) {
   console.log("tytntm");
 
   for (i = 0; i <= isiStatus.length; i++) {
-    if (updatedStatusMap[role_user] == isiStatus[i]) {
+    if (updatedStatusMap[jabatan] == isiStatus[i]) {
       j = i;
       break;
     }
@@ -69,7 +69,7 @@ function getStatus(role_user, isRead, latestStatus, persetujuan) {
     return "";
   }
   console.log("hhhhyyyy");
-  return updatedStatusMap[role_user] || "";
+  return updatedStatusMap[jabatan] || "";
 }
 
 module.exports = getStatus;

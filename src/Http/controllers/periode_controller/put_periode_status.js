@@ -1,64 +1,63 @@
 const express = require("express");
 const { Periode } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
-const isAdmin = require("../../middleware/adminMiddleware");
 const router = express.Router();
 
-const putPeriodeStatus =
-  (isAdmin,
-  async (req, res) => {
-    try {
-      const { status } = req.body;
-      const { id } = req.query;
-      if (!id) {
-        return res
-          .status(StatusCodes.BAD_REQUEST)
-          .json({ error: "Invalid params" });
-      }
+const putPeriodeStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const { periode_id } = req.query;
+    if (!periode_id) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Invalid params" });
+    }
 
-      const activePeriodes = await Periode.findAll({ where: { status: true } });
+    const activePeriodes = await Periode.findAll({ where: { status: true } });
 
-      if (activePeriodes.length > 0) {
-        // Mendapatkan id dari semua periode yang memiliki status true
-        const activePeriodeIds = activePeriodes.map((periode) => periode.id);
-
-        // Melakukan update status menjadi false pada semua periode yang memiliki status true
-        await Periode.update(
-          { status: false },
-          { where: { id: activePeriodeIds } }
-        );
-      }
-
-      const data_periode = await Periode.findOne({ where: { id: id } });
-
-      if (!data_periode) {
-        return res
-          .status(StatusCodes.NOT_FOUND)
-          .json({ error: "Periode not found" });
-      }
-
-      const periode = await Periode.update(
-        {
-          status,
-        },
-        {
-          where: { id: id }, // Gantilah dengan kriteria yang sesuai
-          returning: true, // Menambahkan opsi returning
-        }
+    if (activePeriodes.length > 0) {
+      // Mendapatkan id dari semua periode yang memiliki status true
+      const activePeriodeIds = activePeriodes.map(
+        (periode) => periode.periode_id
       );
 
-      res.json({
-        updated: periode,
-      });
-    } catch (error) {
-      console.error("Error:", error);
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: "Internal Server Error" });
+      // Melakukan update status menjadi false pada semua periode yang memiliki status true
+      await Periode.update(
+        { status: false },
+        { where: { id: activePeriodeIds } }
+      );
     }
-  });
 
-router.put("/", isAdmin, putPeriodeStatus);
+    const data_periode = await Periode.findOne({ where: { id: periode_id } });
+
+    if (!data_periode) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "Periode not found" });
+    }
+
+    const periode = await Periode.update(
+      {
+        status,
+      },
+      {
+        where: { id: periode_id }, // Gantilah dengan kriteria yang sesuai
+        returning: true, // Menambahkan opsi returning
+      }
+    );
+
+    res.json({
+      updated: periode,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
+  }
+};
+
+router.put("/", putPeriodeStatus);
 
 module.exports = {
   putPeriodeStatus,

@@ -1,6 +1,5 @@
 const express = require("express");
 const { Akses_master, Permision, Jabatan, Users } = require("../../../models");
-const isAdmin = require("../../middleware/adminMiddleware");
 const router = express.Router();
 
 const getAksesMaster = async (req, res) => {
@@ -33,7 +32,7 @@ const getAksesMaster = async (req, res) => {
   }
 };
 
-router.get("/", isAdmin, getAksesMaster);
+router.get("/", getAksesMaster);
 module.exports = {
   getAksesMaster,
   router,

@@ -3,7 +3,6 @@ const cloudinary = require("../../../../config/cloudinaryConfig");
 const { StatusCodes } = require("http-status-codes");
 const { Daftar_surat } = require("../../../models");
 const { PDFDocument } = require("pdf-lib");
-// const isAdmin = require("../../../../middleware/adminMiddleware");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 const path = require("path");

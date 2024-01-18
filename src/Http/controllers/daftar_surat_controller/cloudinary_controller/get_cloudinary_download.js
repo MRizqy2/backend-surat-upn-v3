@@ -8,7 +8,7 @@ const { StatusCodes } = require("http-status-codes");
 const {
   Daftar_surat,
   Template_surat,
-  Role_user,
+  Jabatan,
   Users,
   Jenis_surat,
 } = require("../../../../models");

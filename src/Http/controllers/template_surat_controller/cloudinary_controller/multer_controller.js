@@ -2,7 +2,6 @@
 const multer = require("multer");
 const express = require("express");
 const path = require("path");
-const isAdmin = require("../../middleware/adminMiddleware");
 const { Template_surat } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 
@@ -33,7 +32,6 @@ app.post(
     { name: "surat", maxCount: 1 },
     { name: "thumbnail", maxCount: 1 }, // tak makan sek/ o7?/ drmananya njir,oala
   ]),
-  isAdmin,
   async function (req, res, next) {
     try {
       const { deskripsi, jenis } = req.body;

@@ -24,7 +24,7 @@ const putTampilan = async (req, res) => {
       {
         where: {
           surat_id: surat_id,
-          role_id: user.role_id,
+          jabatan_id: user.jabatan_id,
         },
         returning: true,
       }

@@ -7,7 +7,6 @@ const {
   Daftar_surat,
   Users,
 } = require("../../../../models");
-// const isAdmin = require("../../../../Http/middleware/adminMiddleware");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 const path = require("path");

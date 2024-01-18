@@ -4,7 +4,7 @@ const router = express.Router();
 const {
   Daftar_surat,
   Users,
-  Role_user,
+  Jabatan,
   Prodi,
   Fakultas,
   Status,
@@ -24,11 +24,11 @@ const getDaftarSurat = async (req, res) => {
   const user = await Users.findOne({
     where: { id: req.token.id },
   });
-  const role = await Role_user.findOne({
-    where: { id: user.role_id },
+  const jabatan = await Jabatan.findOne({
+    where: { id: user.jabatan_id },
   });
 
-  if (role.name == "TU" || role.name === "Super Admin") {
+  if (jabatan.name == "TU" || jabatan.name === "Super Admin") {
     res.send(
       await Daftar_surat.findAll({
         include: [
@@ -48,8 +48,8 @@ const getDaftarSurat = async (req, res) => {
                 attributes: ["id", "name"],
               },
               {
-                model: Role_user,
-                as: "role",
+                model: Jabatan,
+                as: "jabatan",
                 attributes: ["id", "name"],
               },
               {
@@ -73,7 +73,7 @@ const getDaftarSurat = async (req, res) => {
         order: [["id", "ASC"]],
       })
     );
-  } else if (role.name === "Dekan") {
+  } else if (jabatan.name === "Dekan") {
     return res.send(
       await Daftar_surat.findAll({
         include: [
@@ -93,8 +93,8 @@ const getDaftarSurat = async (req, res) => {
                 attributes: ["id", "name"],
               },
               {
-                model: Role_user,
-                as: "role",
+                model: Jabatan,
+                as: "jabatan",
                 attributes: ["id", "name"],
               },
               {
@@ -127,7 +127,7 @@ const getDaftarSurat = async (req, res) => {
         order: [["id", "ASC"]],
       })
     );
-  } else if (role.name === "Admin Dekan") {
+  } else if (jabatan.name === "Admin Dekan") {
     return res.send(
       await Daftar_surat.findAll({
         include: [
@@ -147,8 +147,8 @@ const getDaftarSurat = async (req, res) => {
                 attributes: ["id", "name"],
               },
               {
-                model: Role_user,
-                as: "role",
+                model: Jabatan,
+                as: "jabatan",
                 attributes: ["id", "name"],
               },
               {
@@ -206,8 +206,8 @@ const getDaftarSurat = async (req, res) => {
                 attributes: ["id", "name"],
               },
               {
-                model: Role_user,
-                as: "role",
+                model: Jabatan,
+                as: "jabatan",
                 attributes: ["id", "name"],
               },
               {

@@ -3,14 +3,12 @@ const { StatusCodes } = require("http-status-codes");
 const { Users, Jabatan, Prodi, Fakultas } = require("../../../models/index.js");
 const config = require("../../../../config/config.js");
 const crypto = require("crypto");
-const isAdmin = require("../../middleware/adminMiddleware.js");
 const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");
 const router = express.Router();
 
 const postRegister =
   (authMiddleware,
-  isAdmin,
   async (req, res) => {
     try {
       const { name, email, jabatan_id, prodi_id, fakultas_id } = req.body;
@@ -30,9 +28,10 @@ const postRegister =
 
       // Generate a random password
       // const password = crypto.randomBytes(10).toString("hex");
-      const password = 12345;
+      const password = "12345";
+      console.log("sdawdawd", password);
       const hashedPassword = await bcrypt.hash(password, 10);
-
+      console.log("sdawdawd", hashedPassword);
       const jabatan_user = await Jabatan.findOne({
         where: { id: jabatan_id },
       });
@@ -60,34 +59,32 @@ const postRegister =
           .json({ error: "No such fakultas_user exists" });
       }
 
-      if (jabatan_id != 2) {
-        if (prodi_id != 1) {
-          return res
-            .status(StatusCodes.BAD_REQUEST)
-            .json({ error: "Not Prodi, Change Prodi to 1" });
-        }
-      }
-      if (jabatan_id == 2) {
-        if (prodi_id == 1) {
-          return res
-            .status(StatusCodes.BAD_REQUEST)
-            .json({ error: "Prodi have to had prodi, Select other than 1" });
-        }
-      }
+      // if (jabatan_id != 2) {
+      //   if (prodi_id != 1) {
+      //     return res
+      //       .status(StatusCodes.BAD_REQUEST)
+      //       .json({ error: "Not Prodi, Change Prodi to 1" });
+      //   }
+      // }
+      // if (jabatan_id == 2) {
+      //   if (prodi_id == 1) {
+      //     return res
+      //       .status(StatusCodes.BAD_REQUEST)
+      //       .json({ error: "Prodi have to had prodi, Select other than 1" });
+      //   }
+      // }
 
       const user = await Users.create({
         id: latestUserId + 1,
         name,
         email,
         password: hashedPassword,
-        jabatan: jabatan_user.id,
+        jabatan_id: jabatan_user.id,
         prodi_id: prodi_user.id,
         fakultas_id: fakultas_user.id,
         aktif: true,
       });
-      // const token = jwt.sign({ id: user.id, aktif: user.aktif }, secretKey, {
-      //   expiresIn: "24h",
-      // });
+
       res
         .status(StatusCodes.CREATED)
         .json({ message: "User created successfully", password });
@@ -99,7 +96,7 @@ const postRegister =
     }
   });
 
-router.post("/register", authMiddleware, isAdmin, postRegister);
+router.post("/register", authMiddleware, postRegister);
 module.exports = {
   router,
   postRegister,
