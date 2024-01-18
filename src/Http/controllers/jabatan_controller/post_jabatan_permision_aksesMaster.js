@@ -1,5 +1,5 @@
 const express = require("express");
-const { Jabatan } = require("../../../models");
+const { Jabatan, Permision, Akses_master } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const isAdmin = require("../../middleware/adminMiddleware");
 const { postPermision } = require("../permision_controller/post_permision");
@@ -55,7 +55,7 @@ const postJabatanPermisionAksesMaster =
           persetujuan,
         },
       };
-      const savePermision = await postPermision(reqPermision);
+      // const savePermision = await postPermision(reqPermision);
 
       const reqAksesMaster = {
         body: {
@@ -68,13 +68,28 @@ const postJabatanPermisionAksesMaster =
           jenis_surat,
         },
       };
-      const saveAksesMaster = await postAksesMaster(reqAksesMaster);
+      // const saveAksesMaster = await postAksesMaster(reqAksesMaster);
 
       const reqJabatan = {
         query: {
           jabatan_id: saveJabatan.id,
         },
       };
+
+      async function createPermision(data) {
+        const permision = await Permision.create(data);
+        return permision;
+      }
+
+      // Utility function to create an AksesMaster
+      async function createAksesMaster(data) {
+        const aksesMaster = await Akses_master.create(data);
+        return aksesMaster;
+      }
+
+      // Then in your controller function
+      const savePermision = await createPermision(reqPermision.body);
+      const saveAksesMaster = await createAksesMaster(reqAksesMaster.body);
 
       res.status(StatusCodes.CREATED).json({
         message: `${await getJabatan(reqJabatan)} created successfully`,
