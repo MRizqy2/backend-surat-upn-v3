@@ -29,7 +29,7 @@ async function getStatus(req, res) {
     [jabatan.id]: !isRead ? isiStatus[1] : isiStatus[2],
   }; //coba ngene.../if(latestStatus != updatedStatusMap[jabatan.id]){return ""}
   //
-  let i, j;
+  // let i, j;
   const updatedStatusMap = { ...statusMap }; // Create a copy of statusMap
 
   if (persetujuan) {
@@ -40,32 +40,19 @@ async function getStatus(req, res) {
     }
   } else if (isSigned) {
     return isiStatus[3];
-  } // wkwkw
+  }
 
   console.log("tytntm");
-  //info logic
-  let currentIndex;
-  for (i = 0; i < isiStatus.length; i++) {
-    if (updatedStatusMap[jabatan.id] === isiStatus[i]) {
-      currentIndex = i;
-      break;
-    }
-  }
 
-  // Find the index of the latest status in the isiStatus array
-  let latestIndex;
-  for (i = 0; i < isiStatus.length; i++) {
-    if (latestStatus.toLowerCase() === isiStatus[i].toLowerCase()) {
-      latestIndex = i;
-      break;
+  if (latestStatus != updatedStatusMap[jabatan.id]) {
+    //diproses TU != Disetujui Dekan
+    if (persetujuan) {
+      return updatedStatusMap[jabatan.id] || "";
     }
-  }
-  if (currentIndex <= latestIndex && latestStatus) {
     return "";
+  } else {
+    return updatedStatusMap[jabatan.id] || "";
   }
-  // if(latestStatus != updatedStatusMap[jabatan.id]){
-  //   //lek ngene gk isok ubah dari di proses tu ke daftar tunggu dekan/ubah piye
-  // }// opo ngubah sing bawah/
   // for (i = 0; i <= isiStatus.length; i++) {
   //   if (updatedStatusMap == isiStatus[i]) {
   //     j = i;
