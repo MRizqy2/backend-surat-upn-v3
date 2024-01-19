@@ -71,7 +71,7 @@ const postTampilan = async (req, res) => {
     ) {
       return {
         tamp_surat,
-        tamp_surat_tu,
+        tamp_surat_atas,
       };
     }
   } catch (error) {

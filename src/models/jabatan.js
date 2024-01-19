@@ -6,8 +6,14 @@ module.exports = (sequelize, DataTypes) => {
       Jabatan.hasMany(models.Notifikasi, { foreignKey: "jabatan_id_dari" });
       Jabatan.hasMany(models.Notifikasi, { foreignKey: "jabatan_id_ke" });
       Jabatan.hasMany(models.Users, { foreignKey: "jabatan_id" });
-      Jabatan.hasMany(models.Komentar, { foreignKey: "jabatan_id_ke" });
-      Jabatan.hasMany(models.Komentar, { foreignKey: "jabatan_id_dari" });
+      Jabatan.hasMany(models.Komentar, {
+        foreignKey: "jabatan_id_ke",
+        as: "komentar1",
+      });
+      Jabatan.hasMany(models.Komentar, {
+        foreignKey: "jabatan_id_dari",
+        as: "komentar2",
+      });
       Jabatan.belongsTo(models.Jabatan, {
         foreignKey: "jabatan_atas_id",
         as: "jabatan_atas",
