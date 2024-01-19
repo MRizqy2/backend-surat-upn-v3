@@ -153,7 +153,7 @@ const putCloudinary = async (req, res, next) => {
         surat_id: surat_id,
       },
       token: req.token,
-    }; //opo o heeT_T
+    }; // statusse tetep di daftar tunggu
     const saveStatus = await putStatus(reqStatus); //
     console.log("nofeoe", saveStatus);
     // const reqRepo = {

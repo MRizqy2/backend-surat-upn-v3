@@ -1,5 +1,5 @@
 const express = require("express");
-const { Akses_master } = require("../../../models");
+const { Akses_master, Permision } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -14,13 +14,17 @@ const putAksesMaster = async (req, res) => {
       jabatan,
       jenis_surat,
     } = req.body;
-    const { akses_master_id } = req.query;
-    if (!akses_master_id) {
+    const { jabatan_id } = req.query;
+    if (!jabatan_id) {
       return res.status(400).json({ error: "Invalid params" });
     }
 
+    const permision = await Permision.findOne({
+      where: { jabatan_id: jabatan_id },
+    });
+
     const akses_master = await Akses_master.findOne({
-      where: { id: akses_master_id },
+      where: { permision_id: permision.id },
     });
 
     if (!akses_master) {
@@ -28,7 +32,7 @@ const putAksesMaster = async (req, res) => {
     }
     const akses_master_update = await Akses_master.update(
       {
-        permision_id,
+        // permision_id,
         prodi,
         template,
         periode,
@@ -37,7 +41,7 @@ const putAksesMaster = async (req, res) => {
         jenis_surat,
       },
       {
-        where: { id: akses_master_id },
+        where: { id: akses_master.id },
         returning: true,
       }
     );
