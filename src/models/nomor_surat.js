@@ -4,7 +4,10 @@ module.exports = (sequelize, DataTypes) => {
   class Nomor_surat extends Model {
     static associate(models) {
       Nomor_surat.belongsTo(models.Daftar_surat, { foreignKey: "surat_id" });
-      Nomor_surat.belongsTo(models.Periode, { foreignKey: "periode_id" });
+      Nomor_surat.belongsTo(models.Periode, {
+        foreignKey: "periode_id",
+        as: "periode",
+      });
     }
   }
   Nomor_surat.init(

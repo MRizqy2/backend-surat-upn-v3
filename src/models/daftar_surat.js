@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const komentar = require("./komentar");
 module.exports = (sequelize, DataTypes) => {
   class Daftar_surat extends Model {
     static associate(models) {
@@ -11,9 +12,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "jenis_id",
         as: "jenis",
       });
-      Daftar_surat.hasMany(models.Komentar, { foreignKey: "surat_id" });
+      Daftar_surat.hasMany(models.Komentar, {
+        foreignKey: "surat_id",
+        as: "komentar",
+      });
       Daftar_surat.hasMany(models.Notifikasi, { foreignKey: "surat_id" });
-      Daftar_surat.hasMany(models.Nomor_surat, { foreignKey: "surat_id" });
+      Daftar_surat.hasMany(models.Nomor_surat, {
+        foreignKey: "surat_id",
+        as: "nomor_surat",
+      });
       Daftar_surat.hasMany(models.Tampilan, {
         as: "tampilan",
         foreignKey: "surat_id",
@@ -22,7 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         as: "status",
         foreignKey: "surat_id",
       });
-      Daftar_surat.hasMany(models.Akses_surat, { foreignKey: "surat_id" });
+      Daftar_surat.hasMany(models.Akses_surat, {
+        foreignKey: "surat_id",
+        as: "akses_surat",
+      });
     }
   }
   Daftar_surat.init(

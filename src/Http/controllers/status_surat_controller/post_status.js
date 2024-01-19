@@ -10,37 +10,49 @@ app.use(express.urlencoded({ extended: true }));
 
 const postStatus = async (req, res) => {
   try {
-    if (req.body) {
-      const { surat_id } = req.body;
-    }
+    const { surat_id } = req.body;
     const surat = await Daftar_surat.findOne({
-      where: { id: req.save.surat_id || surat_id },
+      where: { id: surat_id },
     });
+
     const user = await Users.findOne({
-      where: { id: req.save.user_id || req.token.id },
+      where: { id: req.body.user_id || req.token.id },
     });
 
     const jabatan = await Jabatan.findOne({
       where: { id: user.jabatan_id },
     });
-
+    const jabatan_atas = await Jabatan.findOne({
+      where: { id: jabatan.jabatan_atas_id },
+    });
+    console.log("sdadwdaw", jabatan_atas.id); //kok 2/ iyo/ malah kosong/ statusse kosong
     if (!surat) {
       return res.status(StatusCodes.NOT_FOUND).json({
+        //iki wes 3
         error: "Daftar surat not found",
       });
     }
 
-    const status = getStatus(jabatan.id, false, null, null);
-    console.log("asdnvni", status);
-    // const statusString = status.join(", ");
-    // console.log("dwadawdaw", status);
+    const reqStatus = {
+      body: {
+        jabatan_id: jabatan_atas.id, //"status": "Di Daftar Tunggu prodi", kan harusse TU
+        isRead: false, //
+        latestStatus: "",
+        persetujuan: "",
+        isSigned: false,
+      },
+    }; //asdnvni Promise { <pending> }
+
+    const saveStatus = await getStatus(reqStatus);
+    console.log("uiio;", saveStatus);
+
     const surat_kesetujuan = await Status.create({
       surat_id: surat.id,
       persetujuan: "",
-      status: status,
+      status: saveStatus,
     });
 
-    if (!req.save.from) {
+    if (!req.body.from) {
       res.status(StatusCodes.OK).json({ surat: surat_kesetujuan });
     } else {
       return { surat_kesetujuan };

@@ -11,17 +11,20 @@ const getJabatan = async (req, res) => {
     if (!jabatan_id) {
       // Mendapatkan semua data
       const allData = await Jabatan.findAll({
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
         include: [
           {
             model: Permision,
             as: "permision",
-            attributes: { exclude: ["jabatan_id", "createdAt", "UpdatedAt"] },
+            attributes: { exclude: ["jabatan_id", "createdAt", "updatedAt"] },
             include: [
               {
                 model: Akses_master,
                 as: "akses_master",
                 attributes: {
-                  exclude: ["permision_id", "createdAt", "UpdatedAt"],
+                  exclude: ["permision_id", "createdAt", "updatedAt"],
                 },
               },
             ],
@@ -30,7 +33,7 @@ const getJabatan = async (req, res) => {
             model: Jabatan,
             as: "jabatan_atas",
             attributes: {
-              exclude: ["jabatan_id", "createdAt", "UpdatedAt"],
+              exclude: ["jabatan_id", "createdAt", "updatedAt"],
             },
           },
         ],
@@ -40,16 +43,22 @@ const getJabatan = async (req, res) => {
     } else if (jabatan_id) {
       // Mendapatkan data berdasarkan ID
       const findOneData = await Jabatan.findOne({
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
         include: [
+          // {
+          //   exclude: ["createdAt", "updatedAt"],
+          // },
           {
             model: Permision,
             as: "permision",
             attributes: {
               exclude: [
                 "jabatan_id",
-                "jabatan_atas_id",
+                // "jabatan_atas_id",
                 "createdAt",
-                "UpdatedAt",
+                "updatedAt",
               ],
             },
 
@@ -58,7 +67,7 @@ const getJabatan = async (req, res) => {
                 model: Akses_master,
                 as: "akses_master",
                 attributes: {
-                  exclude: ["permision_id", "createdAt", "UpdatedAt"],
+                  exclude: ["permision_id", "createdAt", "updatedAt"],
                 },
               },
             ],
@@ -67,7 +76,7 @@ const getJabatan = async (req, res) => {
             model: Jabatan,
             as: "jabatan_atas",
             attributes: {
-              exclude: ["jabatan_id", "createdAt", "UpdatedAt"],
+              exclude: ["jabatan_id", "createdAt", "updatedAt"],
             },
           },
         ],
