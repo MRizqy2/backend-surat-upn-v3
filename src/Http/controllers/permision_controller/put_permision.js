@@ -6,20 +6,19 @@ const router = express.Router();
 const putPermision = async (req, res) => {
   try {
     const {
-      jabatan_id,
       buat_surat,
       download_surat,
       generate_nomor_surat,
       upload_tandatangan,
       persetujuan,
     } = req.body;
-    const { permision_id } = req.query;
-    if (!permision_id) {
+    const { jabatan_id } = req.query;
+    if (!jabatan_id) {
       return res.status(400).json({ error: "Invalid params" });
     }
 
     const permision = await Permision.findOne({
-      where: { id: permision_id },
+      where: { jabatan_id: jabatan_id },
     });
 
     if (!permision) {
@@ -27,7 +26,7 @@ const putPermision = async (req, res) => {
     }
     const permision_update = await Permision.update(
       {
-        jabatan_id,
+        // jabatan_id,
         buat_surat,
         download_surat,
         generate_nomor_surat,
@@ -35,7 +34,7 @@ const putPermision = async (req, res) => {
         persetujuan,
       },
       {
-        where: { id: permision_id },
+        where: { jabatan_id: permision.jabatan_id },
         returning: true,
       }
     );
