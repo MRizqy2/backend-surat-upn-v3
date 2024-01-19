@@ -43,28 +43,35 @@ async function getStatus(req, res) {
   }
 
   console.log("tytntm");
+  console.log("hhhhyyyy", updatedStatusMap[jabatan.id]);
+
+  for (i = 0; i <= isiStatus.length; i++) {
+    if (
+      String(latestStatus).toLocaleLowerCase() ==
+      String(isiStatus[i]).toLocaleLowerCase()
+    ) {
+      return updatedStatusMap[jabatan.id];
+    }
+  }
 
   if (latestStatus != updatedStatusMap[jabatan.id]) {
     //diproses TU != Disetujui Dekan
     if (persetujuan) {
       return updatedStatusMap[jabatan.id] || "";
+    } else if (!persetujuan && !isRead) {
+      console.log("bkpoerb");
+      return updatedStatusMap[jabatan.id] || "";
     }
+    // else if (isRead) {
+    //   console.log("k,j,y,");
+    //   return updatedStatusMap[jabatan.id] || "";
+    // }
     return "";
-  } else {
-    return updatedStatusMap[jabatan.id] || "";
-  }
+  } //Di Daftar Tunggu Dekan => Diproses Dekan
+
   // for (i = 0; i <= isiStatus.length; i++) {
   //   if (updatedStatusMap == isiStatus[i]) {
   //     j = i;
-  //     break;
-  //   }
-  // }
-
-  // for (i = 0; i <= isiStatus.length; i++) {
-  //   if (
-  //     String(latestStatus).toLocaleLowerCase() ==
-  //     String(isiStatus[i]).toLocaleLowerCase()
-  //   ) {
   //     break;
   //   }
   // }
@@ -74,7 +81,7 @@ async function getStatus(req, res) {
   // }
   console.log("hhhhyyyy", updatedStatusMap[jabatan.id]);
 
-  return updatedStatusMap[jabatan.id] || ""; //ooo lek ngene iku updatedStatusMap[3] nah nak map iku gk ono 3
+  // return updatedStatusMap[jabatan.id] || ""; //ooo lek ngene iku updatedStatusMap[3] nah nak map iku gk ono 3
 }
 
 module.exports = getStatus;

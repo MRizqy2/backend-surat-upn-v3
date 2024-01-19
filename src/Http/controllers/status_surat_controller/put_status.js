@@ -118,7 +118,7 @@ const putStatus = async (req, res) => {
       const permision = await Permision.findOne({
         where: { jabatan_id: jabatan.id },
       });
-      if (permision.persetujuan) {
+      if (permision.generate_nomor_surat) {
         await postNomorSurat(reqTampilan);
       } //surat_id
     }
