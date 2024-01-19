@@ -14,15 +14,15 @@ const postTampilan = async (req, res) => {
       const { surat_id } = req.body;
     }
     const surat = await Daftar_surat.findOne({
-      where: { id: req.body.surat_id ? req.body.surat_id : surat_id },
+      where: { id: surat_id },
     });
     const user = await Users.findOne({
-      where: { id: req.body.user_id ? req.body.user_id : req.token.id },
+      where: { id: req.token.id },
     });
 
     const jabatan = await Jabatan.findOne({
       where: {
-        id: req.body.jabatan_id ? req.body.jabatan_id : user.jabatan_id,
+        id: user.jabatan_id,
       },
     });
 
@@ -31,36 +31,42 @@ const postTampilan = async (req, res) => {
         error: "Daftar surat not found",
       });
     }
-    let tamp_surat_prodi;
-    let tamp_surat_tu;
     let tamp_surat;
+    let tamp_surat_atas;
+    // let tamp_surat;
+    tamp_surat_atas = await Tampilan.create({
+      pin: false,
+      dibaca: false,
+      surat_id: surat.id,
+      jabatan_id: jabatan_tu.id,
+    });
 
     if (req.body.from === `daftar_surat_controller/cloudinary_controller`) {
-      tamp_surat_prodi = await Tampilan.create({
+      tamp_surat = await Tampilan.create({
         pin: false,
         dibaca: false,
         surat_id: surat.id,
         jabatan_id: jabatan.id,
       });
 
-      const jabatan_tu = await Jabatan.findOne({
-        // attributes: [[Sequelize.fn("LOWER", Sequelize.col("name")), "TU"]],
-        where: Sequelize.where(
-          Sequelize.fn("LOWER", Sequelize.col("name")),
-          "tu"
-        ),
-      });
-      if (!jabatan_tu) {
-        return res.status(StatusCodes.NOT_FOUND).json({
-          error: "Jabatan (TU) not found",
-        }); //
-      }
-      tamp_surat_tu = await Tampilan.create({
-        pin: false,
-        dibaca: false,
-        surat_id: surat.id,
-        jabatan_id: jabatan_tu.id,
-      });
+      // const jabatan_atas = await Jabatan.findOne({//iki mek validasi gk se?
+      //   // attributes: [[Sequelize.fn("LOWER", Sequelize.col("name")), "TU"]],
+      //   where: Sequelize.where(
+      //     Sequelize.fn("LOWER", Sequelize.col("name")),
+      //     "tu"
+      //   ),
+      // });
+      // if (!jabatan_atas) {
+      //   return res.status(StatusCodes.NOT_FOUND).json({
+      //     error: "Jabatan (TU) not found",
+      //   }); //
+      // }
+      // tamp_surat_atas = await Tampilan.create({
+      //   pin: false,
+      //   dibaca: false,
+      //   surat_id: surat.id,
+      //   jabatan_id: jabatan_tu.id,
+      // });
     } else if (req.body.from === "status_surat_controller") {
       const jabatan_dekan = await Jabatan.findOne({
         // attributes: [[Sequelize.fn("LOWER", Sequelize.col("name")), "TU"]],

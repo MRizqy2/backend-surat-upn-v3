@@ -179,7 +179,7 @@ const getDaftarSuratV2 = async (req, res) => {
     });
   }
   res.json(surat);
-};
+}; //
 
 router.get("/", getDaftarSuratV2);
 
