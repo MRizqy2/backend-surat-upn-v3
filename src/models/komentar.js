@@ -11,7 +11,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "jabatan_id_dari",
         as: "jabatan_dari",
       });
-      Komentar.belongsTo(models.Daftar_surat, { foreignKey: "surat_id" });
+      Komentar.belongsTo(models.Daftar_surat, {
+        foreignKey: "surat_id",
+        as: "daftar_surat",
+      });
     }
   }
   Komentar.init(

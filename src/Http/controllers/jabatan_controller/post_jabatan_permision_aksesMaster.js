@@ -27,15 +27,15 @@ const postJabatanPermisionAksesMaster = async (req, res) => {
     jenis_surat,
   } = req.body;
   try {
-    // const latestJabatan = await Jabatan.findAll({
-    //   limit: 1,
-    //   order: [["id", "DESC"]],
-    // });
+    const latestJabatan = await Jabatan.findAll({
+      limit: 1,
+      order: [["id", "DESC"]],
+    });
 
-    // const latestJabatanId = parseInt(latestJabatan[0].id, 10);
+    const latestJabatanId = parseInt(latestJabatan[0].id, 10);
 
     const saveJabatan = await Jabatan.create({
-      // id: latestJabatanId + 1,
+      id: latestJabatanId + 1 || 1,
       name,
       jabatan_atas_id: jabatan_atas_id || null,
     });

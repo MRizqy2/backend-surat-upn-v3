@@ -28,7 +28,7 @@ const putStatus = async (req, res) => {
     where: { id: req.token.id },
   });
   const jabatan = await Jabatan.findOne({
-    where: { id: user.jabatan_id }, //
+    where: { id: user.jabatan_id },
   });
 
   if (persetujuan) {
@@ -38,7 +38,6 @@ const putStatus = async (req, res) => {
   }
 
   surat.status = setStatus;
-
   await surat.save();
 };
 

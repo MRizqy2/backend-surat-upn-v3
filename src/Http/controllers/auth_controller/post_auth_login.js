@@ -13,6 +13,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");
+const { getJabatan } = require("../jabatan_controller/get_jabatan.js");
 // const { router } = require("../daftar_surat_controller/cloudinary_controller.js");
 const app = express.Router();
 const router = express.Router();
@@ -50,6 +51,7 @@ const postLogin = async (req, res) => {
       const user_response = await Users.findOne({
         include: [
           {
+            //
             model: Prodi,
             as: "prodi",
             attributes: ["id", "name"],
@@ -57,28 +59,31 @@ const postLogin = async (req, res) => {
           {
             model: Jabatan,
             as: "jabatan",
-            attributes: ["id", "name"],
+            attributes: {
+              exclude: ["jabatan_atas_id", "createdAt", "UpdatedAt"],
+            },
             where: { id: searchUser.jabatan_id },
-            include: [
-              {
-                model: Permision,
-                as: "permision",
-                attributes: {
-                  exclude: ["jabatan_id", "createdAt", "UpdatedAt"],
-                },
-                include: [
-                  {
-                    model: Akses_master,
-                    as: "akses_master",
-                    attributes: {
-                      exclude: ["permision_id", "createdAt", "UpdatedAt"],
-                    },
-                  },
-                ],
-              },
-            ],
-            order: [["id", "ASC"]],
           },
+          //   include: [
+          //     {
+          //       model: Permision,
+          //       as: "permision",
+          //       attributes: {
+          //         exclude: ["jabatan_id", "createdAt", "UpdatedAt"],
+          //       },
+          //       include: [
+          //         {
+          //           model: Akses_master,
+          //           as: "akses_master",
+          //           attributes: {
+          //             exclude: ["permision_id", "createdAt", "UpdatedAt"],
+          //           },
+          //         },
+          //       ],
+          //     },
+          //   ],
+          //   order: [["id", "ASC"]],
+          // },
           {
             model: Fakultas,
             as: "fakultas",
@@ -88,10 +93,19 @@ const postLogin = async (req, res) => {
         attributes: ["id", "name", "email", "aktif"],
         where: { email: req.body.email },
       });
+
+      const reqJabatan = {
+        query: {
+          jabatan_id: user.jabatan_id,
+          from: `auth_controller/post_auth_login.js`,
+        },
+      };
+      const saveJabatan = await getJabatan(reqJabatan);
       res.json({
         message: "Login Berhasil",
         token,
         user_response,
+        jabatan: saveJabatan,
       });
     } else {
       res

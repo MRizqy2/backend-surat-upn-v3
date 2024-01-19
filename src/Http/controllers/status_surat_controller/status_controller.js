@@ -4,75 +4,169 @@ const {
   Jabatan,
   Users,
 } = require("../../../models");
+const jabatan = require("../../../models/jabatan");
 
-const isiStatus = [
-  "",
-  "Di Daftar Tunggu TU",
-  "Diproses TU",
-  "Di Daftar Tunggu Dekan",
-  "Diproses Dekan",
-  "Di Daftar Tunggu Admin Dekan",
-  "Diproses Admin Dekan",
-  "Surat Telah diTandangan",
-  "Ditolak TU",
-  "Ditolak Dekan",
-];
+async function getStatus(req, res) {
+  // wsaman tinggal ganti nak sebelha
+  const { jabatan_id, isRead, latestStatus, persetujuan, isSigned } = req.body;
 
-function getStatus(jabatan, isRead, latestStatus, persetujuan) {
+  const jabatan = await Jabatan.findOne({
+    where: { id: jabatan_id },
+  });
+  console.log("myjkyu", jabatan.id);
+
+  const isiStatus = [
+    "",
+    `Di Daftar Tunggu ${jabatan.name}`,
+    `Diproses ${jabatan.name}`,
+    "Surat Telah Ditandangan",
+    `Ditolak ${jabatan.name}`,
+  ];
+  console.log("dawdawd");
+
   const statusMap = {
-    2: isiStatus[1],
-    3: !isRead ? isiStatus[1] : isiStatus[2],
-    4: !isRead ? isiStatus[3] : isiStatus[4],
-    5: !isRead ? isiStatus[5] : isiStatus[6],
-  };
-  console.log("adkawind", latestStatus);
+    [jabatan.id]: isiStatus[1],
+    [jabatan.id]: !isRead ? isiStatus[1] : isiStatus[2],
+  }; //coba ngene.../if(latestStatus != updatedStatusMap[jabatan.id]){return ""}
+  //
   let i, j;
   const updatedStatusMap = { ...statusMap }; // Create a copy of statusMap
 
   if (persetujuan) {
-    if (
-      persetujuan.includes("Disetujui TU") ||
-      persetujuan.includes("Disetujui Dekan")
-    ) {
-      updatedStatusMap[3] = isiStatus[3];
-      updatedStatusMap[4] = isiStatus[6];
-    } else if (
-      persetujuan.includes("Ditolak TU") ||
-      persetujuan.includes("Ditolak Dekan")
-    ) {
-      updatedStatusMap[3] = isiStatus[8];
-      updatedStatusMap[4] = isiStatus[9];
+    if (persetujuan.includes(`Disetujui ${jabatan.name}`)) {
+      updatedStatusMap = isiStatus[1];
+    } else if (persetujuan.includes(`Ditolak ${jabatan.name}`)) {
+      updatedStatusMap = isiStatus[4];
     }
-  } else if (latestStatus === isiStatus[6] || latestStatus === isiStatus[5]) {
-    return isiStatus[7];
-  }
+  } else if (isSigned) {
+    return isiStatus[3];
+  } // wkwkw
 
   console.log("tytntm");
-
-  for (i = 0; i <= isiStatus.length; i++) {
-    if (updatedStatusMap[jabatan] == isiStatus[i]) {
-      j = i;
+  //info logic
+  let currentIndex;
+  for (i = 0; i < isiStatus.length; i++) {
+    if (updatedStatusMap[jabatan.id] === isiStatus[i]) {
+      currentIndex = i;
       break;
     }
   }
 
-  for (i = 0; i <= isiStatus.length; i++) {
-    if (
-      String(latestStatus).toLocaleLowerCase() ==
-      String(isiStatus[i]).toLocaleLowerCase()
-    ) {
+  // Find the index of the latest status in the isiStatus array
+  let latestIndex;
+  for (i = 0; i < isiStatus.length; i++) {
+    if (latestStatus.toLowerCase() === isiStatus[i].toLowerCase()) {
+      latestIndex = i;
       break;
     }
   }
-  console.log("lmvpomr", j, i);
-  if (j <= i && latestStatus) {
+  if (currentIndex <= latestIndex && latestStatus) {
     return "";
   }
-  console.log("hhhhyyyy");
-  return updatedStatusMap[jabatan] || "";
+  // if(latestStatus != updatedStatusMap[jabatan.id]){
+  //   //lek ngene gk isok ubah dari di proses tu ke daftar tunggu dekan/ubah piye
+  // }// opo ngubah sing bawah/
+  // for (i = 0; i <= isiStatus.length; i++) {
+  //   if (updatedStatusMap == isiStatus[i]) {
+  //     j = i;
+  //     break;
+  //   }
+  // }
+
+  // for (i = 0; i <= isiStatus.length; i++) {
+  //   if (
+  //     String(latestStatus).toLocaleLowerCase() ==
+  //     String(isiStatus[i]).toLocaleLowerCase()
+  //   ) {
+  //     break;
+  //   }
+  // }
+  // console.log("lmvpomr", j, i);
+  // if (j <= i && latestStatus) {
+  //   return "";
+  // }
+  console.log("hhhhyyyy", updatedStatusMap[jabatan.id]);
+
+  return updatedStatusMap[jabatan.id] || ""; //ooo lek ngene iku updatedStatusMap[3] nah nak map iku gk ono 3
 }
 
 module.exports = getStatus;
+
+// const {
+//   Daftar_surat,
+//   Template_surat,
+//   Jabatan,
+//   Users,
+// } = require("../../../models");
+
+// const isiStatus = [
+//   "",
+//   "Di Daftar Tunggu TU",
+//   "Diproses TU",
+//   "Di Daftar Tunggu Dekan",
+//   "Diproses Dekan",
+//   "Di Daftar Tunggu Admin Dekan",
+//   "Diproses Admin Dekan",
+//   "Surat Telah diTandangan",
+//   "Ditolak TU",
+//   "Ditolak Dekan",
+// ];
+
+// function getStatus(jabatan, isRead, latestStatus, persetujuan) {
+//   const statusMap = {
+//     2: isiStatus[1],
+//     3: !isRead ? isiStatus[1] : isiStatus[2],
+//     4: !isRead ? isiStatus[3] : isiStatus[4],
+//     5: !isRead ? isiStatus[5] : isiStatus[6],
+//   };
+//   console.log("adkawind", latestStatus);
+//   let i, j;
+//   const updatedStatusMap = { ...statusMap }; // Create a copy of statusMap
+
+//   if (persetujuan) {
+//     if (
+//       persetujuan.includes("Disetujui TU") ||
+//       persetujuan.includes("Disetujui Dekan")
+//     ) {
+//       updatedStatusMap[3] = isiStatus[3];
+//       updatedStatusMap[4] = isiStatus[6];
+//     } else if (
+//       persetujuan.includes("Ditolak TU") ||
+//       persetujuan.includes("Ditolak Dekan")
+//     ) {
+//       updatedStatusMap[3] = isiStatus[8];
+//       updatedStatusMap[4] = isiStatus[9];
+//     }
+//   } else if (latestStatus === isiStatus[6] || latestStatus === isiStatus[5]) {
+//     return isiStatus[7];
+//   }
+
+//   console.log("tytntm");
+
+//   for (i = 0; i <= isiStatus.length; i++) {
+//     if (updatedStatusMap[jabatan] == isiStatus[i]) {
+//       j = i;
+//       break;
+//     }
+//   }
+
+//   for (i = 0; i <= isiStatus.length; i++) {
+//     if (
+//       String(latestStatus).toLocaleLowerCase() ==
+//       String(isiStatus[i]).toLocaleLowerCase()
+//     ) {
+//       break;
+//     }
+//   }
+//   console.log("lmvpomr", j, i);
+//   if (j <= i && latestStatus) {
+//     return "";
+//   }
+//   console.log("hhhhyyyy");
+//   return updatedStatusMap[jabatan] || "";
+// }
+
+// module.exports = getStatus;
 
 // function getStatus(role_user, isRead, status, persetujuan) {
 //   const statusMap = {

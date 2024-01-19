@@ -5,7 +5,7 @@ const {
   Users,
   Prodi,
   Fakultas,
-  Role_user,
+  Jabatan,
   Periode,
 } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
@@ -15,12 +15,7 @@ const router = express.Router();
 
 const postNomorSurat = async (req, res) => {
   try {
-    let surat_id;
-    if (req.body) {
-      surat_id = req.body.surat_id;
-    } else {
-      surat_id = req.save.surat_id;
-    }
+    const { surat_id } = req.body;
 
     let nomor;
     let nomor_surat;
@@ -63,7 +58,7 @@ const postNomorSurat = async (req, res) => {
     //   nomor_surat = "1"; // Jika tidak ada nomor sebelumnya, dimulai dari 1
     // }
 
-    const user_dekan = await Users.findOne({
+    const user_login = await Users.findOne({
       where: { id: req.token.id }, //token
     });
 
@@ -75,13 +70,13 @@ const postNomorSurat = async (req, res) => {
       where: { id: surat.user_id },
     });
 
-    if (!user_surat || !user_dekan) {
+    if (!user_surat || !user_login) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "User not found" });
     }
 
-    const role_user_surat = await Role_user.findOne({
+    const jabatan = await Jabatan.findOne({
       where: { id: user_surat.id },
     });
 
@@ -93,7 +88,7 @@ const postNomorSurat = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "Prodi not found" });
     }
-    const fakultas_id = user_dekan.fakultas_id;
+    const fakultas_id = user_login.fakultas_id;
     // console.log("sasda", fakultas_id);
     const fakultas = await Fakultas.findOne({
       where: { id: fakultas_id },
@@ -110,14 +105,13 @@ const postNomorSurat = async (req, res) => {
     const temp_tahun_periode = String(active_periodes[0].tahun);
     const tahun_periode = temp_tahun_periode.split(" ")[3];
 
-    if (role_user_surat === `TU`) {
+    if (jabatan === "" || jabatan === null) {
       nomor_surat = `${nomor_surat}/${kode_fakultas}/TU/${tahun_periode}`;
     } else {
       nomor_surat = `${nomor_surat}/${kode_fakultas}/TU_${kode_prodi}/${tahun_periode}`;
     }
     nomor_surat = String(nomor_surat);
     // console.log("testitn 2", nomor_surat);
-
     const saveNomorSurat = await Nomor_surat.create({
       nomor_surat: nomor_surat,
       surat_id: surat_id,

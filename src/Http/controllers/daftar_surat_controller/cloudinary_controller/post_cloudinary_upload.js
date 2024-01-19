@@ -119,7 +119,7 @@ const postUpload = async (req, res, next) => {
     });
 
     const reqStatus = {
-      save: {
+      body: {
         user_id: user.id,
         surat_id: daftar_surat.id,
         from: `daftar_surat_controller/cloudinary_controller`,
@@ -128,12 +128,13 @@ const postUpload = async (req, res, next) => {
     const saveStatus = await postStatus(reqStatus);
 
     const reqTampilan = {
-      save: {
+      body: {
         jabatan_id: jabatan.id,
         user_id: user.id,
         surat_id: daftar_surat.id,
         from: "daftar_surat_controller/cloudinary_controller",
       },
+      token: req.token,
     };
 
     const saveTampilan = await postTampilan(reqTampilan);

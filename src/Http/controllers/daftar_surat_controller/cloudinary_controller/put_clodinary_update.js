@@ -35,7 +35,7 @@ function getResourceType(filename) {
     return "video";
   } else {
     return "raw";
-  } // mad lek misal pindah surat id iso ga// jalan ni setuju e pindah id :v
+  }
 } // hah/hah
 
 const putCloudinary = async (req, res, next) => {
@@ -142,25 +142,30 @@ const putCloudinary = async (req, res, next) => {
     );
 
     const reqStatus = {
-      save: {
-        surat_id: surat_id,
-        // dibaca: dibaca,
+      body: {
+        // persetujuan,
+        // status,
         user: user,
-        from: "tampilan_surat_controller",
+        isSigned: true,
+        from: "daftar_surat_controller/cloudinary_controller/put_cloudinary_update.js",
+      },
+      query: {
+        surat_id: surat_id,
       },
       token: req.token,
-    };
-    const saveStatus = await putStatus(reqStatus);
-    const reqRepo = {
-      save: {
-        surat_id: surat_id,
-      },
-    };
-    const saveRepo = await postRepo(reqRepo);
+    }; //opo o heeT_T
+    const saveStatus = await putStatus(reqStatus); //
+    console.log("nofeoe", saveStatus);
+    // const reqRepo = {
+    //   save: {
+    //     surat_id: surat_id,
+    //   },
+    // };
+    // const saveRepo = await postRepo(reqRepo);
 
     return res
       .status(StatusCodes.CREATED)
-      .json({ message: "File successfully uploaded", saveSurat, saveRepo });
+      .json({ message: "File successfully uploaded", saveSurat });
   } catch (error) {
     console.error("Error:", error);
     res

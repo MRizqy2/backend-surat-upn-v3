@@ -1,6 +1,12 @@
 const express = require("express");
 const app = express.Router();
-const { Status, Daftar_surat, Users, Jabatan } = require("../../../models");
+const {
+  Status,
+  Daftar_surat,
+  Users,
+  Jabatan,
+  Permision,
+} = require("../../../models");
 const getStatus = require("./status_controller");
 const { StatusCodes } = require("http-status-codes");
 const {
@@ -15,30 +21,21 @@ app.use(express.urlencoded({ extended: true }));
 
 const putStatus = async (req, res) => {
   try {
-    let persetujuan,
-      status = "",
-      surat_id,
-      reqTampilan;
-    let surat, isiStatus;
-    if (req.body) {
-      ({ persetujuan, status } = req.body);
-      ({ surat_id } = req.query);
-    }
-    console.log("asdawd");
-    // console.log("btrbr", req.save.surat_id);
+    let reqTampilan, updateStatus, reqStatus;
+    const { persetujuan, status } = req.body;
+    const { surat_id } = req.query;
+
     const user = await Users.findOne({
       where: { id: req.token.id },
     });
+    const jabatan = await Jabatan.findOne({
+      where: { id: user.jabatan_id },
+    });
 
-    if (!req.body) {
-      surat = await Daftar_surat.findOne({
-        where: { id: req.save.surat_id }, //tampilan
-      });
-    } else {
-      surat = await Daftar_surat.findOne({
-        where: { id: surat_id },
-      });
-    }
+    const surat = await Daftar_surat.findOne({
+      where: { id: surat_id },
+    });
+    console.log("krvpom", surat.id);
     const status_surat = await Status.findOne({
       where: { surat_id: surat.id },
     });
@@ -55,77 +52,82 @@ const putStatus = async (req, res) => {
       });
     }
 
-    if (!req.body) {
-      isiStatus = getStatus(
-        req.save.user.jabatan_id,
-        req.save.dibaca,
-        status_surat.status
+    if (req.body.from) {
+      //diproses/dibaca
+      reqStatus = {
+        body: {
+          jabatan_id: user.jabatan_id,
+          isRead: req.body.dibaca,
+          latestStatus: status_surat.status,
+          persetujuan: persetujuan, //iki admin dekan null berarti?
+          isSigned: req.body.isSigned,
+        },
+      };
+    } else {
+      reqStatus = {
+        body: {
+          jabatan_id: jabatan.jabatan_atas_id,
+          isRead: req.body.dibaca,
+          latestStatus: status_surat.status,
+          persetujuan: persetujuan,
+          // isSigned
+        },
+      };
+    }
+    const saveStatus = await getStatus(reqStatus);
+    console.log(" epmpovm", saveStatus);
+
+    if (!persetujuan) {
+      updateStatus = await Status.update(
+        {
+          // persetujuan: persetujuan || status_surat.persetujuan || "",
+          status: saveStatus || status || status_surat.status,
+        },
+        {
+          where: { surat_id: surat.id ? surat.id : surat_id },
+          returning: true,
+        }
       );
     } else {
-      isiStatus = getStatus(
-        user.jabatan_id,
-        true,
-        status_surat.status,
-        persetujuan
+      updateStatus = await Status.update(
+        {
+          persetujuan: persetujuan || status_surat.persetujuan || "",
+          status: saveStatus || status || status_surat.status,
+        },
+        {
+          where: { surat_id: surat.id ? surat.id : surat_id },
+          returning: true,
+        }
       );
     }
-    if (isiStatus.length == 0) {
-      isiStatus = null;
-    }
-    // console.log("nkpkm ", persetujuan);
-
-    const surat_per = await Status.update(
-      {
-        persetujuan: persetujuan || status_surat.persetujuan || "",
-        status: isiStatus || status || status_surat.status,
-      },
-      {
-        where: { surat_id: surat.id ? surat.id : surat_id },
-        returning: true,
-      }
-    );
     console.log("sdawdawd", persetujuan);
-    const ON = 1;
-    if (ON === 1) {
-      if (persetujuan === `Disetujui TU` || persetujuan === `Disetujui Dekan`) {
-        console.log("dawdawd", persetujuan);
-        reqTampilan = {
-          save: {
-            surat_id: surat_id,
-            // dibaca: dibaca,
-            user_id: user.id,
-            from: "status_surat_controller",
-          },
-          token: { id: req.token.id },
-        };
-        const saveTampilan = await postTampilan(reqTampilan);
-        if (persetujuan === `Disetujui Dekan`) {
-          await postNomorSurat(reqTampilan);
-        } //surat_id
-      }
-    } else if (ON === 2) {
-      if (persetujuan === `Disetujui TU` || persetujuan === `Disetujui Dekan`) {
-        console.log("dawdawd", persetujuan);
-        reqTampilan = {
-          save: {
-            surat_id: surat_id,
-            // dibaca: dibaca,
-            user_id: user.id,
-            from: "status_surat_controller",
-          },
-          token: { id: req.token.id },
-        };
-        const saveTampilan = await postTampilan(reqTampilan);
-        if (persetujuan === `Disetujui Dekan`) {
-          await postNomorSurat(reqTampilan);
-        } //surat_id
-      }
+    // const ON = 1;
+    // if (ON === 1) {
+    if (persetujuan) {
+      //benerkan
+      console.log("dawdawd", persetujuan);
+      reqTampilan = {
+        body: {
+          surat_id: surat_id,
+          from: "status_surat_controller",
+        },
+        token: req.token,
+      };
+      await postTampilan(reqTampilan);
+
+      const permision = await Permision.findOne({
+        where: { jabatan_id: jabatan.id },
+      });
+      if (permision.persetujuan) {
+        await postNomorSurat(reqTampilan);
+      } //surat_id
     }
 
-    if (!req.body) {
-      return surat_per;
+    if (req.body.from) {
+      //
+      return updateStatus; //
     } else {
-      res.status(StatusCodes.OK).json({ surat: surat_per });
+      res.status(StatusCodes.OK).json({ surat: updateStatus });
     }
   } catch (error) {
     console.error("Error:", error);

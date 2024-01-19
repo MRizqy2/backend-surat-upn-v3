@@ -33,15 +33,17 @@ const putTampilan = async (req, res) => {
     let saveStatus;
     if (dibaca) {
       const reqStatus = {
-        save: {
-          surat_id: surat_id,
+        body: {
           dibaca: dibaca,
           user: user,
           from: "tampilan_surat_controller",
         },
+        query: {
+          surat_id: surat_id,
+        },
         token: req.token,
       };
-      saveStatus = await putStatus(reqStatus, null);
+      saveStatus = await putStatus(reqStatus);
     }
 
     res.status(StatusCodes.OK).json({ tampilan, saveStatus });
