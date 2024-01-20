@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "jabatan",
         foreignKey: "jabatan_id",
       });
-      Permision.hasMany(models.Akses_master, {
+      Permision.hasOne(models.Akses_master, {
         foreignKey: "permision_id",
         as: "akses_master",
       });

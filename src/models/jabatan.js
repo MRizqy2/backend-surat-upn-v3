@@ -5,12 +5,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Jabatan.hasMany(models.Notifikasi, { foreignKey: "jabatan_id_dari" });
       Jabatan.hasMany(models.Notifikasi, { foreignKey: "jabatan_id_ke" });
-      Jabatan.hasMany(models.Users, { foreignKey: "jabatan_id" });
-      Jabatan.hasMany(models.Komentar, {
+      Jabatan.hasOne(models.Users, { foreignKey: "jabatan_id" });
+      Jabatan.hasOne(models.Komentar, {
         foreignKey: "jabatan_id_ke",
         as: "komentar1",
       });
-      Jabatan.hasMany(models.Komentar, {
+      Jabatan.hasOne(models.Komentar, {
         foreignKey: "jabatan_id_dari",
         as: "komentar2",
       });
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "jabatan_atas_id",
         as: "jabatan_atas",
       });
-      Jabatan.hasMany(models.Permision, {
+      Jabatan.hasOne(models.Permision, {
         foreignKey: "jabatan_id",
         as: "permision",
       });

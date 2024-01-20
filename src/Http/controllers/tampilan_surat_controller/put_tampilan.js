@@ -4,11 +4,12 @@ const router = express.Router();
 const { Tampilan, Daftar_surat, Users, Role_user } = require("../../../models");
 const { putStatus } = require("../status_surat_controller/put_status");
 const { StatusCodes } = require("http-status-codes");
-
+//sek nyoba2
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const putTampilan = async (req, res) => {
+  // sek mad toilet //okee
   try {
     const { pin, dibaca } = req.body;
     const { surat_id } = req.query;

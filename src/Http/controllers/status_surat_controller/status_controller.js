@@ -4,7 +4,6 @@ const {
   Jabatan,
   Users,
 } = require("../../../models");
-const jabatan = require("../../../models/jabatan");
 
 async function getStatus(req, res) {
   // wsaman tinggal ganti nak sebelha
@@ -13,49 +12,53 @@ async function getStatus(req, res) {
   const jabatan = await Jabatan.findOne({
     where: { id: jabatan_id },
   });
+  const jabatan_atas = await Jabatan.findOne({
+    where: { id: jabatan.jabatan_atas_id },
+  });
   console.log("myjkyu", jabatan.id);
-
   const isiStatus = [
     "",
     `Di Daftar Tunggu ${jabatan.name}`,
     `Diproses ${jabatan.name}`,
-    "Surat Telah Ditandangan",
+    `Di Daftar Tunggu ${
+      jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""
+    }`,
+    `Diproses ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
     `Ditolak ${jabatan.name}`,
+    `Ditolak ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
+    "Surat Telah Ditandangan",
   ];
   console.log("dawdawd");
 
   const statusMap = {
-    [jabatan.id]: isiStatus[1],
-    [jabatan.id]: !isRead ? isiStatus[1] : isiStatus[2],
-  }; //coba ngene.../if(latestStatus != updatedStatusMap[jabatan.id]){return ""}
-  //
-  // let i, j;
+    // [jabatan.id]: isiStatus[1],
+    [jabatan.id]: !isRead ? isiStatus[3] : isiStatus[2],
+  };
   const updatedStatusMap = { ...statusMap }; // Create a copy of statusMap
 
   if (persetujuan) {
-    if (persetujuan.includes(`Disetujui ${jabatan.name}`)) {
-      updatedStatusMap = isiStatus[1];
-    } else if (persetujuan.includes(`Ditolak ${jabatan.name}`)) {
-      updatedStatusMap = isiStatus[4];
+    if (persetujuan.toLowerCase().includes(`disetujui`)) {
+      updatedStatusMap[jabatan.id] = isiStatus[3];
+    } else if (persetujuan.toLowerCase().includes(`ditolak`)) {
+      updatedStatusMap[jabatan.id] = isiStatus[5];
     }
   } else if (isSigned) {
-    return isiStatus[3];
+    return isiStatus[7];
   }
 
   console.log("tytntm");
   console.log("hhhhyyyy", updatedStatusMap[jabatan.id]);
 
-  for (i = 0; i <= isiStatus.length; i++) {
-    if (
-      String(latestStatus).toLocaleLowerCase() ==
-      String(isiStatus[i]).toLocaleLowerCase()
-    ) {
-      return updatedStatusMap[jabatan.id];
+  for (i = 3; i <= 4; i++) {
+    if (latestStatus.toLowerCase() == isiStatus[i].toLowerCase()) {
+      console.log("kmfbmpbmp");
+      return latestStatus;
     }
   }
 
   if (latestStatus != updatedStatusMap[jabatan.id]) {
     //diproses TU != Disetujui Dekan
+    console.log("bkpoerb");
     if (persetujuan) {
       return updatedStatusMap[jabatan.id] || "";
     } else if (!persetujuan && !isRead) {
@@ -66,7 +69,7 @@ async function getStatus(req, res) {
     //   console.log("k,j,y,");
     //   return updatedStatusMap[jabatan.id] || "";
     // }
-    return "";
+    return updatedStatusMap[jabatan.id] || "";
   } //Di Daftar Tunggu Dekan => Diproses Dekan
 
   // for (i = 0; i <= isiStatus.length; i++) {
