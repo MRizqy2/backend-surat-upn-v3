@@ -33,6 +33,9 @@ const postTampilan = async (req, res) => {
     let tamp_surat;
     let tamp_surat_atas;
 
+    const jabatan_atas = await Jabatan.findOne({
+      where: { id: jabatan.jabatan_atas_id },
+    });
     if (req.body.from === `daftar_surat_controller/cloudinary_controller`) {
       tamp_surat = await Tampilan.create({
         pin: false,
@@ -41,12 +44,8 @@ const postTampilan = async (req, res) => {
         jabatan_id: jabatan.id,
       });
 
-      const jabatan_atas = await Jabatan.findOne({
-        where: { id: jabatan.jabatan_atas_id },
-      });
       if (!jabatan_atas) {
         return res.status(StatusCodes.NOT_FOUND).json({
-          // aman
           error: "Jabatan not found",
         });
       }
@@ -57,11 +56,11 @@ const postTampilan = async (req, res) => {
         jabatan_id: jabatan_atas.id,
       });
     } else {
-      tamp_surat = await Tampilan.create({
+      tamp_surat_atas = await Tampilan.create({
         pin: false,
         dibaca: false,
         surat_id: surat.id,
-        jabatan_id: jabatan.id,
+        jabatan_id: jabatan_atas.id,
       });
     }
 
@@ -72,7 +71,7 @@ const postTampilan = async (req, res) => {
     ) {
       return {
         tamp_surat,
-        tamp_surat_tu,
+        tamp_surat_atas,
       };
     }
   } catch (error) {

@@ -15,6 +15,10 @@ const {
 const {
   postNomorSurat,
 } = require("./../nomor_surat_controller/post_nomor_surat");
+const { post } = require("../jabatan_controller/jabatan_controller");
+const {
+  postAksesSurat,
+} = require("../akses_surat_controller/post_akses_surat");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -39,7 +43,7 @@ const putStatus = async (req, res) => {
     const status_surat = await Status.findOne({
       where: { surat_id: surat.id },
     });
-
+    console.log("[pp[lp]]");
     if (!status_surat) {
       return res.status(StatusCodes.NOT_FOUND).json({
         error: "Status not found",
@@ -59,14 +63,14 @@ const putStatus = async (req, res) => {
           jabatan_id: user.jabatan_id,
           isRead: req.body.dibaca,
           latestStatus: status_surat.status,
-          persetujuan: persetujuan, //iki admin dekan null berarti?
+          persetujuan: persetujuan,
           isSigned: req.body.isSigned,
         },
       };
     } else {
       reqStatus = {
         body: {
-          jabatan_id: jabatan.jabatan_atas_id,
+          jabatan_id: jabatan.id,
           isRead: req.body.dibaca,
           latestStatus: status_surat.status,
           persetujuan: persetujuan,
@@ -74,8 +78,9 @@ const putStatus = async (req, res) => {
         },
       };
     }
+    console.log("  vmldv");
     const saveStatus = await getStatus(reqStatus);
-    console.log(" epmpovm", saveStatus);
+    console.log(" epmpovmmmm", saveStatus);
 
     if (!persetujuan) {
       updateStatus = await Status.update(
@@ -88,6 +93,7 @@ const putStatus = async (req, res) => {
           returning: true,
         }
       );
+      console.log("vnrvmop");
     } else {
       updateStatus = await Status.update(
         {
@@ -99,11 +105,12 @@ const putStatus = async (req, res) => {
           returning: true,
         }
       );
+      console.log("vn[ dwc");
     }
     console.log("sdawdawd", persetujuan);
     // const ON = 1;
     // if (ON === 1) {
-    if (persetujuan) {
+    if (persetujuan && persetujuan.toLowerCase().includes("disetujui")) {
       //benerkan
       console.log("dawdawd", persetujuan);
       reqTampilan = {
@@ -115,10 +122,28 @@ const putStatus = async (req, res) => {
       };
       await postTampilan(reqTampilan);
 
+      reqAkses = {
+        body: {
+          surat_id: surat.id,
+          tambah_akses_id: jabatan.jabatan_atas_id || "",
+          from: `status_surat_controller/put_status.js`,
+        },
+      };
+      await postAksesSurat(reqAkses);
+
       const permision = await Permision.findOne({
         where: { jabatan_id: jabatan.id },
       });
-      if (permision.persetujuan) {
+      if (permision.generate_nomor_surat) {
+        const save_surat = await Daftar_surat.create({
+          judul: surat.judul,
+          thumbnail: surat.thumbnail || "",
+          jenis_id: surat.jenis_id || "",
+          user_id: surat.user_id,
+          deskripsi: surat.deskripsi || "",
+          tanggal: surat.tanggal,
+          url: surat.url,
+        });
         await postNomorSurat(reqTampilan);
       } //surat_id
     }

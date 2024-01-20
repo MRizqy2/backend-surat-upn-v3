@@ -38,7 +38,7 @@ const postTampilan = async (req, res) => {
       pin: false,
       dibaca: false,
       surat_id: surat.id,
-      jabatan_id: jabatan_tu.id,
+      jabatan_id: jabatan_t.id,
     });
 
     if (req.body.from === `daftar_surat_controller/cloudinary_controller`) {

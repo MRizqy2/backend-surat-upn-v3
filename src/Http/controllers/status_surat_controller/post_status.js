@@ -22,10 +22,10 @@ const postStatus = async (req, res) => {
     const jabatan = await Jabatan.findOne({
       where: { id: user.jabatan_id },
     });
-    const jabatan_atas = await Jabatan.findOne({
-      where: { id: jabatan.jabatan_atas_id },
-    });
-    console.log("sdadwdaw", jabatan_atas.id); //kok 2/ iyo/ malah kosong/ statusse kosong
+    // const jabatan_atas = await Jabatan.findOne({
+    //   where: { id: jabatan.jabatan_atas_id },
+    // });
+    // console.log("sdadwdaw", jabatan_atas.id); //kok 2/ iyo/ malah kosong/ statusse kosong
     if (!surat) {
       return res.status(StatusCodes.NOT_FOUND).json({
         //iki wes 3
@@ -35,7 +35,7 @@ const postStatus = async (req, res) => {
 
     const reqStatus = {
       body: {
-        jabatan_id: jabatan_atas.id, //"status": "Di Daftar Tunggu prodi", kan harusse TU
+        jabatan_id: jabatan.id, //"status": "Di Daftar Tunggu prodi", kan harusse TU
         isRead: false, //
         latestStatus: "",
         persetujuan: "",

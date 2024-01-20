@@ -8,9 +8,9 @@ const send = async (req, res) => {
 
   const reqAksesSurat = {
     body: {
-      surat_id,
+      surat_id: surat_id,
       tambah_akses_id: jabatan_id,
-      from,
+      from: from,
     },
   };
   console.log("pwvmo", reqAksesSurat.body.tambah_akses_id);

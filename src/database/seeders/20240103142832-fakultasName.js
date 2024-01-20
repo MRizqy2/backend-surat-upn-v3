@@ -5,19 +5,19 @@ module.exports = {
     return queryInterface.bulkInsert(
       "Fakultas",
       [
-        {
-          id: 1,
-          name: "-",
-          jenjang: "-",
-          kode_fakultas: "-",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
+        // {
+        //   id: 1,
+        //   name: "-",
+        //   jenjang: "-",
+        //   kode_fakultas: "-",
+        //   createdAt: new Date(),
+        //   updatedAt: new Date(),
+        // },
         {
           id: 2,
-          name: "Teknik Informatika",
+          name: "FAKULTAS ILMU KOMPUTER ",
           jenjang: "S1",
-          kode_fakultas: "TI-S1",
+          kode_fakultas: "UN 63.7",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

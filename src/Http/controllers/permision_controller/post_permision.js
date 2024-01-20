@@ -13,17 +13,17 @@ const postPermision = async (req, res) => {
     persetujuan,
   } = req.body;
   try {
-    //   const latestAksesMaster = await Akses_master.findAll({
-    //     limit: 1,
-    //     order: [["id", "DESC"]],
-    //   });
-    //   const permision = await Permision.findOne({
-    //     where: { id: permision_id },
-    //   });
-    //   const latestAksesMasterId = parseInt(latestAksesMaster[0].id, 10);
+    // Dapatkan ID terakhir dari tabel Permision
+    const latestPermision = await Akses_master.findOne({
+      order: [["id", "DESC"]],
+    });
+    // Tentukan ID yang baru
+    const latestPermisionId = latestPermision ? latestPermision.id : 0;
+    const newPermisionId = latestPermisionId + 1;
 
+    // Buat data Permision dengan ID yang baru
     const permision = await Permision.create({
-      // id: latestAksesMasterId + 1,
+      id: newPermisionId,
       jabatan_id,
       buat_surat,
       download_surat,

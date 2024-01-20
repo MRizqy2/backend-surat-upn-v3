@@ -1,21 +1,26 @@
 const express = require("express");
-const { Komentar, Users, Role_user, Daftar_surat } = require("../../../models");
+const { Komentar, Users, Jabatan, Daftar_surat } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
+const jabatan = require("../../../models/jabatan");
 const router = express.Router();
 
 const postKomentar = async function (req, res) {
   try {
     const { komentar, surat_id } = req.body;
-
+    // tak upload surat baru
+    //wokeh
     const user = await Users.findOne({ where: { id: req.token.id } });
-    // const surat = await Daftar_surat.findOne({ where: { id: surat_id } });
-    const role_user = await Role_user.findOne({
-      where: { id: user.role_id },
+    const surat = await Daftar_surat.findOne({ where: { id: surat_id } });
+    const user_surat = await Users.findOne({ where: { id: surat.id } });
+
+    const jabatan = await Jabatan.findOne({
+      where: { id: user.jabatan_id },
     });
 
     const komen = await Komentar.create({
       surat_id,
-      role_id: role_user.id,
+      jabatan_id_dari: user.jabatan_id,
+      jabatan_id_ke: user_surat.jabatan_id,
       komentar,
     });
     // await Daftar_surat.update(

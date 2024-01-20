@@ -6,20 +6,16 @@ module.exports = {
       "Jabatans",
       [
         {
-          id: 1,
-          name: "Super Admin",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
           id: 2,
           name: "Prodi",
+          jabatan_atas_id: 3,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           id: 3,
-          name: "TU",
+          name: "Tata Usaha",
+          jabatan_atas_id: 4,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -29,12 +25,12 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-        {
-          id: 5,
-          name: "Admin Dekan",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
+        // {
+        //   id: 5,
+        //   name: "Admin Dekan",
+        //   createdAt: new Date(),
+        //   updatedAt: new Date(),
+        // },
       ],
       {}
     );
