@@ -5,8 +5,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Akses_surat.belongsTo(models.Daftar_surat, {
         foreignKey: "surat_id",
+        as: "daftar_surat",
       });
-      Akses_surat.belongsTo(models.Jabatan, { foreignKey: "jabatan_id" });
+      Akses_surat.belongsTo(models.Jabatan, {
+        foreignKey: "jabatan_id",
+        as: "jabatan",
+      });
     }
   }
   Akses_surat.init(

@@ -4,17 +4,19 @@ const router = express.Router();
 
 const deleteAksesMaster = async (req, res) => {
   try {
-    const { id } = req.query;
+    const { akses_master_id } = req.query;
 
-    if (!id) {
-      return res.status(400).json({ error: "Parameter 'id' is required" });
+    if (!akses_master_id) {
+      return res
+        .status(400)
+        .json({ error: "Parameter 'akses_master_id' is required" });
     }
 
-    const deleteAksesMaster = await Akses_master.destroy({
-      where: { id: id },
+    const deletedAksesMaster = await Akses_master.destroy({
+      where: { id: akses_master_id },
     });
 
-    if (deleteAksesMaster) {
+    if (deletedAksesMaster) {
       res.status(200).json({ message: "Akses Master deleted successfully" });
     } else {
       res.status(404).json({ error: "Akses Master not found" });

@@ -33,15 +33,14 @@ const putAksesMaster = async (req, res) => {
     const akses_master_update = await Akses_master.update(
       {
         // permision_id,
-        prodi, //ubah model kik jadi hasOne antara permision sama akses master
+        prodi,
         template,
         periode,
-        fakultas, //ngubah nek model yo
+        fakultas,
         jabatan,
         jenis_surat,
       },
       {
-        //
         where: { id: akses_master.id },
         returning: true,
       }

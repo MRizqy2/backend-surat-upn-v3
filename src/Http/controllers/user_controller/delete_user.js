@@ -3,12 +3,14 @@ const { Users } = require("../../../models");
 const router = express.Router();
 
 const deleteUser = async (req, res) => {
+  const { user_id } = req.query;
+
   try {
-    if (req.query.user_id == 1) {
+    if (user_id == 1) {
       return res.status(Stat);
     }
     const deleted = await Users.destroy({
-      where: { id: req.query.user_id },
+      where: { id: user_id },
     });
     if (deleted) {
       res.status(200).json("User deleted");

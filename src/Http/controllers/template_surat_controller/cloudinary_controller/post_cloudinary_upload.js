@@ -1,7 +1,7 @@
-const cloudinary = require("../../../../../../config/cloudinaryConfig");
+const cloudinary = require("../../../../../config/cloudinaryConfig");
 const express = require("express");
 const { StatusCodes } = require("http-status-codes");
-const { Template_surat, Jenis_surat } = require("../../../../../models");
+const { Template_surat, Jenis_surat } = require("../../../../models");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 const path = require("path");

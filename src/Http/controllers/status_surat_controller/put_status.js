@@ -7,7 +7,7 @@ const {
   Jabatan,
   Permision,
 } = require("../../../models");
-const getStatus = require("./status_controller");
+const getStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
 const {
   postTampilan,
@@ -126,9 +126,9 @@ const putStatus = async (req, res) => {
           body: {
             surat_id: surat.id,
             tambah_akses_id: jabatan.jabatan_atas_id || "",
-            from: `status_surat_controller/put_status.js`, //meet dc
-          }, //ws/ gae revisi surat?/mulai dari?/ tu sg revisi?/revisine iki marine ttd kan?/berarti sg berubah nomor surat sama surat?
-        }; //gass
+            from: `status_surat_controller/put_status.js`,
+          },
+        };
         await postAksesSurat(reqAkses);
       }
 

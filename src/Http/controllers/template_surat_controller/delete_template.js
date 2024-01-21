@@ -1,5 +1,6 @@
 const express = require("express");
 const { Template_surat } = require("../../../models/index.js");
+const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
 const deleteTemplate = async (req, res) => {
@@ -8,7 +9,7 @@ const deleteTemplate = async (req, res) => {
 
     if (!template_id) {
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Parameter 'template_id' is required" });
     }
 
@@ -17,13 +18,19 @@ const deleteTemplate = async (req, res) => {
     });
 
     if (deleteSurat) {
-      res.status(200).json({ message: "Template Surat deleted successfully" });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Template Surat deleted successfully" });
     } else {
-      res.status(404).json({ error: "Template Surat not found" });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "Template Surat not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

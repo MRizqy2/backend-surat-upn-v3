@@ -44,8 +44,11 @@ const putTampilan = async (req, res) => {
       };
       saveStatus = await putStatus(reqStatus);
     }
-
-    res.status(StatusCodes.OK).json({ tampilan, saveStatus });
+    if (!req.body.from) {
+      res.status(StatusCodes.OK).json({ tampilan, saveStatus });
+    } else {
+      return { tampilan, saveStatus };
+    }
   } catch (error) {
     console.error("Error:", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

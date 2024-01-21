@@ -1,4 +1,4 @@
-const cloudinaryController = require("./cloudinary_controller/cloudinary_controller/cloudinary_controller.js");
+const cloudinaryController = require("./cloudinary_controller/cloudinary_controller.js");
 const { getTemplate } = require("./get_template.js");
 const { deleteTemplate } = require("./delete_template.js");
 const express = require("express");

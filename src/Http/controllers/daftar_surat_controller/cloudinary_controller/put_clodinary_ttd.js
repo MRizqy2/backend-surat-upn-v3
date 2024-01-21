@@ -36,11 +36,10 @@ function getResourceType(filename) {
   } else {
     return "raw";
   }
-} // hah/hah
+}
 
 const putCloudinary = async (req, res, next) => {
   try {
-    //   const {  } = req.body;
     const { surat_id } = req.query;
     if (!req.files["surat"]) {
       return res

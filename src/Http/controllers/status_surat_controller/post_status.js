@@ -2,7 +2,7 @@ const express = require("express");
 const app = express.Router();
 const router = express.Router();
 const { Status, Daftar_surat, Users, Jabatan } = require("../../../models");
-const getStatus = require("./status_controller");
+const getStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
 
 app.use(express.json());

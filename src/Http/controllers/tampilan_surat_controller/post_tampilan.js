@@ -36,7 +36,7 @@ const postTampilan = async (req, res) => {
     const jabatan_atas = await Jabatan.findOne({
       where: { id: jabatan.jabatan_atas_id },
     });
-    if (req.body.from === `daftar_surat_controller/cloudinary_controller`) {
+    if (req.body.from) {
       tamp_surat = await Tampilan.create({
         pin: false,
         dibaca: false,
@@ -66,9 +66,7 @@ const postTampilan = async (req, res) => {
 
     if (!req.body.from) {
       res.status(StatusCodes.OK).json({ tampilan: tamp_surat });
-    } else if (
-      req.body.from === `daftar_surat_controller/cloudinary_controller`
-    ) {
+    } else {
       return {
         tamp_surat,
         tamp_surat_atas,

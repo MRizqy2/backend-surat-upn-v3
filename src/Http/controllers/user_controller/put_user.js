@@ -1,48 +1,56 @@
+const { StatusCodes } = require("http-status-codes");
 const express = require("express");
-const { Users } = require("../../../models");
-const bcrypt = require("bcryptjs");
-const router = express.Router();
-
 const app = express.Router();
+const { Users } = require("../../../models");
 
 const putUser = async (req, res) => {
   try {
-    const { oldPassword, newPassword } = req.body;
+    const { name, email, jabatan_id, prodi_id, fakultas_id, aktif } = req.body;
+    const { user_id } = req.query;
 
-    const user = await Users.findOne({ where: { id: req.token.id } });
+    const user = await Users.findOne({
+      where: { id: user_id },
+    });
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ error: "Old password does not match" });
-    }
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const [updated] = await Users.update(
-      { password: hashedPassword },
+    const updatedUser = await Users.update(
       {
-        where: { id: req.token.id },
+        name: name || user.name,
+        email: email || user.email,
+        // password: password || ,
+        jabatan_id: jabatan_id || user.jabatan_id,
+        prodi_id: prodi_id || user.prodi_id,
+        fakultas_id: fakultas_id || user.fakultas_id,
+        aktif: aktif || user.aktif,
+      },
+      {
+        where: {
+          id: user_id,
+        },
+        returning: true,
       }
     );
 
-    if (updated) {
-      res.json({ message: `${user.email} Password updated successfully` });
+    // Ambil data user yang telah diperbarui
+    const resultUser = await Users.findOne({
+      where: { id: user_id },
+      attributes: { exclude: ["password"] }, // Perbaikan pada properti attributes
+    });
+
+    if (req.body.from) {
+      // Jika parameter from disertakan, kembalikan data user yang diperbarui
+      return resultUser;
     } else {
-      res.status(500).json({ error: "Failed to update password" });
+      // Jika tidak, kirim respons JSON dengan data user yang diperbarui
+      res.status(StatusCodes.OK).json({ user: resultUser });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    // Tangani kesalahan dan kirim respons kesalahan
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
   }
 };
 
-router.put("/update", putUser);
+app.put("/", putUser);
 
-module.exports = {
-  router,
-  putUser,
-  app,
-};
+module.exports = { putUser, app };

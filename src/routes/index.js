@@ -16,7 +16,7 @@ const komentarController = require("../Http/controllers/komentar_controller/kome
 const repoController = require("../Http/controllers/repo_controller/repo_controller");
 const aksesMasterController = require("../Http/controllers/akses_master_controller/akses_master_controller");
 const permisionController = require("../Http/controllers/permision_controller/permision_controller");
-
+const aksesSuratController = require("../Http/controllers/akses_surat_controller/akses_surat_controller");
 // const nomorController = require("../Http/controllers/nomor_surat_controller");
 // const notifikasiController = require("../Http/controllers/notifikasi_controller");
 
@@ -33,6 +33,8 @@ router.use(express.urlencoded({ extended: true }));
 router.use("/akses-master", authMiddleware, aksesMasterController);
 router.use("/permision", authMiddleware, permisionController);
 router.use("/jabatan", authMiddleware, jabatanController);
+
+router.use("/akses-surat", authMiddleware, aksesSuratController);
 
 router.use("/auth", authController);
 router.use("/user", authMiddleware, usersController);

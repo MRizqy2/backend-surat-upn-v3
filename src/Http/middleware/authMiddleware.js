@@ -1,13 +1,14 @@
 const jwt = require("jsonwebtoken");
-// const config = require("../../../process.env");
+const { StatusCodes } = require("http-status-codes");
 
 module.exports = function (req, res, next) {
   const tokenWithBearer = req.header("Authorization");
-  if (!tokenWithBearer)
-    return res.status(401).send("Access Denied: No Token Provided!");
-  // if (tokenWithBearer !== `Bearer ${process.env.SECRET_KEY}`) {
-  //   return res.status(401).end('Unauthorized');
-  // }
+
+  if (!tokenWithBearer) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .send("Access Denied: No Token Provided!");
+  }
 
   const token = tokenWithBearer.split(" ")[1];
 
@@ -16,6 +17,11 @@ module.exports = function (req, res, next) {
     req.token = decoded;
     next();
   } catch (error) {
-    res.status(400).send("Access Denied: Invalid Token!");
+    if (error.name === "TokenExpiredError") {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .send("Access Denied: Token Expired");
+    }
+    res.status(StatusCodes.UNAUTHORIZED).send("Access Denied: Invalid Token!");
   }
 };

@@ -1,0 +1,37 @@
+const express = require("express");
+const app = express.Router();
+const router = express.Router();
+const { Status, Daftar_surat, Users, Jabatan } = require("../../../models");
+const { StatusCodes } = require("http-status-codes");
+
+const getStatus = async (req, res) => {
+  try {
+    const { status_id, surat_id } = req.query;
+    const whereClause = {};
+    let status;
+
+    if (status_id) {
+      whereClause.id = status_id;
+    } else if (surat_id) {
+      whereClause.surat_id = surat_id;
+    } else {
+      status = await Status.findAll({ where: whereClause });
+    }
+
+    if (req.query.from) {
+      return status;
+    } else {
+      res.status(StatusCodes.OK).json(status);
+    }
+  } catch (error) {
+    console.error("Error getting status:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: "Internal Server Error",
+      message: error.message,
+    });
+  }
+};
+
+app.get("/", getStatus);
+
+module.exports = { getStatus, app };

@@ -5,8 +5,7 @@ const {
   Users,
 } = require("../../../models");
 
-async function getStatus(req, res) {
-  // wsaman tinggal ganti nak sebelha
+async function catchStatus(req, res) {
   const { jabatan_id, isRead, latestStatus, persetujuan, isSigned } = req.body;
 
   const jabatan = await Jabatan.findOne({
@@ -27,7 +26,7 @@ async function getStatus(req, res) {
     `Ditolak ${jabatan.name}`,
     `Ditolak ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
     "Surat Telah Ditandatangani",
-  ];
+  ]; // boleh//jenis_status?//boleh bole// catch_status opo catchStatus?//okee
   console.log("dawdawd");
 
   const statusMap = {
@@ -90,7 +89,7 @@ async function getStatus(req, res) {
   // return updatedStatusMap[jabatan.id] || ""; //ooo lek ngene iku updatedStatusMap[3] nah nak map iku gk ono 3
 }
 
-module.exports = getStatus;
+module.exports = catchStatus;
 
 // const {
 //   Daftar_surat,

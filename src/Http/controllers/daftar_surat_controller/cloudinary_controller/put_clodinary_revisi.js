@@ -7,7 +7,7 @@ const { StatusCodes } = require("http-status-codes");
 const { OCR } = require("./../../ocr_controller/ocr_controller");
 const {
   Daftar_surat,
-  Nomor_surat, // sg mari direvisi gk isok didelok dekan padahal ws due akses
+  Nomor_surat,
   Akses_surat,
   Status,
   Tampilan,
@@ -107,8 +107,8 @@ const revisi = async (req, res) => {
       console.log("i.k,k,t", nomorRevisi);
       nomorRevisi++;
       updateNomorSurat = `${nomorSuratSplit[0]}/${nomorRevisi}/${nomorSuratSplit[2]}/${nomorSuratSplit[3]}/${nomorSuratSplit[4]}`;
-    } // masalahe mek nak akses
-    console.log("ojvro", nomorRevisi); //
+    }
+    console.log("ojvro", nomorRevisi);
     const stringNomorSurat = String(updateNomorSurat);
     const save_nomor_surat = await Nomor_surat.create({
       nomor_surat: stringNomorSurat,
@@ -134,14 +134,12 @@ const revisi = async (req, res) => {
     const akses_surat = await Akses_surat.findAll({
       where: { surat_id: surat.id },
     });
-    //
     for (i = 0; i < akses_surat.length; i++) {
-      //aman iki
       console.log("porvpo", i);
       const duplicate_akses_surat = await Akses_surat.create({
         surat_id: duplicate_surat.id,
         jabatan_id: akses_surat[i].jabatan_id,
-      }); //Ha?/ gk
+      });
       console.log("vegweg", duplicate_akses_surat.id);
     }
     console.log("porvpo");

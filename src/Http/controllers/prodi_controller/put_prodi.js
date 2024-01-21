@@ -13,23 +13,30 @@ const putProdi = async (req, res) => {
         .json({ error: "Invalid params" });
     }
 
-    const prodi = await Prodi.findOne({ where: { id: prodi_id } });
+    const prodi = await Prodi.findOne({
+      where: { id: prodi_id },
+    });
 
-    if (!prodi) {
+    const [updatedRows] = await Prodi.update(
+      {
+        name: name || prodi.name,
+        kode_prodi: kode_prodi || prodi.kode_prodi,
+        fakultas_id: fakultas_id || prodi.fakultas_id,
+      },
+      {
+        where: { id: prodi_id },
+      }
+    );
+
+    if (updatedRows === 0) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "Prodi not found" });
     }
 
-    prodi.name = name;
-    prodi.kode_prodi = kode_prodi;
-    prodi.fakultas_id = fakultas_id;
-
-    await prodi.save();
-
     res.status(StatusCodes.OK).json({
       message: "success update",
-      updated: prodi.name,
+      updated: name,
       kode_prodi,
       fakultas_id,
     });

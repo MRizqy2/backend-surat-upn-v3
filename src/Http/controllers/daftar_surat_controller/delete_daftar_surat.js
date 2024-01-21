@@ -1,5 +1,14 @@
 const express = require("express");
 const { Daftar_surat } = require("../../../models");
+// const { post } = require("./daftar_surat_controller");
+const {
+  deleteAksesSurat,
+} = require("../akses_surat_controller/delete_akses_surat");
+const {
+  deleteTampilan,
+} = require("../tampilan_surat_controller/delete_tampilan");
+const { deleteStatus } = require("../status_surat_controller/delete_status");
+const { deleteKomentar } = require("../komentar_controller/delete_komentar");
 const router = express.Router();
 
 const deleteSurat = async (req, res) => {
@@ -11,6 +20,23 @@ const deleteSurat = async (req, res) => {
     if (!surat_id) {
       return res.status(400).json({ error: "Parameter 'id' is required" });
     }
+
+    const reqDelete = {
+      query: {
+        surat_id: surat_id,
+        from: `daftar_surat_controller/delete_daftar_surat.js`,
+        // akses_surat_id: null,
+        // tampilan_id: null,
+        // status_id: null,
+        // komentar_id: null,
+        // jabatan_id: null,//okee
+      },
+    };
+
+    const deletedAksesSurat = await deleteAksesSurat(reqDelete);
+    const deletedTampilan = await deleteTampilan(reqDelete);
+    const deletedStatus = await deleteStatus(reqDelete);
+    const deletedKomentar = await deleteKomentar(reqDelete);
 
     const deletedSurat = await Daftar_surat.destroy({
       where: { id: surat_id },

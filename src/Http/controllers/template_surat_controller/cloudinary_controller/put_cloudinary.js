@@ -1,7 +1,7 @@
-const cloudinary = require("../../../../../../config/cloudinaryConfig");
+const cloudinary = require("../../../../../config/cloudinaryConfig");
 const express = require("express");
 const { StatusCodes } = require("http-status-codes");
-const { Template_surat, Jenis_surat } = require("../../../../../models");
+const { Template_surat, Jenis_surat } = require("../../../../models");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 const path = require("path");
@@ -33,39 +33,16 @@ function getResourceType(filename) {
 
 const putCloudinary = async (req, res, next) => {
   try {
-    //pakai if//soale suratte blum tentu ono /
     const { judul, deskripsi, jenis_id } = req.body;
-    const { id } = req.query;
-    // if (!req.files["surat"]) {
-    //   return res
-    //     .status(StatusCodes.BAD_REQUEST)
-    //     .json({ error: "Missing files in request" });
-    // }
-    // const judul = req.files["surat"][0].originalname;
-    //   where: { id: jenis_id },
-    // };
-    // const judulCheck = await Template_surat.findOne({ where: { judul } });
+    const { template_id } = req.query;
     const jenis = await Jenis_surat.findOne({
       where: { id: jenis_id },
     });
 
-    // if (judulCheck) {
-    //   return res.json("judul/file sudah ada");
-    // }
-    // let judul;
-    let suratUrl;
-    let thumbnailUrl;
-    let judulEx;
-    let data_template_surat;
-    // if (!req.files["surat"]) {
-    //   data_template_surat = Template_surat.findOne({
-    //     where: { id: id },
-    //   });
-    // }
+    let thumbnailUrl, judulEx, data_template_surat, suratUrlHttps;
+
     if (req.files["surat"]) {
       judulEx = judul + path.extname(req.files["surat"][0].originalname);
-      // const jenis = await Jenis_surat.findOne({
-      // judul = req.files["surat"][0].originalname;
       await new Promise((resolve, reject) => {
         cloudinary.uploader
           .upload_stream(
@@ -85,7 +62,6 @@ const putCloudinary = async (req, res, next) => {
       });
     }
 
-    // Upload thumbnail to Cloudinary
     if (req.files["thumbnail"]) {
       await new Promise((resolve, reject) => {
         cloudinary.uploader
@@ -109,13 +85,16 @@ const putCloudinary = async (req, res, next) => {
     }
 
     data_template_surat = await Template_surat.findOne({
-      where: { id },
+      where: { id: template_id },
     });
     if (!data_template_surat) {
       return res.status(404).json({ error: "Template surat not found" });
     }
-
-    const suratUrlHttps = suratUrl.replace(/^http:/, "https:");
+    //coba awkmu nembak postman nak server ku kik
+    if (req.files["surat"]) {
+      suratUrlHttps = suratUrl.replace(/^http:/, "https:");
+    }
+    // sekarang suratUrlHttps dapat diakses di sini
 
     const template_surat = await Template_surat.update(
       {
@@ -126,8 +105,8 @@ const putCloudinary = async (req, res, next) => {
         thumbnail: thumbnailUrl || "",
       },
       {
-        where: { id: id }, // Gantilah dengan kriteria yang sesuai
-        returning: true, // Menambahkan opsi returning
+        where: { id: template_id },
+        returning: true,
       }
     );
 
