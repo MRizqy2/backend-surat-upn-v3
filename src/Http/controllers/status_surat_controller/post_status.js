@@ -28,15 +28,14 @@ const postStatus = async (req, res) => {
     // console.log("sdadwdaw", jabatan_atas.id); //kok 2/ iyo/ malah kosong/ statusse kosong
     if (!surat) {
       return res.status(StatusCodes.NOT_FOUND).json({
-        //iki wes 3
         error: "Daftar surat not found",
       });
     }
-
+    console.log(",uiikliyk", jabatan.id);
     const reqStatus = {
       body: {
         jabatan_id: jabatan.id, //"status": "Di Daftar Tunggu prodi", kan harusse TU
-        isRead: false, //
+        isRead: false, //aman
         latestStatus: "",
         persetujuan: "",
         isSigned: false,
@@ -45,13 +44,12 @@ const postStatus = async (req, res) => {
 
     const saveStatus = await getStatus(reqStatus);
     console.log("uiio;", saveStatus);
-
     const surat_kesetujuan = await Status.create({
       surat_id: surat.id,
       persetujuan: "",
       status: saveStatus,
     });
-
+    console.log("Sadwasdwas");
     if (!req.body.from) {
       res.status(StatusCodes.OK).json({ surat: surat_kesetujuan });
     } else {

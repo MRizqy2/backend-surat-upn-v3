@@ -39,6 +39,9 @@ async function getStatus(req, res) {
   if (persetujuan) {
     if (persetujuan.toLowerCase().includes(`disetujui`)) {
       updatedStatusMap[jabatan.id] = isiStatus[3];
+      if (!jabatan_atas) {
+        updatedStatusMap[jabatan.id] = persetujuan;
+      }
     } else if (persetujuan.toLowerCase().includes(`ditolak`)) {
       updatedStatusMap[jabatan.id] = isiStatus[5];
     }

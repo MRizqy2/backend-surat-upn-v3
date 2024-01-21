@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "tampilan",
         foreignKey: "surat_id",
       });
-      Daftar_surat.hasMany(models.Status, {
+      Daftar_surat.hasOne(models.Status, {
         as: "status",
         foreignKey: "surat_id",
       });
