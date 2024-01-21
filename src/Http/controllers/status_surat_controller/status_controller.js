@@ -26,7 +26,7 @@ async function getStatus(req, res) {
     `Diproses ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
     `Ditolak ${jabatan.name}`,
     `Ditolak ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
-    "Surat Telah Ditandangan",
+    "Surat Telah Ditandatangan",
   ];
   console.log("dawdawd");
 

@@ -70,6 +70,7 @@ const getDaftarSuratV2 = async (req, res) => {
           model: Komentar,
           as: "komentar",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
         },
         {
           model: Nomor_surat,
@@ -99,7 +100,7 @@ const getDaftarSuratV2 = async (req, res) => {
               as: "fakultas",
               attributes: ["id", "name"],
               where: { id: fakultas.id },
-            },
+            }, // user sing jalani revisi iku prodi kah?
           ],
         },
       ],
@@ -112,7 +113,9 @@ const getDaftarSuratV2 = async (req, res) => {
         "$user.prodi.id$": prodi.id,
       },
       include: [
+        //iki kape ubah get e coba/ jadi per model iku get dewe, sg gabung mek daftar surat karo akses surat/
         {
+          // gk await model.findAll ta?
           model: Status,
           as: "status",
           attributes: ["status", "persetujuan"],
