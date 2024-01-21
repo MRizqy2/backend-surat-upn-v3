@@ -7,7 +7,7 @@ const postJabatan = async (req, res) => {
   const { name, jabatan_atas_id } = req.body;
   try {
     // Dapatkan ID terakhir dari tabel Permision
-    const latestJabatan = await Akses_master.findOne({
+    const latestJabatan = await Jabatan.findOne({
       order: [["id", "DESC"]],
     });
     // Tentukan ID yang baru

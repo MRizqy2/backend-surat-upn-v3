@@ -17,9 +17,9 @@ const deleteSurat = async (req, res) => {
     });
 
     if (deletedSurat) {
-      res.status(200).json({ message: "Permision deleted successfully" });
+      res.status(200).json({ message: "Surat deleted successfully" });
     } else {
-      res.status(404).json({ error: "Permision not found" });
+      res.status(404).json({ error: "Surat not found" });
     }
   } catch (error) {
     console.error("Error:", error);

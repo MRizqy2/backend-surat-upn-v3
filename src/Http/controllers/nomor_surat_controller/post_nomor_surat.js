@@ -131,10 +131,9 @@ const postNomorSurat = async (req, res) => {
       },
     };
     console.log("ompo[k");
-    const saveOcr = await OCR(reqOcr); // coba mad pdf sing mok upload bener kah// maksud e ga crash//
+    const saveOcr = await OCR(reqOcr);
     if (!saveOcr) {
-      //sek/ crash anjir/ kok tiba2 crash?cloudmu penuhkha?/ kosongin ta?
-      return res // nek cloudinary kok ga iso delok file sing ke upload yo
+      return res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Failed to save OCR" });
     }

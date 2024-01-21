@@ -14,7 +14,7 @@ const postKomentar = async function (req, res) {
     const user_surat = await Users.findOne({ where: { id: surat.user_id } });
 
     const jabatan = await Jabatan.findOne({
-      where: { id: user.jabatan_id },
+      where: { id: user.jabatan_id }, // tak merge master
     });
     console.log("mwrmovme", user.jabatan_id); //mwrmovme 4
     const komen = await Komentar.create({
