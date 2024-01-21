@@ -11,12 +11,12 @@ const postKomentar = async function (req, res) {
     //wokeh
     const user = await Users.findOne({ where: { id: req.token.id } });
     const surat = await Daftar_surat.findOne({ where: { id: surat_id } });
-    const user_surat = await Users.findOne({ where: { id: surat.id } });
+    const user_surat = await Users.findOne({ where: { id: surat.user_id } });
 
     const jabatan = await Jabatan.findOne({
       where: { id: user.jabatan_id },
     });
-
+    console.log("mwrmovme", user.jabatan_id); //mwrmovme 4
     const komen = await Komentar.create({
       surat_id,
       jabatan_id_dari: user.jabatan_id,
