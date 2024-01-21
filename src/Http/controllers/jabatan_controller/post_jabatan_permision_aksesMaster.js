@@ -27,34 +27,20 @@ const postJabatanPermisionAksesMaster = async (req, res) => {
     jenis_surat,
   } = req.body;
   try {
-    const latestJabatan = await Jabatan.findAll({
-      limit: 1,
+    const latestJabatan = await Jabatan.findOne({
       order: [["id", "DESC"]],
     });
+    // Tentukan ID yang baru
+    const latestJabatanId = latestJabatan ? latestJabatan.id : 0;
+    const newJabatanId = latestJabatanId + 1;
 
-    const latestJabatanId = parseInt(latestJabatan[0].id, 10);
+    // Buat data Permision dengan ID yang baru
 
     const saveJabatan = await Jabatan.create({
-      id: latestJabatanId + 1 || 1,
+      id: newJabatanId,
       name,
       jabatan_atas_id: jabatan_atas_id || null,
     });
-
-    // const checkJabatanAtas = await Jabatan.findAll({
-    //   where: { id: saveJabatan.jabatan_atas_id },
-    // });
-    // if (checkJabatanAtas[0].jabatan_bawah_id != saveJabatan.jabatan_atas_id) {
-    //   await Jabatan.update(
-    //     {
-    //       jabatan_bawah_id: saveJabatan.jabatan_atas_id,
-    //     },
-    //     {
-    //       where: {
-    //         id: checkJabatanAtas[0].id,
-    //       },
-    //     }
-    //   );
-    // }
 
     const reqPermision = {
       body: {

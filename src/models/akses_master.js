@@ -13,12 +13,12 @@ module.exports = (sequelize, DataTypes) => {
     {
       permision_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: false, //sek tak coba flow surat
         references: {
           model: "Permision",
           key: "id",
         },
-      },
+      }, // wokeeh
       prodi: DataTypes.BOOLEAN,
       template: DataTypes.BOOLEAN,
       periode: DataTypes.BOOLEAN,

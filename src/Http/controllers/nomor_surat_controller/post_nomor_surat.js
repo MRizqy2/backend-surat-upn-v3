@@ -76,14 +76,14 @@ const postNomorSurat = async (req, res) => {
         .json({ error: "User not found" });
     }
 
-    const jabatan = await Jabatan.findOne({
-      where: { id: user_surat.id },
+    const jabatan_user_surat = await Jabatan.findOne({
+      where: { id: user_surat.jabatan_id },
     });
 
-    const prodi = await Prodi.findOne({
+    const prodi_user_surat = await Prodi.findOne({
       where: { id: user_surat.prodi_id },
     });
-    if (!prodi) {
+    if (!prodi_user_surat) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "Prodi not found" });
@@ -100,12 +100,17 @@ const postNomorSurat = async (req, res) => {
         .json({ error: "Fakultas not found" });
     }
 
-    const kode_prodi = prodi.kode_prodi;
+    const nama_jabatan = jabatan_user_surat.name;
+    const kode_prodi = prodi_user_surat.kode_prodi;
     const kode_fakultas = fakultas.kode_fakultas;
     const temp_tahun_periode = String(active_periodes[0].tahun);
     const tahun_periode = temp_tahun_periode.split(" ")[3];
 
-    if (jabatan === "" || jabatan === null) {
+    if (
+      prodi_user_surat.name === "-" ||
+      !prodi_user_surat ||
+      prodi_user_surat.id === 1
+    ) {
       nomor_surat = `${nomor_surat}/${kode_fakultas}/TU/${tahun_periode}`;
     } else {
       nomor_surat = `${nomor_surat}/${kode_fakultas}/TU_${kode_prodi}/${tahun_periode}`;

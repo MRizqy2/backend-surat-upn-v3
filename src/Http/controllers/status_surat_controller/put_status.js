@@ -120,30 +120,31 @@ const putStatus = async (req, res) => {
         },
         token: req.token,
       };
-      await postTampilan(reqTampilan);
-
-      reqAkses = {
-        body: {
-          surat_id: surat.id,
-          tambah_akses_id: jabatan.jabatan_atas_id || "",
-          from: `status_surat_controller/put_status.js`,
-        },
-      };
-      await postAksesSurat(reqAkses);
+      if (jabatan.jabatan_atas_id) {
+        await postTampilan(reqTampilan);
+        reqAkses = {
+          body: {
+            surat_id: surat.id,
+            tambah_akses_id: jabatan.jabatan_atas_id || "",
+            from: `status_surat_controller/put_status.js`, //meet dc
+          }, //ws/ gae revisi surat?/mulai dari?/ tu sg revisi?/revisine iki marine ttd kan?/berarti sg berubah nomor surat sama surat?
+        }; //gass
+        await postAksesSurat(reqAkses);
+      }
 
       const permision = await Permision.findOne({
         where: { jabatan_id: jabatan.id },
       });
       if (permision.generate_nomor_surat) {
-        const save_surat = await Daftar_surat.create({
-          judul: surat.judul,
-          thumbnail: surat.thumbnail || "",
-          jenis_id: surat.jenis_id || "",
-          user_id: surat.user_id,
-          deskripsi: surat.deskripsi || "",
-          tanggal: surat.tanggal,
-          url: surat.url,
-        });
+        // const save_surat = await Daftar_surat.create({
+        //   judul: surat.judul,
+        //   thumbnail: surat.thumbnail || "",
+        //   jenis_id: surat.jenis_id || "",
+        //   user_id: surat.user_id,
+        //   deskripsi: surat.deskripsi || "",
+        //   tanggal: surat.tanggal,
+        //   url: surat.url,
+        // });
         await postNomorSurat(reqTampilan);
       } //surat_id
     }

@@ -42,7 +42,7 @@ const getDaftarSuratV2 = async (req, res) => {
 
   if (!prodi.id || prodi.id == 1) {
     surat = await Daftar_surat.findAll({
-      attributes: { exclude: ["user_id", "createdAt", "updatedAt"] },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
       include: [
         {
           model: Status,
@@ -92,7 +92,7 @@ const getDaftarSuratV2 = async (req, res) => {
               model: Jabatan,
               as: "jabatan",
               attributes: ["id", "name"],
-              where: { id: jabatan.id },
+              // where: { id: jabatan.id },
             },
             {
               model: Fakultas,
@@ -103,6 +103,7 @@ const getDaftarSuratV2 = async (req, res) => {
           ],
         },
       ],
+      order: [["id", "ASC"]],
     });
   } else {
     surat = await Daftar_surat.findAll({
@@ -149,7 +150,7 @@ const getDaftarSuratV2 = async (req, res) => {
               attributes: { exclude: ["createdAt", "updatedAt"] },
             },
           ],
-        }, //lupa mau ngapain
+        },
         {
           model: Users,
           as: "user",
@@ -176,6 +177,7 @@ const getDaftarSuratV2 = async (req, res) => {
           ],
         },
       ],
+      order: [["id", "ASC"]],
     });
   }
   res.json(surat);

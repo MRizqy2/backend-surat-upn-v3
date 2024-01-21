@@ -8,7 +8,7 @@ npx sequelize-cli model:generate --name User --attributes firstName:string,lastN
 npx sequelize-cli db:seed:all
 npx sequelize-cli db:seed:undo --seed nama-file-migrasi.js
 
-> npm run api-service//iyo kik
+> npm run api-service
 
 for install secret_key:
 

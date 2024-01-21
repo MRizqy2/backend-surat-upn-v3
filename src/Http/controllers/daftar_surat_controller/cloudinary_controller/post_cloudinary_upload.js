@@ -22,7 +22,6 @@ const { send } = require("./../send_controller");
 
 const fs = require("fs");
 const fetch = require("node-fetch");
-const jabatan = require("../../../../models/jabatan");
 
 function getResourceType(filename) {
   const extension = path.extname(filename).toLowerCase();
@@ -62,8 +61,8 @@ const postUpload = async (req, res, next) => {
     });
 
     let suratUrl;
-    let thumbnailUrl;
-
+    let thumbnailUrl; //l//tak pushe
+    //okke
     if (req.files["surat"]) {
       await new Promise((resolve, reject) => {
         cloudinary.uploader
@@ -168,8 +167,8 @@ const postUpload = async (req, res, next) => {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Internal Server Error" });
-  }
-};
+  } // akun dekan/
+}; // coba run post bang // error e nek endi
 
 router.post(
   "/",
