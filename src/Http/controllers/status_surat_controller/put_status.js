@@ -163,6 +163,7 @@ const putStatus = async (req, res) => {
         where: { id: surat.user_id },
       });
       const reqNotif = {
+        // tak coba run sek
         body: {
           surat_id: surat_id,
           jabatan_id_dari: jabatan.id,

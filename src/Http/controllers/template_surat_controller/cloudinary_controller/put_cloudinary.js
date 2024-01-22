@@ -90,11 +90,11 @@ const putCloudinary = async (req, res, next) => {
     if (!data_template_surat) {
       return res.status(404).json({ error: "Template surat not found" });
     }
-    //coba awkmu nembak postman nak server ku kik
+    //coba awkmu nembak postman nak server ku kik/ok
     if (req.files["surat"]) {
       suratUrlHttps = suratUrl.replace(/^http:/, "https:");
     }
-    // sekarang suratUrlHttps dapat diakses di sini
+    // sekarang suratUrlHttps dapat diakses di sini/
 
     const template_surat = await Template_surat.update(
       {
