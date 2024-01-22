@@ -30,7 +30,7 @@ app.post(
   "/multer",
   upload.fields([
     { name: "surat", maxCount: 1 },
-    { name: "thumbnail", maxCount: 1 }, // tak makan sek/ o7?/ drmananya njir,oala
+    { name: "thumbnail", maxCount: 1 },
   ]),
   async function (req, res, next) {
     try {

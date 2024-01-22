@@ -4,14 +4,16 @@ const router = express.Router();
 
 const deletePermision = async (req, res) => {
   try {
-    const { id } = req.query;
+    const { permision_id } = req.query;
 
-    if (!id) {
-      return res.status(400).json({ error: "Parameter 'id' is required" });
+    if (!permision_id) {
+      return res
+        .status(400)
+        .json({ error: "Parameter 'permision_id' is required" });
     }
 
     const deletedPermision = await Permision.destroy({
-      where: { id: id },
+      where: { id: permision_id },
     });
 
     if (deletedPermision) {

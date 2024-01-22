@@ -2,7 +2,7 @@ const express = require("express");
 const app = express.Router();
 const router = express.Router();
 const { Status, Daftar_surat, Users, Jabatan } = require("../../../models");
-const getStatus = require("./status_controller");
+const catchStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
 
 app.use(express.json());
@@ -42,7 +42,7 @@ const postStatus = async (req, res) => {
       },
     }; //asdnvni Promise { <pending> }
 
-    const saveStatus = await getStatus(reqStatus);
+    const saveStatus = await catchStatus(reqStatus);
     console.log("uiio;", saveStatus);
     const surat_kesetujuan = await Status.create({
       surat_id: surat.id,

@@ -12,11 +12,11 @@ const deleteJenis = async (req, res) => {
         .json({ error: "Parameter 'jenis_id' is required" });
     }
 
-    const HapusJenis = await Jenis_surat.destroy({
+    const hapusJenis = await Jenis_surat.destroy({
       where: { id: jenis_id },
     });
 
-    if (HapusJenis) {
+    if (hapusJenis) {
       res.status(200).json({ message: "Jenis Surat deleted successfully" });
     } else {
       res.status(404).json({ error: "Jenis Surat not found" });

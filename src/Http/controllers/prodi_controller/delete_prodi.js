@@ -7,7 +7,7 @@ const deleteProdi = async (req, res) => {
     const { prodi_id } = req.query;
 
     if (!prodi_id) {
-      return res.status(400).json({ error: "Parameter id is required" });
+      return res.status(400).json({ error: "Parameter prodi_id is required" });
     }
 
     const deletedProdi = await Prodi.destroy({

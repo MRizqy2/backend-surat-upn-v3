@@ -1,11 +1,5 @@
 const express = require("express");
-const {
-  Akses_surat,
-  Permision,
-  Jabatan,
-  Users,
-  Daftar_surat,
-} = require("../../../models");
+const { Akses_surat, Daftar_surat } = require("../../../models");
 const router = express.Router();
 
 const postAksesSurat = async (req, res) => {

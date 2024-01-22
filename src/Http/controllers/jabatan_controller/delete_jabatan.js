@@ -1,5 +1,11 @@
 const express = require("express");
-const { Jabatan, Akses_master, Permision } = require("../../../models");
+const {
+  Jabatan,
+  Akses_master,
+  Permision,
+  Users,
+  Akses_surat,
+} = require("../../../models");
 const router = express.Router();
 
 const deleteJabatan = async (req, res) => {
@@ -11,20 +17,38 @@ const deleteJabatan = async (req, res) => {
         .status(400)
         .json({ error: "Parameter 'jabatan_id' is required" });
     }
+    const users = await Users.findAll({
+      where: { jabatan_id: jabatan_id },
+    });
+
+    // Set jabatan_id to NULL for all associated Users
+    for (let user of users) {
+      user.jabatan_id = null;
+      await user.save();
+    }
+    const akses_surat = await Akses_surat.findAll({
+      where: { jabatan_id: jabatan_id },
+    });
+    for (let akseSurat of akses_surat) {
+      akseSurat.jabatan_id = null;
+      await akseSurat.save();
+    }
+    const permisions = await Permision.findAll({
+      where: { jabatan_id: jabatan_id },
+    });
+
+    for (let permision of permisions) {
+      await Akses_master.destroy({
+        where: { permision_id: permision.id },
+      });
+    }
+
+    await Permision.destroy({
+      where: { jabatan_id: jabatan_id },
+    });
 
     const deletedJabatan = await Jabatan.destroy({
       where: { id: jabatan_id },
-    });
-
-    const permision = await Permision.findOne({
-      where: { jabatan_id: jabatan_id },
-    });
-    const deletedPermision = await Permision.destroy({
-      where: { jabatan_id: jabatan_id },
-    });
-
-    const deletedAksesMaster = await Akses_master.destroy({
-      where: { permision_id: permision.id },
     });
 
     if (deletedJabatan) {

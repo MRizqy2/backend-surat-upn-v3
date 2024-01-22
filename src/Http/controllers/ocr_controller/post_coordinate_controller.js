@@ -23,7 +23,7 @@ async function changeTextInPdfV2(inputPath, outputPath, searchText, newText) {
 
       const pages = pdfDoc.getPages();
       const firstPage = pages[0];
-      const x = 220;
+      const x = 240;
       const y = 685;
       console.log("x : ", x);
       console.log("y : ", y);

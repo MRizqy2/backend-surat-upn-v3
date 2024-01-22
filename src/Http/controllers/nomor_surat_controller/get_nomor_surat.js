@@ -1,25 +1,20 @@
 const express = require("express");
 const {
-  Akses_surat,
-  Jabatan,
-  Users,
+  Nomor_surat,
+  Periode,
   Daftar_surat,
-  Jenis_surat,
+  Users,
+  Jenis,
 } = require("../../../models");
 const router = express.Router();
 
-const getAksesSurat = async (req, res) => {
+const getNomorSurat = async function (req, res) {
   try {
-    const { akses_surat_id } = req.query;
-    let aksesSurat;
-    const user = await Users.findOne({
-      where: { id: req.token.id },
-    });
-    if (!akses_surat_id) {
-      aksesSurat = await Akses_surat.findAll({
-        attributes: {
-          exclude: ["createdAt", "updatedAt"],
-        },
+    let nomor_surat;
+    const { nomor_surat_id } = req.query;
+    if (!nomor_surat_id) {
+      nomor_surat = await Nomor_surat.findAll({
+        attributes: ["id", "nomor_surat"],
         include: [
           {
             model: Daftar_surat,
@@ -27,29 +22,29 @@ const getAksesSurat = async (req, res) => {
             attributes: { exclude: ["createdAt", "updatedAt"] },
             include: [
               {
-                model: Jenis_surat,
+                model: Jenis,
                 as: "jenis",
                 attributes: ["id", "jenis"],
               },
               {
                 model: Users,
                 as: "user",
-                attributes: ["email", "name"],
+                attributes: ["id", "email", "name"],
               },
             ],
           },
           {
-            model: Jabatan,
-            as: "jabatan",
-            attributes: ["id", "name"],
+            model: Periode,
+            as: "periode",
+            attributes: ["id", "tahun", "status"],
           },
         ],
+
+        order: [["id", "ASC"]],
       });
-    } else if (akses_surat_id) {
-      aksesSurat = await Akses_surat.findOne({
-        attributes: {
-          exclude: ["createdAt", "updatedAt"],
-        },
+    } else if (nomor_surat_id) {
+      nomor_surat = await Nomor_surat.findOne({
+        attributes: ["nomor_surat"],
         include: [
           {
             model: Daftar_surat,
@@ -57,34 +52,37 @@ const getAksesSurat = async (req, res) => {
             attributes: { exclude: ["createdAt", "updatedAt"] },
             include: [
               {
-                model: Jenis_surat,
+                model: Jenis,
                 as: "jenis",
                 attributes: ["id", "jenis"],
               },
               {
                 model: Users,
                 as: "user",
-                attributes: ["email", "name"],
+                attributes: ["id", "email", "name"],
               },
             ],
           },
           {
-            model: Jabatan,
-            as: "jabatan",
-            attributes: ["id", "name"],
+            model: Periode,
+            as: "periode",
+            attributes: ["id", "tahun", "status"],
           },
         ],
+
+        order: [["id", "ASC"]],
       });
     }
-    res.json(aksesSurat);
+    res.json(nomor_surat);
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error getting users:", error);
+    res.status(500).json({ error: error.message });
   }
 };
-router.get("/", getAksesSurat);
+
+router.get("/", getNomorSurat);
 
 module.exports = {
+  getNomorSurat,
   router,
-  getAksesSurat,
 };

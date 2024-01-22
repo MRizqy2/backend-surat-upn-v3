@@ -7,7 +7,7 @@ const {
   Jabatan,
   Permision,
 } = require("../../../models");
-const getStatus = require("./status_controller");
+const catchStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
 const {
   postTampilan,
@@ -15,6 +15,7 @@ const {
 const {
   postNomorSurat,
 } = require("./../nomor_surat_controller/post_nomor_surat");
+const { postNotif } = require("../notifikasi_controller/post_notifikasi");
 const { post } = require("../jabatan_controller/jabatan_controller");
 const {
   postAksesSurat,
@@ -79,7 +80,7 @@ const putStatus = async (req, res) => {
       };
     }
     console.log("  vmldv");
-    const saveStatus = await getStatus(reqStatus);
+    const saveStatus = await catchStatus(reqStatus);
     console.log(" epmpovmmmm", saveStatus);
 
     if (!persetujuan) {
@@ -126,11 +127,20 @@ const putStatus = async (req, res) => {
           body: {
             surat_id: surat.id,
             tambah_akses_id: jabatan.jabatan_atas_id || "",
-            from: `status_surat_controller/put_status.js`, //meet dc
-          }, //ws/ gae revisi surat?/mulai dari?/ tu sg revisi?/revisine iki marine ttd kan?/berarti sg berubah nomor surat sama surat?
-        }; //gass
+            from: `status_surat_controller/put_status.js`,
+          },
+        };
         await postAksesSurat(reqAkses);
-      }
+        const reqNotif = {
+          body: {
+            surat_id: surat_id,
+            jabatan_id_dari: jabatan.id,
+            jabatan_id_ke: jabatan.jabatan_atas_id,
+            from: `status_surat_controller/put_status`,
+          },
+        };
+        await postNotif(reqNotif);
+      } //
 
       const permision = await Permision.findOne({
         where: { jabatan_id: jabatan.id },
@@ -148,10 +158,24 @@ const putStatus = async (req, res) => {
         await postNomorSurat(reqTampilan);
       } //surat_id
     }
+    if (persetujuan && persetujuan.toLowerCase().includes("ditolak")) {
+      const user_surat = await Users.findOne({
+        where: { id: surat.user_id },
+      });
+      const reqNotif = {
+        // tak coba run sek
+        body: {
+          surat_id: surat_id,
+          jabatan_id_dari: jabatan.id,
+          jabatan_id_ke: user_surat.jabatan_id,
+          from: `status_surat_controller/put_status`,
+        },
+      };
+      await postNotif(reqNotif);
+    }
 
     if (req.body.from) {
-      //
-      return updateStatus; //
+      return updateStatus;
     } else {
       res.status(StatusCodes.OK).json({ surat: updateStatus });
     }

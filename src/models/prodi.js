@@ -1,4 +1,4 @@
-"use strict";
+"use strict"; //inpo pindah .env
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Prodi extends Model {
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       kode_prodi: DataTypes.STRING,
       fakultas_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "Fakultas",
           key: "id",

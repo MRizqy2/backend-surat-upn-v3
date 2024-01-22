@@ -18,7 +18,7 @@ const {
 const auth = require("../../middleware/authMiddleware");
 const cloudinaryController = require("./cloudinary_controller/cloudinary_controller");
 const { StatusCodes } = require("http-status-codes");
-const getStatus = require("../status_surat_controller/status_controller");
+const getStatus = require("../status_surat_controller/catch_status");
 const { Op, Sequelize } = require("sequelize");
 
 app.use(express.json());

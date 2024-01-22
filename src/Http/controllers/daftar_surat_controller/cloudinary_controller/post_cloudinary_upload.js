@@ -17,6 +17,7 @@ const { postStatus } = require("../../status_surat_controller/post_status");
 const {
   postTampilan,
 } = require("../../tampilan_surat_controller/post_tampilan");
+const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
 // const status = getStatus();
 const { send } = require("./../send_controller");
 
@@ -157,6 +158,16 @@ const postUpload = async (req, res, next) => {
     };
     await send(reqSend);
 
+    const reqNotif = {
+      body: {
+        surat_id: daftar_surat.id,
+        jabatan_id_dari: jabatan.id,
+        jabatan_id_ke: jabatan.jabatan_atas_id,
+        from: `daftar_surat_controller/cloudinary_controller/post_cloudinary_upload`,
+      },
+    };
+    await postNotif(reqNotif);
+
     res.status(StatusCodes.CREATED).json({
       message: "File successfully uploaded",
       daftar_surat,
@@ -167,8 +178,8 @@ const postUpload = async (req, res, next) => {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Internal Server Error" });
-  } // akun dekan/
-}; // coba run post bang // error e nek endi
+  }
+};
 
 router.post(
   "/",
