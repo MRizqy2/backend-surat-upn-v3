@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express.Router();
 const router = express.Router();
-const { Tampilan, Daftar_surat, Users, Role_user } = require("../../../models");
+const { Tampilan, Daftar_surat, Users, Jabatan } = require("../../../models");
 const { putStatus } = require("../status_surat_controller/put_status");
+const { postNotif } = require("../notifikasi_controller/post_notifikasi");
 const { StatusCodes } = require("http-status-codes");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -14,6 +15,9 @@ const putTampilan = async (req, res) => {
     // console.log("testing ", req.token.id); //testing  4
     const user = await Users.findOne({
       where: { id: req.token.id },
+    });
+    const jabatan = await Jabatan.findOne({
+      where: { id: user.jabatan_id },
     });
     const tampilan = await Tampilan.update(
       {
@@ -43,6 +47,22 @@ const putTampilan = async (req, res) => {
         token: req.token,
       };
       saveStatus = await putStatus(reqStatus);
+      const surat = await Daftar_surat.findOne({
+        where: { id: surat_id },
+      });
+      const user_surat = await Users.findOne({
+        where: { id: surat.user_id },
+      });
+
+      const reqNotif = {
+        body: {
+          surat_id: surat_id,
+          jabatan_id_dari: jabatan.id,
+          jabatan_id_ke: user_surat.jabatan_id,
+          from: `daftar_surat_controller/cloudinary_controller/post_cloudinary_upload`,
+        },
+      };
+      await postNotif(reqNotif);
     }
     if (!req.body.from) {
       res.status(StatusCodes.OK).json({ tampilan, saveStatus });

@@ -117,10 +117,13 @@ const putCloudinary = async (req, res, next) => {
       where: { id: surat_id },
     });
     if (!data_surat) {
-      return res.status(404).json({ error: "Template surat not found" });
+      return res.status(404).json({ error: "Data surat not found" });
     }
 
     const suratUrlHttps = suratUrl.replace(/^http:/, "https:");
+    const user_surat = await Users.findOne({
+      where: { id: data_surat.user_id },
+    });
 
     const user = await Users.findOne({
       where: { id: req.token.id },
@@ -161,6 +164,15 @@ const putCloudinary = async (req, res, next) => {
     //   },
     // };
     // const saveRepo = await postRepo(reqRepo);
+    const reqNotif = {
+      body: {
+        surat_id: data_surat.id,
+        jabatan_id_dari: user.jabatan_id,
+        jabatan_id_ke: user_surat.jabatan_id,
+        from: `daftar_surat_controller/cloudinary_controller/put_cloudinary_ttd`,
+      },
+    };
+    await postNotif(reqNotif);
 
     return res
       .status(StatusCodes.CREATED)

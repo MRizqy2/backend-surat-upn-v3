@@ -18,7 +18,7 @@ const aksesMasterController = require("../Http/controllers/akses_master_controll
 const permisionController = require("../Http/controllers/permision_controller/permision_controller");
 const aksesSuratController = require("../Http/controllers/akses_surat_controller/akses_surat_controller");
 // const nomorController = require("../Http/controllers/nomor_surat_controller");
-// const notifikasiController = require("../Http/controllers/notifikasi_controller");
+const notifikasiController = require("../Http/controllers/notifikasi_controller/notifikasi_controller");
 
 // const {
 //   app: tampilanController,
@@ -41,7 +41,6 @@ router.use("/user", authMiddleware, usersController);
 router.use("/periode", authMiddleware, periodeController);
 router.use("/jenis", authMiddleware, jenisController);
 router.use("/fakultas", authMiddleware, fakultasController);
-
 router.use("/prodi", authMiddleware, prodiController);
 
 router.use("/daftar-surat", authMiddleware, daftarSuratController);
@@ -49,6 +48,7 @@ router.use("/template-surat", authMiddleware, templateController);
 router.use("/tampilan", authMiddleware, tampilanController);
 router.use("/status", authMiddleware, statusController);
 router.use("/komentar", authMiddleware, komentarController);
+router.use("/notifikasi", authMiddleware, notifikasiController);
 
 router.use("/repo", authMiddleware, repoController);
 
