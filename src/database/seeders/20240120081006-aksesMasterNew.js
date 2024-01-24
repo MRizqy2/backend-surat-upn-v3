@@ -41,6 +41,18 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
+        {
+          id: 5,
+          permision_id: 5,
+          prodi: false,
+          template: false,
+          periode: false,
+          fakultas: false,
+          jabatan: false,
+          jenis_surat: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ],
       {}
     );

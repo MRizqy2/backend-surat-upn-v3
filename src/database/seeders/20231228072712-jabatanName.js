@@ -22,15 +22,17 @@ module.exports = {
         {
           id: 4,
           name: "Dekan",
+          jabatan_atas_id: 5,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-        // {
-        //   id: 5,
-        //   name: "Admin Dekan",
-        //   createdAt: new Date(),
-        //   updatedAt: new Date(),
-        // },
+        {
+          id: 5,
+          name: "Admin Dekan",
+          // jabatan_atas_id: ,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ],
       {}
     );

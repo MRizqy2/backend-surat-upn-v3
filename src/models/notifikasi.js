@@ -3,9 +3,13 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Notifikasi extends Model {
     static associate(models) {
-      Notifikasi.belongsTo(models.Daftar_surat, { foreignKey: "surat_id" });
+      Notifikasi.belongsTo(models.Daftar_surat, {
+        foreignKey: "surat_id",
+        as: "surat",
+      });
       Notifikasi.belongsTo(models.Jabatan, {
         foreignKey: "jabatan_id_dari",
+        as: "pengirim",
       });
       Notifikasi.belongsTo(models.Jabatan, {
         foreignKey: "jabatan_id_ke",

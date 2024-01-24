@@ -21,7 +21,16 @@ const getUser = async (req, res) => {
           {
             model: Jabatan,
             as: "jabatan",
-            attributes: { exclude: ["createdAt", "updatedAt"] },
+            attributes: {
+              exclude: ["jabatan_atas_id", "createdAt", "updatedAt"],
+            },
+            include: {
+              model: Jabatan,
+              as: "jabatan_atas",
+              attributes: {
+                exclude: ["jabatan_atas_id", "createdAt", "updatedAt"],
+              },
+            },
           },
           {
             model: Fakultas,
@@ -67,7 +76,16 @@ const getUser = async (req, res) => {
           {
             model: Jabatan,
             as: "jabatan",
-            attributes: { exclude: ["createdAt", "updatedAt"] },
+            attributes: {
+              exclude: ["jabatan_atas_id", "createdAt", "updatedAt"],
+            },
+            include: {
+              model: Jabatan,
+              as: "jabatan_atas",
+              attributes: {
+                exclude: ["jabatan_atas_id", "createdAt", "updatedAt"],
+              },
+            },
           },
           {
             model: Fakultas,

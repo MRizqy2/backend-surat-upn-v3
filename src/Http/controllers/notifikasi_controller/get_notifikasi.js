@@ -1,5 +1,11 @@
 const express = require("express");
-const { Notifikasi, Users } = require("../../../models");
+const {
+  Notifikasi,
+  Users,
+  Jabatan,
+  Daftar_surat,
+  Status,
+} = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const app = express.Router();
 
@@ -17,6 +23,26 @@ const getNotif = async (req, res) => {
 
     const notifikasi = await Notifikasi.findAll({
       where: { jabatan_id_ke: user.jabatan_id },
+      attributes: ["id"],
+      include: [
+        {
+          model: Jabatan,
+          as: "pengirim",
+          attributes: ["id", "name"],
+        },
+        {
+          model: Daftar_surat,
+          as: "surat",
+          attributes: ["id", "judul"],
+          include: [
+            {
+              model: Status,
+              as: "status",
+              attributes: ["status", "persetujuan"],
+            },
+          ],
+        },
+      ],
     });
 
     res.status(StatusCodes.OK).json(notifikasi);

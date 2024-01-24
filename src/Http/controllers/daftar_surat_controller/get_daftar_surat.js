@@ -24,7 +24,7 @@ const { Op, Sequelize } = require("sequelize");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const getDaftarSuratV2 = async (req, res) => {
+const getDaftarSurat = async (req, res) => {
   let surat;
 
   const user = await Users.findOne({
@@ -40,8 +40,78 @@ const getDaftarSuratV2 = async (req, res) => {
     where: { id: user.fakultas_id },
   });
 
-  if (!prodi.id || prodi.id == 1) {
+  if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
+    console.log("ovorvpw");
     surat = await Daftar_surat.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      include: [
+        {
+          model: Status,
+          as: "status",
+          attributes: ["status", "persetujuan"],
+        },
+        // {
+        //   model: Tampilan,
+        //   as: "tampilan",
+        //   attributes: ["pin", "dibaca"],
+        //   // where: { jabatan_id: jabatan.id },
+        // },
+        {
+          model: Jenis_surat,
+          as: "jenis",
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+        // {
+        //   model: Akses_surat,
+        //   as: "akses_surat",
+        //   attributes: { exclude: ["createdAt", "updatedAt"] },
+        //   // where: { jabatan_id: user.jabatan_id },
+        // },
+        {
+          model: Komentar,
+          as: "komentar",
+          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
+        },
+        {
+          model: Nomor_surat,
+          as: "nomor_surat",
+          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
+          include: [
+            {
+              model: Periode,
+              as: "periode",
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
+          ],
+        },
+        {
+          model: Users,
+          as: "user",
+          attributes: ["email", "name"],
+          include: [
+            {
+              model: Jabatan,
+              as: "jabatan",
+              attributes: ["id", "name"],
+              // where: { id: jabatan.id },
+            },
+            {
+              model: Fakultas,
+              as: "fakultas",
+              attributes: ["id", "name"],
+              // where: { id: fakultas.id },
+            },
+          ],
+        },
+      ],
+      order: [["id", "ASC"]],
+    });
+  } else if (!prodi.id || prodi.name == `-` || prodi.id == 1) {
+    console.log("moomp");
+    surat = await Daftar_surat.findAll({
+      //by fakultas
       attributes: { exclude: ["createdAt", "updatedAt"] },
       include: [
         {
@@ -100,22 +170,22 @@ const getDaftarSuratV2 = async (req, res) => {
               as: "fakultas",
               attributes: ["id", "name"],
               where: { id: fakultas.id },
-            }, // user sing jalani revisi iku prodi kah?
+            },
           ],
         },
       ],
       order: [["id", "ASC"]],
     });
   } else {
+    console.log("mrprmv");
     surat = await Daftar_surat.findAll({
+      //by prodi
       attributes: { exclude: ["user_id", "createdAt", "updatedAt"] },
       where: {
         "$user.prodi.id$": prodi.id,
       },
       include: [
-        //iki kape ubah get e coba/ jadi per model iku get dewe, sg gabung mek daftar surat karo akses surat/
         {
-          // gk await model.findAll ta?
           model: Status,
           as: "status",
           attributes: ["status", "persetujuan"],
@@ -186,9 +256,9 @@ const getDaftarSuratV2 = async (req, res) => {
   res.json(surat);
 }; //
 
-router.get("/", getDaftarSuratV2);
+router.get("/", getDaftarSurat);
 
 module.exports = {
   router,
-  getDaftarSuratV2,
+  getDaftarSurat,
 };
