@@ -130,14 +130,24 @@ const postUpload = async (req, res, next) => {
     const reqTampilan = {
       body: {
         jabatan_id: jabatan.id,
-        user_id: user.id,
+        // user_id: user.id,
         surat_id: daftar_surat.id,
         from: "daftar_surat_controller/cloudinary_controller",
       },
       token: req.token,
     };
 
-    const saveTampilan = await postTampilan(reqTampilan);
+    await postTampilan(reqTampilan);
+    const reqTampilan2 = {
+      body: {
+        jabatan_id: jabatan.jabatan_atas_id,
+        // user_id: user.id,
+        surat_id: daftar_surat.id,
+        from: "daftar_surat_controller/cloudinary_controller",
+      },
+      token: req.token,
+    };
+    await postTampilan(reqTampilan2);
 
     let reqSend;
     reqSend = {
@@ -147,7 +157,7 @@ const postUpload = async (req, res, next) => {
         from: "daftar_surat_controller/cloudinary_controller",
       },
     };
-    await send(reqSend);
+    await send(reqSend); //akses
 
     reqSend = {
       body: {

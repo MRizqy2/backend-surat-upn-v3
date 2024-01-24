@@ -7,10 +7,10 @@ const {
   Fakultas,
   Jabatan,
   Periode,
+  Jenis_surat,
 } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const { OCR } = require("./../ocr_controller/ocr_controller");
-const jenis_surat = require("../../../models/jenis_surat");
 // const { repo } = require("./../repo_controller/repo_controller");
 const router = express.Router();
 
@@ -46,10 +46,11 @@ const postNomorSurat = async (req, res) => {
         order: [["id", "DESC"]],
         where: { periode_id: active_periodes[0].id },
       });
-      console.log("okvowf", nomor[0].nomor_surat);
-      nomor_surat = String(parseInt(nomor[0].nomor_surat, 10) + 1);
-      console.log(".ui,hj", nomor_surat);
-      nomor_surat = nomor_surat.padStart(4, "0");
+      const existingNomor = nomor[0].nomor_surat;
+      const parts = existingNomor.split("/");
+      const angkaNomor = parts[0];
+
+      nomor_surat = String(parseInt(angkaNomor, 10) + 1).padStart(4, "0");
     } else {
       nomor_surat = "0001"; // Jika tidak ada nomor sebelumnya, dimulai dari 1
       // console.log("testing");
@@ -70,7 +71,7 @@ const postNomorSurat = async (req, res) => {
       where: { id: surat_id },
     });
 
-    const jenis = await jenis_surat.findOne({
+    const jenis = await Jenis_surat.findOne({
       where: { id: surat.jenis_id },
     });
 
@@ -111,20 +112,21 @@ const postNomorSurat = async (req, res) => {
     const nama_jabatan = jabatan_user_surat.name;
     const kode_prodi = prodi_user_surat.kode_prodi;
     const kode_fakultas = fakultas.kode_fakultas;
+    const kode_jenis_surat = jenis.kode_jenis;
     const temp_tahun_periode = String(active_periodes[0].tahun);
     const tahun_periode = temp_tahun_periode.split(" ")[3];
 
     if (
-      prodi_user_surat.name === "-" || // tak merge sek
+      prodi_user_surat.name === "-" ||
       !prodi_user_surat ||
       prodi_user_surat.id === 1
     ) {
-      nomor_surat = `${nomor_surat}/${kode_fakultas}/TU/${tahun_periode}`;
+      nomor_surat = `${nomor_surat}/${kode_fakultas}/${kode_jenis_surat}/TU/${tahun_periode}`;
     } else {
-      nomor_surat = `${nomor_surat}/${kode_fakultas}/TU_${kode_prodi}/${tahun_periode}`;
+      nomor_surat = `${nomor_surat}/${kode_fakultas}/${kode_jenis_surat}/TU_${kode_prodi}/${tahun_periode}`;
     }
     nomor_surat = String(nomor_surat);
-    // console.log("testitn 2", nomor_surat);
+    console.log("testitn 2", nomor_surat);
     const saveNomorSurat = await Nomor_surat.create({
       nomor_surat: nomor_surat,
       surat_id: surat_id,
