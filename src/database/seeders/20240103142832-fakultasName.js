@@ -17,7 +17,7 @@ module.exports = {
           id: 2,
           name: "FAKULTAS ILMU KOMPUTER ",
           jenjang: "S1",
-          kode_fakultas: "UN 63.7",
+          kode_fakultas: "UN63.7",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
