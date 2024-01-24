@@ -46,8 +46,9 @@ const postNomorSurat = async (req, res) => {
         where: { periode_id: active_periodes[0].id },
       });
       nomor_surat = String(parseInt(nomor[0].nomor_surat, 10) + 1);
+      nomor_surat = nomor_surat.padStart(4, "0");
     } else {
-      nomor_surat = "1"; // Jika tidak ada nomor sebelumnya, dimulai dari 1
+      nomor_surat = "0001"; // Jika tidak ada nomor sebelumnya, dimulai dari 1
       // console.log("testing");
     }
 
@@ -65,6 +66,8 @@ const postNomorSurat = async (req, res) => {
     const surat = await Daftar_surat.findOne({
       where: { id: surat_id },
     });
+
+    // const jenis
 
     const user_surat = await Users.findOne({
       where: { id: surat.user_id },

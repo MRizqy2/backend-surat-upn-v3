@@ -12,6 +12,9 @@ module.exports = {
       jenis: {
         type: Sequelize.STRING,
       },
+      kode_jenis: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
