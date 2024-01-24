@@ -10,6 +10,7 @@ const {
 } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const { OCR } = require("./../ocr_controller/ocr_controller");
+const jenis_surat = require("../../../models/jenis_surat");
 // const { repo } = require("./../repo_controller/repo_controller");
 const router = express.Router();
 
@@ -45,7 +46,9 @@ const postNomorSurat = async (req, res) => {
         order: [["id", "DESC"]],
         where: { periode_id: active_periodes[0].id },
       });
+      console.log("okvowf", nomor[0].nomor_surat);
       nomor_surat = String(parseInt(nomor[0].nomor_surat, 10) + 1);
+      console.log(".ui,hj", nomor_surat);
       nomor_surat = nomor_surat.padStart(4, "0");
     } else {
       nomor_surat = "0001"; // Jika tidak ada nomor sebelumnya, dimulai dari 1
@@ -67,7 +70,9 @@ const postNomorSurat = async (req, res) => {
       where: { id: surat_id },
     });
 
-    // const jenis
+    const jenis = await jenis_surat.findOne({
+      where: { id: surat.jenis_id },
+    });
 
     const user_surat = await Users.findOne({
       where: { id: surat.user_id },
@@ -110,7 +115,7 @@ const postNomorSurat = async (req, res) => {
     const tahun_periode = temp_tahun_periode.split(" ")[3];
 
     if (
-      prodi_user_surat.name === "-" ||
+      prodi_user_surat.name === "-" || // tak merge sek
       !prodi_user_surat ||
       prodi_user_surat.id === 1
     ) {
