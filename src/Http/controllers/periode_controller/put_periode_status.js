@@ -18,7 +18,7 @@ const putPeriodeStatus = async (req, res) => {
     if (activePeriodes.length > 0) {
       // Mendapatkan id dari semua periode yang memiliki status true
       const activePeriodeIds = activePeriodes.map(
-        (periode) => periode.periode_id
+        (periode) => periode.id
       );
 
       // Melakukan update status menjadi false pada semua periode yang memiliki status true

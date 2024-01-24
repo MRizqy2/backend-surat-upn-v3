@@ -9,6 +9,7 @@ const {
 } = require("../tampilan_surat_controller/delete_tampilan");
 const { deleteStatus } = require("../status_surat_controller/delete_status");
 const { deleteKomentar } = require("../komentar_controller/delete_komentar");
+const { deleteNotifikasi } = require("../notifikasi_controller/delete_notifikasi");
 const router = express.Router();
 
 const deleteSurat = async (req, res) => {
@@ -37,6 +38,7 @@ const deleteSurat = async (req, res) => {
     const deletedTampilan = await deleteTampilan(reqDelete);
     const deletedStatus = await deleteStatus(reqDelete);
     const deletedKomentar = await deleteKomentar(reqDelete);
+    const deletedNotifikasi = await deleteNotifikasi(reqDelete);
 
     const deletedSurat = await Daftar_surat.destroy({
       where: { id: surat_id },
