@@ -5,7 +5,7 @@ const router = express.Router();
 const postJenis = async function (req, res) {
   try {
     let latestJenisId;
-    const { jenis } = req.body;
+    const { jenis, kode_jenis } = req.body;
     const latestJenis = await Jenis_surat.findAll({
       limit: 1,
       order: [["id", "DESC"]],
@@ -18,6 +18,7 @@ const postJenis = async function (req, res) {
     const jenis_surat = await Jenis_surat.create({
       id: latestJenisId + 1 || 1,
       jenis,
+      kode_jenis,
     });
 
     return res.json({ message: "Berhasil", jenis_surat });

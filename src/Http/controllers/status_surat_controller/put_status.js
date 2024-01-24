@@ -112,16 +112,16 @@ const putStatus = async (req, res) => {
     // const ON = 1;
     // if (ON === 1) {
     if (persetujuan && persetujuan.toLowerCase().includes("disetujui")) {
-      //benerkan
-      console.log("dawdawd", persetujuan);
-      reqTampilan = {
-        body: {
-          surat_id: surat_id,
-          from: "status_surat_controller",
-        },
-        token: req.token,
-      };
       if (jabatan.jabatan_atas_id) {
+        console.log("dawdawd", persetujuan);
+        reqTampilan = {
+          body: {
+            jabatan_id: jabatan.jabatan_atas_id,
+            surat_id: surat_id,
+            from: "status_surat_controller",
+          },
+          token: req.token,
+        };
         await postTampilan(reqTampilan);
         reqAkses = {
           body: {

@@ -8,6 +8,7 @@ module.exports = {
         {
           id: 1,
           jenis: "Surat Tugas",
+          kode_jenis: "ST",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

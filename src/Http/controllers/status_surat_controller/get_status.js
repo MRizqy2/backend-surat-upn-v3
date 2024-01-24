@@ -12,11 +12,15 @@ const getStatus = async (req, res) => {
 
     if (status_id) {
       whereClause.id = status_id;
-    } else if (surat_id) {
-      whereClause.surat_id = surat_id;
-    } else {
-      status = await Status.findAll({ where: whereClause });
     }
+    if (surat_id) {
+      whereClause.surat_id = surat_id;
+    }
+    status = await Status.findAll({
+      where: whereClause,
+      order: [["id", "ASC"]],
+    });
+    console.log("mdwqpo", status[0]);
 
     if (req.query.from) {
       return status;

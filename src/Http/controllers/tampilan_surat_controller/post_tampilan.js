@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const postTampilan = async (req, res) => {
   try {
-    const { surat_id } = req.body;
+    const { surat_id, jabatan_id } = req.body;
 
     const surat = await Daftar_surat.findOne({
       where: { id: surat_id },
@@ -21,7 +21,7 @@ const postTampilan = async (req, res) => {
 
     const jabatan = await Jabatan.findOne({
       where: {
-        id: user.jabatan_id,
+        id: jabatan_id || user.jabatan_id,
       },
     });
 
@@ -33,36 +33,43 @@ const postTampilan = async (req, res) => {
     let tamp_surat;
     let tamp_surat_atas;
 
-    const jabatan_atas = await Jabatan.findOne({
-      where: { id: jabatan.jabatan_atas_id },
-    });
-    if (req.body.from) {
-      tamp_surat = await Tampilan.create({
-        pin: false,
-        dibaca: false,
-        surat_id: surat.id,
-        jabatan_id: jabatan.id,
-      });
+    // const jabatan_atas = await Jabatan.findOne({
+    //   where: { id: jabatan.jabatan_atas_id },
+    // });
 
-      if (!jabatan_atas) {
-        return res.status(StatusCodes.NOT_FOUND).json({
-          error: "Jabatan not found",
-        });
-      }
-      tamp_surat_atas = await Tampilan.create({
-        pin: false,
-        dibaca: false,
-        surat_id: surat.id,
-        jabatan_id: jabatan_atas.id,
-      });
-    } else {
-      tamp_surat_atas = await Tampilan.create({
-        pin: false,
-        dibaca: false,
-        surat_id: surat.id,
-        jabatan_id: jabatan_atas.id,
-      });
-    }
+    tamp_surat_atas = await Tampilan.create({
+      pin: false,
+      dibaca: false,
+      surat_id: surat.id,
+      jabatan_id: jabatan.id,
+    });
+    // if (req.body.from) {
+    //   tamp_surat = await Tampilan.create({
+    //     pin: false,
+    //     dibaca: false,
+    //     surat_id: surat.id,
+    //     jabatan_id: jabatan.id,
+    //   });
+
+    //   if (!jabatan_atas) {
+    //     return res.status(StatusCodes.NOT_FOUND).json({
+    //       error: "Jabatan not found",
+    //     });
+    //   }
+    //   tamp_surat_atas = await Tampilan.create({
+    //     pin: false,
+    //     dibaca: false,
+    //     surat_id: surat.id,
+    //     jabatan_id: jabatan_atas.id,
+    //   });
+    // } else {
+    // tamp_surat_atas = await Tampilan.create({
+    //   pin: false,
+    //   dibaca: false,
+    //   surat_id: surat.id,
+    //   jabatan_id: jabatan_atas.id,
+    // });
+    // }
 
     if (!req.body.from) {
       res.status(StatusCodes.OK).json({ tampilan: tamp_surat });
