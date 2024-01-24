@@ -21,41 +21,6 @@ const postNomorSurat = async (req, res) => {
     let nomor;
     let nomor_surat;
 
-    const active_periodes = await Periode.findAll({
-      where: { status: true },
-    });
-    // console.log("dasve");
-    if (active_periodes.length !== 1) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "Active period should be exactly 1" });
-    } else if (!active_periodes) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "No Periode active" });
-    }
-    // console.log("brgb");
-    const nomor_surat_per_periode = await Nomor_surat.count({
-      where: { periode_id: active_periodes[0].id },
-    });
-    console.log("vmwivei");
-
-    if (nomor_surat_per_periode > 0) {
-      nomor = await Nomor_surat.findAll({
-        limit: 1,
-        order: [["id", "DESC"]],
-        where: { periode_id: active_periodes[0].id },
-      });
-      const existingNomor = nomor[0].nomor_surat;
-      const parts = existingNomor.split("/");
-      const angkaNomor = parts[0];
-
-      nomor_surat = String(parseInt(angkaNomor, 10) + 1).padStart(4, "0");
-    } else {
-      nomor_surat = "0001"; // Jika tidak ada nomor sebelumnya, dimulai dari 1
-      // console.log("testing");
-    }
-
     // if (nomor && nomor.length > 0) {
     //   // Menggunakan padStart untuk memastikan panjang nomor_surat selalu 10 karakter
     //   nomor_surat = String(parseInt(nomor[0].nomor_surat, 10) + 1);
@@ -64,7 +29,7 @@ const postNomorSurat = async (req, res) => {
     // }
 
     const user_login = await Users.findOne({
-      where: { id: req.token.id }, //token
+      where: { id: req.token.id },
     });
 
     const surat = await Daftar_surat.findOne({
@@ -74,6 +39,59 @@ const postNomorSurat = async (req, res) => {
     const jenis = await Jenis_surat.findOne({
       where: { id: surat.jenis_id },
     });
+
+    const active_periodes = await Periode.findAll({
+      where: { status: true },
+    });
+
+    if (active_periodes.length !== 1) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Active period should be exactly 1" });
+    } else if (!active_periodes) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "No Periode active" });
+    }
+
+    const nomor_surat_per_periode_dan_jenis = await Nomor_surat.count({
+      where: {
+        periode_id: active_periodes[0].id,
+        "$daftar_surat.jenis_id$": jenis.id,
+      },
+      include: [
+        {
+          model: Daftar_surat,
+          as: "daftar_surat",
+        },
+      ],
+    });
+
+    if (nomor_surat_per_periode_dan_jenis > 0) {
+      nomor = await Nomor_surat.findAll({
+        limit: 1,
+        order: [["id", "DESC"]],
+        where: {
+          periode_id: active_periodes[0].id,
+          "$daftar_surat.jenis_id$": jenis.id,
+        },
+        include: [
+          {
+            model: Daftar_surat,
+            as: "daftar_surat",
+          },
+        ],
+      });
+
+      const existingNomor = nomor[0].nomor_surat;
+      const parts = existingNomor.split("/");
+      const angkaNomor = parts[0];
+
+      nomor_surat = String(parseInt(angkaNomor, 10) + 1).padStart(4, "0");
+    } else {
+      nomor_surat = "0001"; // Jika tidak ada nomor sebelumnya, dimulai dari 1
+      // console.log("testing");
+    }
 
     const user_surat = await Users.findOne({
       where: { id: surat.user_id },
@@ -123,7 +141,7 @@ const postNomorSurat = async (req, res) => {
     ) {
       nomor_surat = `${nomor_surat}/${kode_fakultas}/${kode_jenis_surat}/TU/${tahun_periode}`;
     } else {
-      nomor_surat = `${nomor_surat}/${kode_fakultas}/${kode_jenis_surat}/TU_${kode_prodi}/${tahun_periode}`;
+      nomor_surat = `${nomor_surat}/${kode_fakultas}/${kode_jenis_surat}/TU-${kode_prodi}/${tahun_periode}`;
     }
     nomor_surat = String(nomor_surat);
     console.log("testitn 2", nomor_surat);
