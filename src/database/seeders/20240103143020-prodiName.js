@@ -37,22 +37,22 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-        // {
-        //   id: 5,
-        //   name: "SD",
-        //   kode_prodi: "SD",
-        //   fakultas_id: 2,
-        //   createdAt: new Date(),
-        //   updatedAt: new Date(),
-        // },
-        // {
-        //   id: 6,
-        //   name: "MTI",
-        //   kode_prodi: "MTI",
-        //   fakultas_id: 2,
-        //   createdAt: new Date(),
-        //   updatedAt: new Date(),
-        // },
+        {
+          id: 5,
+          name: "Prodi BD",
+          kode_prodi: "BD",
+          fakultas_id: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 6,
+          name: "Prodi MTI",
+          kode_prodi: "MTI",
+          fakultas_id: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ],
       {}
     );

@@ -4,9 +4,8 @@ const router = express.Router();
 const { StatusCodes } = require("http-status-codes");
 
 const deleteUser = async (req, res) => {
-  const { user_id } = req.query;
-
   try {
+    const { user_id } = req.query;
     if (user_id == 1) {
       return res.status(StatusCodes.FORBIDDEN).json({
         error: "Cannot delete the default Super Admin.",
@@ -18,7 +17,7 @@ const deleteUser = async (req, res) => {
     });
 
     if (deleted) {
-      res.status(StatusCodes.OK).json("User deleted");
+      res.status(StatusCodes.OK).json(`${deleted.name} deleted`);
     } else {
       res.status(StatusCodes.NOT_FOUND).json({ error: "User not found" });
     }
