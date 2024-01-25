@@ -1,4 +1,3 @@
-const cloudinary = require("../../../../../config/cloudinaryConfig");
 const express = require("express");
 const { StatusCodes } = require("http-status-codes");
 const { Template_surat, Jenis_surat } = require("../../../../models");
@@ -8,28 +7,11 @@ const path = require("path");
 const fs = require("fs");
 const fetch = require("node-fetch");
 const router = express.Router();
+const VercelBlob = require("../../../../../config/vercelConfig");
 
-function getResourceType(filename) {
-  const extension = path.extname(filename).toLowerCase();
-  const imageExtensions = [
-    ".png",
-    ".jpg",
-    ".jpeg",
-    ".gif",
-    ".bmp",
-    ".tiff",
-    ".ico",
-  ];
-  const videoExtensions = [".mp4", ".avi", ".mov", ".flv", ".wmv", ".mkv"];
-
-  if (imageExtensions.includes(extension)) {
-    return "image";
-  } else if (videoExtensions.includes(extension)) {
-    return "video";
-  } else {
-    return "raw";
-  }
-}
+// function getResourceType(filename) {
+//   // ... existing code ...
+// }
 
 const postCloudinary = async function (req, res, next) {
   try {
@@ -44,57 +26,17 @@ const postCloudinary = async function (req, res, next) {
     });
 
     const judulEx = judul + path.extname(req.files["surat"][0].originalname);
-    // const judul = req.files["surat"][0].originalname;
-    // const judulCheck = await Template_surat.findOne({
-    //   where: { judul_file },
-    // });
-
-    // if (judulCheck) {
-    //   return res.json("judul/file sudah ada");
-    // }
 
     let suratUrl;
     let thumbnailUrl;
 
-    await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            resource_type: getResourceType(req.files.surat[0].originalname),
-            public_id: path.parse(req.files.surat[0].originalname),
-          },
-          (error, result) => {
-            if (error) reject(error);
-            else {
-              suratUrl = result.url;
-              resolve(result);
-            }
-          }
-        )
-        .end(req.files.surat[0].buffer);
-    });
+    const file = new File([req.files["surat"][0].buffer], req.files["surat"][0].originalname, { type: req.files["surat"][0].mimetype });
+suratUrl = await VercelBlob.uploadToVercel(file, file.name, file.type);
 
-    // Upload thumbnail to Cloudinary
+    // Upload thumbnail to VercelBlob
     if (req.files["thumbnail"]) {
-      await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              resource_type: getResourceType(
-                req.files.thumbnail[0].originalname
-              ),
-              public_id: path.parse(req.files.thumbnail[0].originalname),
-            },
-            (error, result) => {
-              if (error) reject(error);
-              else {
-                thumbnailUrl = result.url;
-                resolve(result);
-              }
-            }
-          )
-          .end(req.files.thumbnail[0].buffer);
-      });
+      const file = req.files["thumbnail"][0];
+      thumbnailUrl = await VercelBlob.uploadToVercel(file.buffer, file.originalname, file.mimetype);
     }
 
     const suratUrlHttps = suratUrl.replace(/^http:/, "https:");
