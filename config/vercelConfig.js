@@ -1,5 +1,13 @@
 require("dotenv").config();
-const blob = require("@vercel/blob");
+const { put } = require("@vercel/blob");
 
-// Mengatur token untuk operasi membaca dan menulis blob
-blob.setToken(process.env.BLOB_READ_WRITE_TOKEN);
+module.exports = {
+  uploadToVercel: async (stream, fileName, contentType) => {
+    const result = await put(fileName, stream, {
+      contentType,
+      access: "public",
+    });
+
+    return result.url;
+  },
+};
