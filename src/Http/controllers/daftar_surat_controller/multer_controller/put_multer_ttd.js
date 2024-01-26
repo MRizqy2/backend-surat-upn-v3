@@ -55,7 +55,7 @@ const putMulterTtd = async function (req, res) {
 
     const data_surat = await Daftar_surat.findOne({
       where: { id: surat_id },
-    });
+    }); //lanjut opo maneh iki//
     if (!data_surat) {
       return res.status(404).json({ error: "Data surat not found" });
     }

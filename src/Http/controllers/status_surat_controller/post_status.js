@@ -13,8 +13,8 @@ const postStatus = async (req, res) => {
     const { surat_id } = req.body;
     const surat = await Daftar_surat.findOne({
       where: { id: surat_id },
-    });
-
+    }); //cuy/info get daftar surat/"Both 'month' and 'year' parameters are required"/ ss no postmanmu ae
+    //sek nambah maneh
     const user = await Users.findOne({
       where: { id: req.body.user_id || req.token.id },
     });

@@ -29,7 +29,7 @@ const getDownload = (req, res) => {
       .json({ error: "Internal Server Error" });
   }
 };
-//sek memahami T_T
+
 router.get("/:filename", getDownload);
 
 module.exports = router;

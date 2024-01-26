@@ -51,14 +51,12 @@ const putSuratUrl = async (req, res, next) => {
     // console.log("dadwawdaw", surat_judul);
     // const judulFinal = path.basename(surat_judul);// kok acc maneh // salah judul sebelum e nek mana cuy
     const judulFinal = `acc-${surat.judul}`;
-    // const suratUrl = `${req.files["surat"].filename}`;//kudune guduk ini se
+    // const suratUrl = `${req.files["surat"].filename}`;/isok kik/tak commit sek
     const downloadUrl = `${
-      //aman/bisa
-      // iyo duduk cuy
-      process.env.NGROK // coba cuy// iso  download kah?
+      process.env.NGROK // coba cuy// iso  download kah?// mantap//oke;v
     }/daftar-surat/multer/download/${encodeURIComponent(fileName)}`; //malah gak masuk daftar surat njir
     console.log("dawdawda--------", downloadUrl); // qkqk
-    // await new Promise((resolve, reject) => {
+    // await new Promise((resolve, reject) => {//sek2 belum tak save semua file e
     //   cloudinary.uploader
     //     .upload_stream(
     //       {
