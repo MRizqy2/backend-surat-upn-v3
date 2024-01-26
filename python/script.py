@@ -41,8 +41,8 @@ def detect_specific_text(image_path, target_text):
             boxes["bottom"][i],
         )
         word = boxes["char"][i].strip()  # explain
-        if word == "x":
-            if len(word) < 5:
+        if word == "X" or word == "x":
+            if len(desired_letter) < 5:
                 desired_letter.append(word)
                 x_position.append(x)
                 y_position.append(y)
@@ -50,7 +50,7 @@ def detect_specific_text(image_path, target_text):
             continue
 
     desired_letter = "".join(desired_letter)
-    if target_text == desired_letter:
+    if target_text == desired_letter.lower():
         print(
             math.floor(x_position[0] / 3),
             math.floor(y_position[-1] / 3),
