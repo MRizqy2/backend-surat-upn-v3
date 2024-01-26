@@ -92,6 +92,12 @@ const getDaftarSurat = async (req, res) => {
           attributes: ["email", "name"],
           include: [
             {
+              model: Prodi,
+              as: "prodi",
+              attributes: ["id", "name"],
+              // where: { id: jabatan.id },
+            },
+            {
               model: Jabatan,
               as: "jabatan",
               attributes: ["id", "name"],
@@ -159,6 +165,12 @@ const getDaftarSurat = async (req, res) => {
           as: "user",
           attributes: ["email", "name"],
           include: [
+            {
+              model: Prodi,
+              as: "prodi",
+              attributes: ["id", "name"],
+              // where: { id: prodi.id },
+            },
             {
               model: Jabatan,
               as: "jabatan",
