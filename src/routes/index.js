@@ -44,7 +44,7 @@ router.use("/fakultas", authMiddleware, fakultasController);
 router.use("/prodi", authMiddleware, prodiController);
 
 router.use("/daftar-surat", authMiddleware, daftarSuratController);
-router.use("/template-surat", authMiddleware, templateController);
+router.use("/template-surat", templateController);
 router.use("/tampilan", authMiddleware, tampilanController);
 router.use("/status", authMiddleware, statusController);
 router.use("/komentar", authMiddleware, komentarController);
