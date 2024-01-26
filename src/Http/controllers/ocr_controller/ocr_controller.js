@@ -5,15 +5,16 @@ const fetch = require("node-fetch");
 const fs = require("fs");
 const path = require("path");
 const { changeTextInPdfV2 } = require("./post_coordinate_controller");
-const { putSuratUrl } = require("./put_surat_url");
+const { putSuratUrl } = require("./put_surat_url_multer");
+// const { putSuratUrl } = require("./put_surat_url");
 const { StatusCodes } = require("http-status-codes"); // Tambahkan import StatusCodes
 const { Nomor_surat, Daftar_surat } = require("../../../models");
 
 const OCR = async (req, res) => {
   try {
-    const { nomor_surat_id, surat_id } = req.save;
+    const { nomor_surat_id, surat_id } = req.save; //ok
     const surat = await Daftar_surat.findOne({
-      where: { id: surat_id },
+      where: { id: surat_id }, // inpo coba run maneh bang
     });
 
     if (!surat) {
@@ -22,18 +23,42 @@ const OCR = async (req, res) => {
         .json({ error: "Daftar Surat not found" });
     }
 
-    // const fileName = daftar_surat.judul;
-    const fileName = path.basename(surat.judul);
+    // // const fileName = daftar_surat.judul;
+    // const fileName = path.basename(surat.judul);
+    // // const downloadUrl = `${surat.url}`;
     // const downloadUrl = `${surat.url}`;
-    const downloadUrl = `${surat.url}?attachment=${encodeURIComponent(
-      fileName
-    )}`;
+    // // ?attachment=${encodeURIComponent(
+    // //   fileName
+    // // )}`;
+    // console.log("mivmwpo", downloadUrl); //kenek token gk seh?/ coba pateni tokenne daftar surat/piye2
+    // console.log("sadadwa", req.header);
+    // // console.log("sadadwa", req.header["Authorization"]);
+    // // const tokenWithBearer = req.header["Authorization"];// sek cuy
+    // // const authToken = tokenWithBearer.split(" ")[1];
+    // // const authToken = req.headers.authorization;
+    // console.log("vefqwd", authToken);
+    // const headers = {
+    //   Authorization: authToken,
+    // };
+    // // ngaruh kah//okee
+    // // Download file dari Cloudinary
+    // const response = await fetch(downloadUrl, { headers });
+    // // const response = await fetch(downloadUrl);
+    // if (response) {
+    //   console.log("response = ", response);
+    // }
 
-    // Download file dari Cloudinary
-    const response = await fetch(downloadUrl);
-    const fileBuffer = await response.buffer();
+    // const fileBuffer = await response.buffer();
+    // require("../../../../")
+    const fileName = surat.url.split("/").pop();
+    console.log("fileName = ", fileName);
+    const fileBuffer = fs.readFileSync(`daftar_surat/${fileName}`);
+    console.log("dataBuffer = ", fileBuffer);
+    // console.log("fileBuffer = ", fileBuffer); //;v
+    // }
 
-    const tempDir = path.resolve("/tmp/daftar_surat");
+    // const tempDir = path.resolve("/tmp/daftar_surat");//asli
+    const tempDir = path.resolve("daftar_surat/");
     console.log("tempDir = ", tempDir);
 
     // Check if the directory exists
@@ -57,10 +82,10 @@ const OCR = async (req, res) => {
     console.log("inputPath = ", inputPath); //inputPath =  D:\Rizal\PENS\Semester 6\Magang KP\Sejahtera Mandiri Solusindo\upn\backend-surat-upn-v3\backend-surat-upn-v3\daftar_surat\mbkm2.pdf
 
     // Create 'acc' directory if it doesn't exist
-    const accDir = path.join(tempDir, "acc");
-    if (!fs.existsSync(accDir)) {
-      fs.mkdirSync(accDir, { recursive: true });
-    }
+    // const accDir = path.join(tempDir, "acc");
+    // if (!fs.existsSync(accDir)) {
+    //   fs.mkdirSync(accDir, { recursive: true });
+    // }
 
     // const outputPath = path.join(
     //   accDir,
@@ -72,12 +97,13 @@ const OCR = async (req, res) => {
       fileNameWithoutExtension = fileName.replace(".pdf", "-acc.pdf"); // Ganti ekstensi .pdf dengan -acc.pdf
     }
     console.log("fileNameWithoutExtension2 = ", fileNameWithoutExtension); //mbkm2-acc.pdf
-    const outputPath = path.join(accDir, fileNameWithoutExtension);
+    const outputPath = path.join(tempDir, fileNameWithoutExtension); //iki bang
     console.log("outputPath = ", outputPath); //D:\Rizal\PENS\Semester 6\Magang KP\Sejahtera Mandiri Solusindo\upn\backend-surat-upn-v3\backend-surat-upn-v3\daftar_surat\acc\mbkm2-acc.pdf
     // fs.writeFileSync(outputPath, fileBuffer);
-    console.log("outputPath2 = ", outputPath);
+    console.log("outputPath2 = ", outputPath); //surate rusak/ download e salah kyk e//
     const searchText = "xxxxx";
     const newText = await Nomor_surat.findOne({
+      //inpo run bang
       where: { id: nomor_surat_id },
     });
 

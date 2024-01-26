@@ -41,10 +41,10 @@ router.use("/user", authMiddleware, usersController);
 router.use("/periode", authMiddleware, periodeController);
 router.use("/jenis", authMiddleware, jenisController);
 router.use("/fakultas", authMiddleware, fakultasController);
-router.use("/prodi", authMiddleware, prodiController);
+router.use("/prodi", authMiddleware, prodiController); //info lempar2 token piye
 
-router.use("/daftar-surat", authMiddleware, daftarSuratController);
-router.use("/template-surat", templateController);
+router.use("/daftar-surat", authMiddleware, daftarSuratController); //wat iyo;v//sek
+router.use("/template-surat", authMiddleware, templateController);
 router.use("/tampilan", authMiddleware, tampilanController);
 router.use("/status", authMiddleware, statusController);
 router.use("/komentar", authMiddleware, komentarController);

@@ -11,10 +11,11 @@ module.exports = function (req, res, next) {
   }
 
   const token = tokenWithBearer.split(" ")[1];
-
+  // const pure =
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     req.token = decoded;
+    req.header.authorization = req.header("Authorization");
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
