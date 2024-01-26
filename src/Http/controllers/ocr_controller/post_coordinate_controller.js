@@ -2,33 +2,65 @@
 const { PDFDocument, StandardFonts, rgb } = require("pdf-lib");
 const fs = require("fs");
 const pdfParse = require("pdf-parse");
+const { PythonShell } = require("python-shell");
+
+function getCoordinate(filePath, searchText) {
+  return new Promise((resolve, reject) => {
+    try {
+      let x, y;
+      const pyshell = new PythonShell("script.py", {
+        mode: "text",
+        pythonPath: `python`,
+        scriptPath: "python/",
+        args: [filePath, filePath.replace(".pdf", ".png"), searchText],
+      });
+
+      pyshell.on("message", function (message) {
+        console.log(message);
+        const values = message.split(" ");
+        x = parseInt(values[0]);
+        y = parseInt(values[1]);
+      });
+
+      pyshell.end(function (err, code, signal) {
+        if (err) {
+          console.error("Error during PDF parsing:", err);
+          reject({ error: "Terjadi kesalahan selama parsing PDF." });
+        } else {
+          console.log("The exit code was: " + code);
+          console.log("The exit signal was: " + signal);
+          console.log("finished");
+          resolve({ x, y });
+        }
+      });
+    } catch (error) {
+      console.error("Error during PDF parsing:", error);
+      reject({ error: "Terjadi kesalahan selama parsing PDF." });
+    }
+  });
+}
 
 async function changeTextInPdfV2(inputPath, outputPath, searchText, newText) {
   try {
-    // inputPath = `daftar_surat/masyu.pdf`;
-    // outputPath = `daftar_surat/acc/masyu.pdf`;
-
     const dataBuffer = fs.readFileSync(inputPath);
     const data = await pdfParse(dataBuffer);
 
     const textIndex = data.text.indexOf(searchText);
 
     if (textIndex !== -1) {
-      // Temukan posisi awal dan akhir kata
-      const startPosition = textIndex;
-      const endPosition = textIndex + searchText.length - 1;
-
       const pdfBytes = fs.readFileSync(inputPath);
       const pdfDoc = await PDFDocument.load(pdfBytes);
 
       const pages = pdfDoc.getPages();
       const firstPage = pages[0];
-      const x = 240;
-      const y = 685;
+      // make the value of x and y dynamic
+      const result = await getCoordinate(inputPath, searchText);
+      const x = result.x;
+      const y = result.y;
+
       console.log("x : ", x);
       console.log("y : ", y);
 
-      const pointToCm = (pointValue) => pointValue * (2.54 / 72);
       const fontSize = 11;
       const font = await pdfDoc.embedFont(StandardFonts.TimesRoman);
       const textWidth = newText.length * fontSize * 0.6;
