@@ -9,6 +9,9 @@ app.use(express.json());
 app.use(cors());
 app.use(router);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Example app listening on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || "localhost";
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server is running at http://${HOST}:${PORT}`);
 });
