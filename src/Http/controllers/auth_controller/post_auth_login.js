@@ -19,8 +19,8 @@ const postLogin = async (req, res) => {
       where: {
         email: sequelize.where(
           sequelize.fn("LOWER", sequelize.col("email")),
-          req.body.email.toLowerCase() //
-        ),
+          req.body.email.toLowerCase()
+        ), //
       },
     });
 
