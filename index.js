@@ -10,5 +10,5 @@ app.use(cors());
 app.use(router);
 
 app.listen(process.env.PORT, () => {
-  console.log(`Example app listening on port ${process.env.PORT}`);
+  console.log(`${process.env.NGROK} on port ${process.env.PORT}`);
 });
