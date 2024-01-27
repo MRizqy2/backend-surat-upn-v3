@@ -48,9 +48,12 @@ const putSuratUrl = async (req, res, next) => {
     console.log("fileName = ", fileName); //ga ke potong// aman tp link nge kurang /acc
     const fileBuffer = fs.readFileSync(outputPath);
     // const surat_judul = path.join(outputPath);
-    // console.log("dadwawdaw", surat_judul);
+    // console.log("dadwawdaw", surat_judul);// file e rusak?//hmm// gk mending file e ta sg diwalik?
     // const judulFinal = path.basename(surat_judul);// kok acc maneh // salah judul sebelum e nek mana cuy
-    const judulFinal = `acc-${surat.judul}`;
+
+    // fileNameWithoutExtension = fileName.replace(".pdf", "-acc.pdf"); // Ganti ekstensi .pdf dengan -acc.pdf
+    const judulExt = surat.judul;
+    const judulFinal = judulExt.replace(".pdf", "-acc.pdf"); // iki sing
     // const suratUrl = `${req.files["surat"].filename}`;/isok kik/tak commit sek
     const downloadUrl = `${
       process.env.NGROK // coba cuy// iso  download kah?// mantap//oke;v

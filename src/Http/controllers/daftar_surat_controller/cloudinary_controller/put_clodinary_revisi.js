@@ -33,9 +33,9 @@ function getResourceType(filename) {
   } else if (videoExtensions.includes(extension)) {
     return "video";
   } else {
-    return "raw";
+    return "raw"; //awkmu lapo
   }
-}
+} // nyoba revisi tapi salah run postman e;v
 
 const revisi = async (req, res) => {
   try {

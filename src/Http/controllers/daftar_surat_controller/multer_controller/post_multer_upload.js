@@ -51,10 +51,10 @@ const postMulter = async function (req, res) {
     const suratFile = req.files["surat"][0];
     const thumbnailUrl = "";
     const judulExt = judul + path.extname(suratFile.originalname);
-    const suratUrl = `${suratFile.filename}`;
+    const suratUrl = `${suratFile.filename}`; // kan emang iso
     const downloadUrl = `${
       process.env.NGROK
-    }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;
+    }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`; //nak kene kok isok url e melok i judul?
     const jenis = await Jenis_surat.findOne({
       where: { id: jenis_id },
     });

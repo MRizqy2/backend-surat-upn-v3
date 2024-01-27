@@ -50,9 +50,11 @@ const OCR = async (req, res) => {
 
     // const fileBuffer = await response.buffer();
     // require("../../../../")
-    const fileName = surat.url.split("/").pop();
-    console.log("fileName = ", fileName);
-    const fileBuffer = fs.readFileSync(`daftar_surat/${fileName}`);
+    console.log("dawawdawd", surat.url); //put revisi?/ok
+    const fileName = surat.url.split("/").pop(); // yoi// url e emang undifine ternyata
+    // https://9d82-158-140-171-95.ngrok-free.app/daftar-surat/multer/download/undefined// opo salah nek put e// iyo sek melui bang
+    console.log("fileName = ", fileName); //filename e undifine //fileName =  undefined//nah kui
+    const fileBuffer = fs.readFileSync(`daftar_surat/${fileName}`); // iyo awal emang ketemu, pas update surat sing diduplicale iku ga nemu//yoi
     console.log("dataBuffer = ", fileBuffer);
     // console.log("fileBuffer = ", fileBuffer); //;v
     // }
@@ -106,7 +108,7 @@ const OCR = async (req, res) => {
       //inpo run bang
       where: { id: nomor_surat_id },
     });
-
+    //
     const savePdf = await changeTextInPdfV2(
       inputPath,
       outputPath,
