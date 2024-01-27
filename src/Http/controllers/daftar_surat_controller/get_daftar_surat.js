@@ -33,15 +33,23 @@ const getDaftarSurat = async (req, res) => {
 
   if (month && year) {
     if (month < 1 || month > 12) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: "The 'month' parameter must be between 1 and 12" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "The 'month' parameter must be between 1 and 12" });
     }
 
     dataFilter[Op.and] = [
-      Sequelize.literal(`"Daftar_surat"."createdAt" >= DATE_TRUNC('month', TIMESTAMP '${year}-${month}-01') - INTERVAL '1 month'`),
-      Sequelize.literal(`"Daftar_surat"."createdAt" < DATE_TRUNC('month', TIMESTAMP '${year}-${month}-01') + INTERVAL '2 months'`)
+      Sequelize.literal(
+        `"Daftar_surat"."createdAt" >= DATE_TRUNC('month', TIMESTAMP '${year}-${month}-01') - INTERVAL '1 month'`
+      ),
+      Sequelize.literal(
+        `"Daftar_surat"."createdAt" < DATE_TRUNC('month', TIMESTAMP '${year}-${month}-01') + INTERVAL '2 months'`
+      ),
     ];
   } else {
-    return res.status(StatusCodes.BAD_REQUEST).json({ error: "Both 'month' and 'year' parameters are required" });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: "Both 'month' and 'year' parameters are required" });
   }
   const user = await Users.findOne({
     where: { id: req.token.id },
@@ -57,7 +65,6 @@ const getDaftarSurat = async (req, res) => {
   });
 
   if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
-    console.log("ovorvpw");
     surat = await Daftar_surat.findAll({
       where: dataFilter,
       attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -67,23 +74,11 @@ const getDaftarSurat = async (req, res) => {
           as: "status",
           attributes: ["status", "persetujuan"],
         },
-        // {
-        //   model: Tampilan,
-        //   as: "tampilan",
-        //   attributes: ["pin", "dibaca"],
-        //   // where: { jabatan_id: jabatan.id },
-        // },
         {
           model: Jenis_surat,
           as: "jenis",
           attributes: { exclude: ["createdAt", "updatedAt"] },
         },
-        // {
-        //   model: Akses_surat,
-        //   as: "akses_surat",
-        //   attributes: { exclude: ["createdAt", "updatedAt"] },
-        //   // where: { jabatan_id: user.jabatan_id },
-        // },
         {
           model: Komentar,
           as: "komentar",
@@ -112,13 +107,11 @@ const getDaftarSurat = async (req, res) => {
               model: Jabatan,
               as: "jabatan",
               attributes: ["id", "name"],
-              // where: { id: jabatan.id },
             },
             {
               model: Fakultas,
               as: "fakultas",
               attributes: ["id", "name"],
-              // where: { id: fakultas.id },
             },
           ],
         },
@@ -181,7 +174,6 @@ const getDaftarSurat = async (req, res) => {
               model: Jabatan,
               as: "jabatan",
               attributes: ["id", "name"],
-              // where: { id: jabatan.id },
             },
             {
               model: Fakultas,

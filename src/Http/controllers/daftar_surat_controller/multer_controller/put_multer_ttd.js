@@ -23,13 +23,10 @@ const storage = multer.diskStorage({
 
     cb(null, destinationPath);
   },
-  // filename: function (req, file, cb) {
-  //   cb(null, req.body.judul + ".pdf");
-  // },
+
   filename: function (req, file, cb) {
     // Gunakan judul sebagai nama file
     const judul = req.body.judul || "default";
-    // console.log("Judul:", req);
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
     const filename = `${randomString}-${timestamp}-${judul}${path.extname(
@@ -55,7 +52,7 @@ const putMulterTtd = async function (req, res) {
 
     const data_surat = await Daftar_surat.findOne({
       where: { id: surat_id },
-    }); //lanjut opo maneh iki//
+    });
     if (!data_surat) {
       return res.status(404).json({ error: "Data surat not found" });
     }
@@ -68,10 +65,7 @@ const putMulterTtd = async function (req, res) {
     });
     const updateSurat = await Daftar_surat.update(
       {
-        // judul: data_surat.judul,
         url: downloadUrl,
-        // jenis_id: jenis.id || "",
-        // deskripsi: deskripsi || "",
         thumbnail: thumbnailUrl || "",
       },
       {
@@ -82,8 +76,6 @@ const putMulterTtd = async function (req, res) {
 
     const reqStatus = {
       body: {
-        // persetujuan,
-        // status,
         user: user,
         isSigned: true,
         from: "daftar_surat_controller/multer_controller/put_multer_update.js",
@@ -92,8 +84,8 @@ const putMulterTtd = async function (req, res) {
         surat_id: surat_id,
       },
       token: req.token,
-    }; // statusse tetep di daftar tunggu
-    const saveStatus = await putStatus(reqStatus); //
+    };
+    const saveStatus = await putStatus(reqStatus);
 
     const reqNotif = {
       body: {

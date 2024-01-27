@@ -10,7 +10,6 @@ const {
   Jenis_surat,
 } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
-// const app = express.Router();
 
 const postRepo = async (req, res) => {
   try {

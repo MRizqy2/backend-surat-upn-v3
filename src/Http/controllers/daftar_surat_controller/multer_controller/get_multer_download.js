@@ -15,7 +15,6 @@ const getDownload = (req, res) => {
 
     // Gunakan metode res.download untuk mengirimkan file ke pengguna
     res.download(filePath, (err) => {
-      //ws aman
       if (err) {
         console.error("Error:", err);
         res

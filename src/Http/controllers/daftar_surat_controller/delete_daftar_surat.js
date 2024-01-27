@@ -1,6 +1,5 @@
 const express = require("express");
 const { Daftar_surat } = require("../../../models");
-// const { post } = require("./daftar_surat_controller");
 const {
   deleteAksesSurat,
 } = require("../akses_surat_controller/delete_akses_surat");
@@ -21,29 +20,14 @@ const deleteSurat = async (req, res) => {
   try {
     const { surat_id } = req.query;
 
-    // const user = await Users.findOne();
-    // gk ke delete
     if (!surat_id) {
       return res.status(400).json({ error: "Parameter 'id' is required" });
     }
 
-    //     // const suratFile = fs.unlink()
-    //     const daftarSurat = await Daftar_surat.findOne({ where: { id: surat_id } });
-    //     if (daftarSurat && daftarSurat.url) {
-    //       //iso kah//oh iyo
-    //       console.log("mwddp", daftarSurat.url); //eror
-    //       fs.unlinkSync(daftarSurat.url); // Delete the file from disk
-    //     }// opo atek sing bawah cuy
-    // //bawah ndi
     const reqDelete = {
       query: {
         surat_id: surat_id,
         from: `daftar_surat_controller/delete_daftar_surat.js`,
-        // akses_surat_id: null,
-        // tampilan_id: null,
-        // status_id: null,
-        // komentar_id: null,
-        // jabatan_id: null,//okee
       },
     };
 
@@ -78,7 +62,6 @@ const deleteSurat = async (req, res) => {
 
         res.status(200).json({ message: "Surat deleted successfully" });
       });
-      // res.status(200).json({ message: "Surat deleted successfully" });
     } else {
       res.status(404).json({ error: "Surat not found" });
     }

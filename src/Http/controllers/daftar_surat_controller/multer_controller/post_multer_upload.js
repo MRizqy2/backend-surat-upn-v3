@@ -27,13 +27,10 @@ const storage = multer.diskStorage({
 
     cb(null, destinationPath);
   },
-  // filename: function (req, file, cb) {
-  //   cb(null, req.body.judul + ".pdf");
-  // },
+
   filename: function (req, file, cb) {
     // Gunakan judul sebagai nama file
     const judul = req.body.judul || "default";
-    // console.log("Judul:", req);
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
     const filename = `${randomString}-${timestamp}-${judul}${path.extname(
@@ -51,10 +48,10 @@ const postMulter = async function (req, res) {
     const suratFile = req.files["surat"][0];
     const thumbnailUrl = "";
     const judulExt = judul + path.extname(suratFile.originalname);
-    const suratUrl = `${suratFile.filename}`; // kan emang iso
+    const suratUrl = `${suratFile.filename}`;
     const downloadUrl = `${
       process.env.NGROK
-    }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`; //nak kene kok isok url e melok i judul?
+    }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;
     const jenis = await Jenis_surat.findOne({
       where: { id: jenis_id },
     });
@@ -66,8 +63,6 @@ const postMulter = async function (req, res) {
       where: { id: user.jabatan_id },
     });
 
-    // const decoded = jwt.verify(token, secretKey);
-    // const user_id = decoded.id;
     const daftar_surat = await Daftar_surat.create({
       judul: judulExt,
       thumbnail: thumbnailUrl || "",
@@ -90,7 +85,6 @@ const postMulter = async function (req, res) {
     const reqTampilan = {
       body: {
         jabatan_id: jabatan.id,
-        // user_id: user.id,
         surat_id: daftar_surat.id,
         from: "daftar_surat_controller/multer_controller",
       },
@@ -101,7 +95,6 @@ const postMulter = async function (req, res) {
     const reqTampilan2 = {
       body: {
         jabatan_id: jabatan.jabatan_atas_id,
-        // user_id: user.id,
         surat_id: daftar_surat.id,
         from: "daftar_surat_controller/multer_controller",
       },
@@ -114,17 +107,16 @@ const postMulter = async function (req, res) {
       body: {
         surat_id: daftar_surat.id,
         jabatan_id: jabatan.jabatan_atas_id,
-        from: "daftar_surat_controller/multer_controller",
+        from: `daftar_surat_controller/multer_controller/post_multer_upload`,
       },
     };
     await send(reqSend); //akses
 
     reqSend = {
-      //
       body: {
         surat_id: daftar_surat.id,
         jabatan_id: jabatan.id,
-        from: "daftar_surat_controller/multer_controller",
+        from: `daftar_surat_controller/multer_controller/post_multer_upload`,
       },
     };
     await send(reqSend);

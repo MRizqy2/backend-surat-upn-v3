@@ -1,5 +1,5 @@
 const express = require("express");
-const { Akses_master, Permision, Jabatan, Users } = require("../../../models");
+const { Akses_master } = require("../../../models");
 const router = express.Router();
 
 const getAksesMaster = async (req, res) => {

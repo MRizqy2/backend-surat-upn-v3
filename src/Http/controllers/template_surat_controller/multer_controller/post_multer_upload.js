@@ -24,7 +24,6 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     // Gunakan judul sebagai nama file
     const judul = req.body.judul || "default";
-    // console.log("Judul:", req);
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
     const filename = `${randomString}-${timestamp}-${judul}${path.extname(
@@ -50,7 +49,6 @@ const postMulter = async function (req, res) {
     });
 
     const judulEx = judul + path.extname(suratFile.originalname);
-    // const suratUrl = judulEx;
     const suratUrl = `${suratFile.filename}`;
     const downloadUrl = `${
       process.env.NGROK

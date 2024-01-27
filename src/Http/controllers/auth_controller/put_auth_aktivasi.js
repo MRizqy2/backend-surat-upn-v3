@@ -1,4 +1,3 @@
-const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
 const { Users } = require("../../../models/index.js");
 const config = require("../../../../config/config.js");
@@ -28,7 +27,6 @@ const putAktivasi =
         } else {
           message = "User deactivated successfully";
         }
-        console.log(aktif);
         res.json({ message });
       } else {
         res.status(StatusCodes.NOT_FOUND).json({ error: "User not found" });

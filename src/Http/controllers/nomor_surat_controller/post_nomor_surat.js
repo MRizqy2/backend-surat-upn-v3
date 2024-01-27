@@ -21,13 +21,6 @@ const postNomorSurat = async (req, res) => {
     let nomor;
     let nomor_surat;
 
-    // if (nomor && nomor.length > 0) {
-    //   // Menggunakan padStart untuk memastikan panjang nomor_surat selalu 10 karakter
-    //   nomor_surat = String(parseInt(nomor[0].nomor_surat, 10) + 1);
-    // } else {
-    //   nomor_surat = "1"; // Jika tidak ada nomor sebelumnya, dimulai dari 1
-    // }
-
     const user_login = await Users.findOne({
       where: { id: req.token.id },
     });
@@ -90,7 +83,6 @@ const postNomorSurat = async (req, res) => {
       nomor_surat = String(parseInt(angkaNomor, 10) + 1).padStart(4, "0");
     } else {
       nomor_surat = "0001"; // Jika tidak ada nomor sebelumnya, dimulai dari 1
-      // console.log("testing");
     }
 
     const user_surat = await Users.findOne({
@@ -116,11 +108,11 @@ const postNomorSurat = async (req, res) => {
         .json({ error: "Prodi not found" });
     }
     const fakultas_id = user_login.fakultas_id;
-    // console.log("sasda", fakultas_id);
+
     const fakultas = await Fakultas.findOne({
       where: { id: fakultas_id },
     });
-    // console.log("tesising", fakultas.kode_fakultas);
+
     if (!fakultas) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -172,7 +164,6 @@ const postNomorSurat = async (req, res) => {
     //   },
     // };
     // const saveRepo = await repo(reqRepo);
-    console.log("l;mmkoo[k");
 
     if (saveNomorSurat && saveOcr) {
       return (res = { message: "Success", saveNomorSurat, saveOcr });

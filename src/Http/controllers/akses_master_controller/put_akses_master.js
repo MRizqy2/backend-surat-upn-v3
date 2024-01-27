@@ -32,7 +32,6 @@ const putAksesMaster = async (req, res) => {
     }
     const akses_master_update = await Akses_master.update(
       {
-        // permision_id,
         prodi,
         template,
         periode,
