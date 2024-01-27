@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class Jenis_surat extends Model {
     static associate(models) {
       Jenis_surat.hasMany(models.Daftar_surat, { foreignKey: "jenis_id" });
+      Jenis_surat.hasMany(models.Template_surat, { foreignKey: "jenis_id" });
     }
   }
   Jenis_surat.init(
