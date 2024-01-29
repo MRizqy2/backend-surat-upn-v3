@@ -1,21 +1,12 @@
 const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
-const {
-  Users,
-  Jabatan,
-  Prodi,
-  Fakultas,
-  Permision,
-  Akses_master,
-} = require("../../../models/index.js");
+const { Users, Jabatan, Prodi, Fakultas } = require("../../../models/index.js");
 const config = require("../../../../config/config.js");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");
 const { getJabatan } = require("../jabatan_controller/get_jabatan.js");
-// const { router } = require("../daftar_surat_controller/cloudinary_controller.js");
-const app = express.Router();
 const router = express.Router();
 const sequelize = require("sequelize");
 
@@ -32,8 +23,6 @@ const postLogin = async (req, res) => {
         ),
       },
     });
-    console.log("kvmmd", user.email);
-    console.log("vpv,ped", user.password);
 
     if (user && !user.aktif) {
       return res
@@ -51,7 +40,6 @@ const postLogin = async (req, res) => {
       const user_response = await Users.findOne({
         include: [
           {
-            //
             model: Prodi,
             as: "prodi",
             attributes: ["id", "name"],
@@ -64,26 +52,6 @@ const postLogin = async (req, res) => {
             },
             where: { id: searchUser.jabatan_id },
           },
-          //   include: [
-          //     {
-          //       model: Permision,
-          //       as: "permision",
-          //       attributes: {
-          //         exclude: ["jabatan_id", "createdAt", "UpdatedAt"],
-          //       },
-          //       include: [
-          //         {
-          //           model: Akses_master,
-          //           as: "akses_master",
-          //           attributes: {
-          //             exclude: ["permision_id", "createdAt", "UpdatedAt"],
-          //           },
-          //         },
-          //       ],
-          //     },
-          //   ],
-          //   order: [["id", "ASC"]],
-          // },
           {
             model: Fakultas,
             as: "fakultas",

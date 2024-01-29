@@ -12,7 +12,6 @@ const putTampilan = async (req, res) => {
   try {
     const { pin, dibaca } = req.body;
     const { surat_id } = req.query;
-    // console.log("testing ", req.token.id); //testing  4
     const user = await Users.findOne({
       where: { id: req.token.id },
     });
@@ -59,7 +58,7 @@ const putTampilan = async (req, res) => {
           surat_id: surat_id,
           jabatan_id_dari: jabatan.id,
           jabatan_id_ke: user_surat.jabatan_id,
-          from: `daftar_surat_controller/cloudinary_controller/post_cloudinary_upload`,
+          from: `tampilan_surat_controller/put_tampilan`,
         },
       };
       await postNotif(reqNotif);

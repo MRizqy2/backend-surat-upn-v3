@@ -1,5 +1,5 @@
 const express = require("express");
-const { Akses_master, Permision } = require("../../../models");
+const { Akses_master } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 

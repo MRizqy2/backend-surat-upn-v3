@@ -1,8 +1,7 @@
 const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
 const { Users, Jabatan, Prodi, Fakultas } = require("../../../models/index.js");
-const config = require("../../../../config/config.js");
-const crypto = require("crypto");
+
 const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");
 const router = express.Router();
@@ -26,12 +25,9 @@ const postRegister =
       });
       const latestUserId = parseInt(latestUser[0].id, 10);
 
-      // Generate a random password
-      // const password = crypto.randomBytes(10).toString("hex");
       const password = "12345";
-      console.log("sdawdawd", password);
       const hashedPassword = await bcrypt.hash(password, 10);
-      console.log("sdawdawd", hashedPassword);
+
       const jabatan_user = await Jabatan.findOne({
         where: { id: jabatan_id },
       });
@@ -58,21 +54,6 @@ const postRegister =
           .status(StatusCodes.BAD_REQUEST)
           .json({ error: "No such fakultas_user exists" });
       }
-
-      // if (jabatan_id != 2) {
-      //   if (prodi_id != 1) {
-      //     return res
-      //       .status(StatusCodes.BAD_REQUEST)
-      //       .json({ error: "Not Prodi, Change Prodi to 1" });
-      //   }
-      // }
-      // if (jabatan_id == 2) {
-      //   if (prodi_id == 1) {
-      //     return res
-      //       .status(StatusCodes.BAD_REQUEST)
-      //       .json({ error: "Prodi have to had prodi, Select other than 1" });
-      //   }
-      // }
 
       const user = await Users.create({
         id: latestUserId + 1,

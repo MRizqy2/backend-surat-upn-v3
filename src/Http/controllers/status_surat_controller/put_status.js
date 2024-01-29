@@ -16,7 +16,6 @@ const {
   postNomorSurat,
 } = require("./../nomor_surat_controller/post_nomor_surat");
 const { postNotif } = require("../notifikasi_controller/post_notifikasi");
-const { post } = require("../jabatan_controller/jabatan_controller");
 const {
   postAksesSurat,
 } = require("../akses_surat_controller/post_akses_surat");
@@ -109,8 +108,7 @@ const putStatus = async (req, res) => {
       console.log("vn[ dwc");
     }
     console.log("sdawdawd", persetujuan);
-    // const ON = 1;
-    // if (ON === 1) {
+
     if (persetujuan && persetujuan.toLowerCase().includes("disetujui")) {
       if (jabatan.jabatan_atas_id) {
         console.log("dawdawd", persetujuan);

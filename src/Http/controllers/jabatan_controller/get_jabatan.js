@@ -47,19 +47,11 @@ const getJabatan = async (req, res) => {
           exclude: ["createdAt", "updatedAt"],
         },
         include: [
-          // {
-          //   exclude: ["createdAt", "updatedAt"],
-          // },
           {
             model: Permision,
             as: "permision",
             attributes: {
-              exclude: [
-                "jabatan_id",
-                // "jabatan_atas_id",
-                "createdAt",
-                "updatedAt",
-              ],
+              exclude: ["jabatan_id", "createdAt", "updatedAt"],
             },
 
             include: [

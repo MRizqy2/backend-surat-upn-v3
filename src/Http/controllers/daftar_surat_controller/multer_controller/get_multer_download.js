@@ -4,14 +4,14 @@ const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
 // Endpoint untuk mengunduh file
-const getDownloadv2 = (req, res) => {
+const getDownload = (req, res) => {
   try {
     const filename = req.params.filename;
     const filePath = path.resolve(
       __dirname,
-      "../../../../../template_surat/",
+      "../../../../../daftar_surat/",
       filename
-    ); //cuman iki link e gk sesuai sg disave pas upload
+    );
 
     // Gunakan metode res.download untuk mengirimkan file ke pengguna
     res.download(filePath, (err) => {
@@ -29,7 +29,7 @@ const getDownloadv2 = (req, res) => {
       .json({ error: "Internal Server Error" });
   }
 };
-//sek memahami T_T
-router.get("/:filename", getDownloadv2);
+
+router.get("/:filename", getDownload);
 
 module.exports = router;

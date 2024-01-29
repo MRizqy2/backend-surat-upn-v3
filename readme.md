@@ -14,3 +14,9 @@ for install secret_key:
 
 > node
 > require('crypto').randomBytes(64).toString('hex')
+
+python: v3.11
+pytesseract 0.3.10
+opencv-python 4.9.0.80
+PyMuPDF 1.23.16
+PyMuPDFb 1.23.9

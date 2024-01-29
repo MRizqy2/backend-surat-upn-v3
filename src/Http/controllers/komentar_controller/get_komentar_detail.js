@@ -7,7 +7,6 @@ const getDetail = async function (req, res) {
   try {
     const komen = await Komentar.findOne({
       where: { surat_id: req.query.surat_id },
-      // attributes: { exclude: ["createdAt", "updatedAt"] },
       include: [
         {
           model: Jabatan,
@@ -22,7 +21,6 @@ const getDetail = async function (req, res) {
       ],
     });
     if (komen) {
-      //salah model?
       res.status(StatusCodes.OK).json({
         komentar: komen,
       });

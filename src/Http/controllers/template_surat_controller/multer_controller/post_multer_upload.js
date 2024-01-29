@@ -24,8 +24,11 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     // Gunakan judul sebagai nama file
     const judul = req.body.judul || "default";
-    // console.log("Judul:", req);
-    const filename = `${judul}${path.extname(file.originalname)}`;
+    const timestamp = Date.now();
+    const randomString = crypto.randomBytes(4).toString("hex");
+    const filename = `${randomString}-${timestamp}-${judul}${path.extname(
+      file.originalname
+    )}`;
     cb(null, filename);
   },
 });
@@ -46,11 +49,10 @@ const postMulter = async function (req, res) {
     });
 
     const judulEx = judul + path.extname(suratFile.originalname);
-
-    const suratUrl = judulEx;
+    const suratUrl = `${suratFile.filename}`;
     const downloadUrl = `${
       process.env.NGROK
-    }/template-surat/multer/downloadv2/${encodeURIComponent(suratUrl)}`;
+    }/template-surat/multer/download/${encodeURIComponent(suratUrl)}`;
 
     if (thumbnailFile) {
       lokasiThumbnail = path.join(

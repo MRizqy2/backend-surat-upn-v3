@@ -10,9 +10,7 @@ const postJenis = async function (req, res) {
       limit: 1,
       order: [["id", "DESC"]],
     });
-    console.log("movmpe ", latestJenis.length);
     if (latestJenis.length > 0) {
-      console.log("movmpe ", latestJenis.length);
       latestJenisId = parseInt(latestJenis[0].id, 10);
     }
     const jenis_surat = await Jenis_surat.create({

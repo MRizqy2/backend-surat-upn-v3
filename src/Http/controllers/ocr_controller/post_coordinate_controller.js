@@ -46,7 +46,6 @@ async function changeTextInPdfV2(inputPath, outputPath, searchText, newText) {
     const data = await pdfParse(dataBuffer);
 
     const textIndex = data.text.indexOf(searchText);
-
     if (textIndex !== -1) {
       const pdfBytes = fs.readFileSync(inputPath);
       const pdfDoc = await PDFDocument.load(pdfBytes);

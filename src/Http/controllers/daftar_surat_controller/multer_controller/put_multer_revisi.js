@@ -1,7 +1,6 @@
-const cloudinary = require("../../../../../config/cloudinaryConfig");
 const express = require("express");
 const multer = require("multer");
-const upload = multer({ storage: multer.memoryStorage() });
+const crypto = require("crypto");
 const path = require("path");
 const { StatusCodes } = require("http-status-codes");
 const { OCR } = require("./../../ocr_controller/ocr_controller");
@@ -12,30 +11,33 @@ const {
   Status,
   Tampilan,
 } = require("../../../../models");
-const jabatan = require("../../../../models/jabatan");
 const router = express.Router();
 
-function getResourceType(filename) {
-  const extension = path.extname(filename).toLowerCase();
-  const imageExtensions = [
-    ".png",
-    ".jpg",
-    ".jpeg",
-    ".gif",
-    ".bmp",
-    ".tiff",
-    ".ico",
-  ];
-  const videoExtensions = [".mp4", ".avi", ".mov", ".flv", ".wmv", ".mkv"];
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const isThumbnail = file.fieldname === "thumbnail";
+    const destinationPath = isThumbnail
+      ? "daftar_surat/thumbnail/"
+      : "daftar_surat/";
 
-  if (imageExtensions.includes(extension)) {
-    return "image";
-  } else if (videoExtensions.includes(extension)) {
-    return "video";
-  } else {
-    return "raw"; //awkmu lapo
-  }
-} // nyoba revisi tapi salah run postman e;v
+    cb(null, destinationPath);
+    console.log("mvew[v");
+  },
+
+  filename: function (req, file, cb) {
+    console.log(",vw,ep[g");
+    // Gunakan judul sebagai nama file
+    const judul = req.body.judul || "default";
+    const timestamp = Date.now();
+    const randomString = crypto.randomBytes(4).toString("hex");
+    const filename = `${randomString}-${timestamp}-${judul}${path.extname(
+      file.originalname
+    )}`;
+    cb(null, filename);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 const revisi = async (req, res) => {
   try {
@@ -46,7 +48,7 @@ const revisi = async (req, res) => {
     const surat = await Daftar_surat.findOne({
       where: { id: surat_id },
     });
-
+    console.log("jshdjaw", surat.judul);
     const duplicate_surat = await Daftar_surat.create({
       judul: surat.judul,
       thumbnail: surat.thumbnail,
@@ -57,35 +59,20 @@ const revisi = async (req, res) => {
       url: surat.url,
     });
 
-    if (req.files["surat"]) {
-      await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              resource_type: getResourceType(req.files.surat[0].originalname),
-              public_id: path.parse(req.files.surat[0].originalname),
-            },
-            (error, result) => {
-              if (error) reject(error);
-              else {
-                suratUrl = result.url;
-                resolve(result);
-              }
-            }
-          )
-          .end(req.files.surat[0].buffer);
-      });
-    }
-
-    const suratUrlHttps = suratUrl.replace(/^http:/, "https:");
     const judulExt = judul + path.extname(req.files["surat"][0].originalname);
+
+    const suratFile = req.files["surat"][0];
+
+    const suratUrl = `${suratFile.filename}`;
+
+    const downloadUrl = `${
+      process.env.NGROK
+    }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;
     const update_duplicate_surat = await Daftar_surat.update(
       {
         judul: judulExt,
-        url: suratUrlHttps,
-        // jenis_id: jenis.id || "",
+        url: downloadUrl,
         deskripsi: deskripsi || "",
-        // thumbnail: thumbnailUrl || "",
       },
       {
         where: { id: duplicate_surat.id },
@@ -99,31 +86,27 @@ const revisi = async (req, res) => {
     });
     const nomor = nomor_surat.nomor_surat;
     const nomorSuratSplit = nomor.split("/");
-    console.log(".io.ouk");
-    if (nomorSuratSplit.length === 4) {
-      updateNomorSurat = `${nomorSuratSplit[0]}/1/${nomorSuratSplit[1]}/${nomorSuratSplit[2]}/${nomorSuratSplit[3]}`;
-    } else if (nomorSuratSplit.length === 5) {
+
+    if (nomorSuratSplit.length === 5) {
+      updateNomorSurat = `${nomorSuratSplit[0]}/1/${nomorSuratSplit[1]}/${nomorSuratSplit[2]}/${nomorSuratSplit[3]}/${nomorSuratSplit[4]}`;
+    } else if (nomorSuratSplit.length === 6) {
       nomorRevisi = parseInt(nomorSuratSplit[1], 10);
-      console.log("i.k,k,t", nomorRevisi);
       nomorRevisi++;
-      updateNomorSurat = `${nomorSuratSplit[0]}/${nomorRevisi}/${nomorSuratSplit[2]}/${nomorSuratSplit[3]}/${nomorSuratSplit[4]}`;
+      updateNomorSurat = `${nomorSuratSplit[0]}/${nomorRevisi}/${nomorSuratSplit[2]}/${nomorSuratSplit[3]}/${nomorSuratSplit[4]}/${nomorSuratSplit[5]}`;
     }
-    console.log("ojvro", nomorRevisi);
     const stringNomorSurat = String(updateNomorSurat);
     const save_nomor_surat = await Nomor_surat.create({
       nomor_surat: stringNomorSurat,
       surat_id: duplicate_surat.id,
       periode_id: nomor_surat.periode_id,
     });
-
     const reqOcr = {
       save: {
         nomor_surat_id: save_nomor_surat.id,
         surat_id: duplicate_surat.id,
-        from: `daftar_surat_controller/cloudinary_controller/put_clodinary_revisi`,
+        from: `daftar_surat_controller/multer_controller/put_multer_revisi`,
       },
     };
-    console.log("ii/oi", duplicate_surat.id);
     const saveOcr = await OCR(reqOcr);
     if (!saveOcr) {
       return res
@@ -134,15 +117,14 @@ const revisi = async (req, res) => {
     const akses_surat = await Akses_surat.findAll({
       where: { surat_id: surat.id },
     });
+
     for (i = 0; i < akses_surat.length; i++) {
-      console.log("porvpo", i);
       const duplicate_akses_surat = await Akses_surat.create({
         surat_id: duplicate_surat.id,
         jabatan_id: akses_surat[i].jabatan_id,
       });
-      console.log("vegweg", duplicate_akses_surat.id);
     }
-    console.log("porvpo");
+
     const status_surat = await Status.findOne({
       where: { surat_id: surat.id },
     });
@@ -165,7 +147,6 @@ const revisi = async (req, res) => {
       });
     }
 
-    console.log("pvwmvp");
     res.json(`sukses`);
   } catch (error) {
     console.error("Error:", error);
