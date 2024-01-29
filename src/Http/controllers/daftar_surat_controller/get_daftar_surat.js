@@ -15,42 +15,18 @@ const {
   Nomor_surat,
   Periode,
 } = require("../../../models");
-const auth = require("../../middleware/authMiddleware");
-const cloudinaryController = require("./cloudinary_controller/cloudinary_controller");
-const { StatusCodes } = require("http-status-codes");
-const getStatus = require("../status_surat_controller/catch_status");
-const { Op, Sequelize } = require("sequelize");
+const { Op } = require("sequelize");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const getDaftarSurat = async (req, res) => {
   let surat;
+  const { startDate, endDate } = req.query;
 
-  const month = parseInt(req.query.month);
-  const year = parseInt(req.query.year);
-  let dataFilter = {};
+  const start = new Date(startDate);
+  const end = new Date(endDate);
 
-  if (month && year) {
-    if (month < 1 || month > 12) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "The 'month' parameter must be between 1 and 12" });
-    }
-
-    dataFilter[Op.and] = [
-      Sequelize.literal(
-        `"Daftar_surat"."createdAt" >= DATE_TRUNC('month', TIMESTAMP '${year}-${month}-01') - INTERVAL '1 month'`
-      ),
-      Sequelize.literal(
-        `"Daftar_surat"."createdAt" < DATE_TRUNC('month', TIMESTAMP '${year}-${month}-01') + INTERVAL '2 months'`
-      ),
-    ];
-  } else {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ error: "Both 'month' and 'year' parameters are required" });
-  }
   const user = await Users.findOne({
     where: { id: req.token.id },
   });
@@ -66,8 +42,12 @@ const getDaftarSurat = async (req, res) => {
 
   if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
     surat = await Daftar_surat.findAll({
-      where: dataFilter,
       attributes: { exclude: ["createdAt", "updatedAt"] },
+      where: {
+        createdAt: {
+          [Op.between]: [start, end]
+        }
+      },
       include: [
         {
           model: Status,
@@ -122,8 +102,12 @@ const getDaftarSurat = async (req, res) => {
     console.log("moomp");
     surat = await Daftar_surat.findAll({
       //by fakultas
-      where: dataFilter,
       attributes: { exclude: ["createdAt", "updatedAt"] },
+      where: {
+        createdAt: {
+          [Op.between]: [start, end]
+        }
+      },
       include: [
         {
           model: Status,
@@ -192,8 +176,10 @@ const getDaftarSurat = async (req, res) => {
       //by prodi
       attributes: { exclude: ["user_id", "createdAt", "updatedAt"] },
       where: {
-        dataFilter,
         "$user.prodi.id$": prodi.id,
+        createdAt: {
+          [Op.between]: [start, end]
+        }
       },
       include: [
         {
