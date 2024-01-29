@@ -1,5 +1,5 @@
 const express = require("express");
-const app = express.Router();
+// const app = express.Router();
 const router = express.Router();
 const {
   Daftar_surat,
@@ -17,16 +17,24 @@ const {
 } = require("../../../models");
 const { Op } = require("sequelize");
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
 
 const getDaftarSurat = async (req, res) => {
   let surat;
   const { startDate, endDate } = req.query;
 
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-
+  let dateFilter = {};
+  if (startDate) {
+    const start = new Date(startDate);
+    dateFilter[Op.gte] = start;
+  }
+  if (endDate) {
+    const end = new Date(endDate);
+    end.setDate(end.getDate() + 1);
+    end.setMilliseconds(end.getMilliseconds() - 1);
+    dateFilter[Op.lte] = end;
+  }
   const user = await Users.findOne({
     where: { id: req.token.id },
   });
@@ -40,13 +48,31 @@ const getDaftarSurat = async (req, res) => {
     where: { id: user.fakultas_id },
   });
 
+  // const whereClause = {};
+  const whereClause =
+    startDate && endDate
+      ? {
+          tanggal: {
+            [Op.between]: [new Date(startDate), new Date(endDate)],
+          },
+        }
+      : {};
+
+  if (req.query && startDate !== undefined) {
+    const start = new Date(startDate);
+    let end;
+    if (endDate) {
+      end = new Date(endDate);
+      end.setDate(end.getDate() + 1);
+      end.setMilliseconds(end.getMilliseconds() - 1);
+    }
+  }
+
   if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
     surat = await Daftar_surat.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
       where: {
-        createdAt: {
-          [Op.between]: [start, end]
-        }
+        ...whereClause,
       },
       include: [
         {
@@ -84,6 +110,12 @@ const getDaftarSurat = async (req, res) => {
           attributes: ["email", "name"],
           include: [
             {
+              model: Prodi,
+              as: "prodi",
+              attributes: ["id", "name"],
+              // where: { id: prodi.id },
+            },
+            {
               model: Jabatan,
               as: "jabatan",
               attributes: ["id", "name"],
@@ -99,14 +131,11 @@ const getDaftarSurat = async (req, res) => {
       order: [["id", "ASC"]],
     });
   } else if (!prodi.id || prodi.name == `-` || prodi.id == 1) {
-    console.log("moomp");
     surat = await Daftar_surat.findAll({
       //by fakultas
       attributes: { exclude: ["createdAt", "updatedAt"] },
       where: {
-        createdAt: {
-          [Op.between]: [start, end]
-        }
+        ...whereClause,
       },
       include: [
         {
@@ -155,6 +184,12 @@ const getDaftarSurat = async (req, res) => {
           attributes: ["email", "name"],
           include: [
             {
+              model: Prodi,
+              as: "prodi",
+              attributes: ["id", "name"],
+              // where: { id: prodi.id },
+            },
+            {
               model: Jabatan,
               as: "jabatan",
               attributes: ["id", "name"],
@@ -171,15 +206,12 @@ const getDaftarSurat = async (req, res) => {
       order: [["id", "ASC"]],
     });
   } else {
-    console.log("mrprmv");
     surat = await Daftar_surat.findAll({
       //by prodi
-      attributes: { exclude: ["user_id", "createdAt", "updatedAt"] },
+      attributes: { exclude: [, "createdAt", "updatedAt"] },
       where: {
         "$user.prodi.id$": prodi.id,
-        createdAt: {
-          [Op.between]: [start, end]
-        }
+        ...whereClause,
       },
       include: [
         {
@@ -251,7 +283,7 @@ const getDaftarSurat = async (req, res) => {
     });
   }
   res.json(surat);
-}; //
+};
 
 router.get("/", getDaftarSurat);
 

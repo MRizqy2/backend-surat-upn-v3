@@ -23,7 +23,7 @@ const postRegister =
         limit: 1,
         order: [["id", "DESC"]],
       });
-      const latestUserId = parseInt(latestUser[0].id, 10);
+      const latestUserId = latestUser[0] ? parseInt(latestUser[0].id, 10) : 0;
 
       const password = "12345";
       const hashedPassword = await bcrypt.hash(password, 10);

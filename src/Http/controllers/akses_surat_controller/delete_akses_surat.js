@@ -30,7 +30,9 @@ const deleteAksesSurat = async (req, res) => {
         return deletedAksesSurat;
       }
     } else {
-      res.status(404).json({ error: "Akses Surat not found" });
+      if (res) {
+        res.status(404).json({ error: "Akses Surat not found" });
+      }
     }
   } catch (error) {
     console.error("Error:", error);

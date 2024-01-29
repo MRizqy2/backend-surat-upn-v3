@@ -9,6 +9,12 @@ npx sequelize-cli db:seed:all
 npx sequelize-cli db:seed:undo --seed nama-file-migrasi.js
 
 > npm run api-service
+> forever start index.js
+> forever list
+> tail -f path/.forever/jypW.log
+
+> forever logs
+> forever stop 0
 
 for install secret_key:
 

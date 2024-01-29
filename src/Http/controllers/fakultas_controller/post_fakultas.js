@@ -12,7 +12,10 @@ const postFakultas = async (req, res) => {
       order: [["id", "DESC"]],
     });
 
-    const latestFakultasId = parseInt(latestFakultas[0].id, 10);
+    // const latestFakultasId = parseInt(latestFakultas[0].id, 10);
+    const latestFakultasId = latestFakultas[0]
+      ? parseInt(latestFakultas[0].id, 10)
+      : 0;
 
     const fakultas = await Fakultas.create({
       id: latestFakultasId + 1,

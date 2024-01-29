@@ -47,7 +47,7 @@ module.exports = {
         {
           id: 5,
           name: "Admin Prodi MTI",
-          email: "marsono.fik@gmail.com",
+          email: "marsono.fik@staff.upnjatim.ac.id",
           password: hashedPassword,
           jabatan_id: 2,
           prodi_id: 2,
@@ -59,7 +59,7 @@ module.exports = {
         {
           id: 6,
           name: "Admin Prodi BD",
-          email: "tu.fik.bd@gmail.com",
+          email: "tu.fik.bd@staff.upnjatim.ac.id",
           password: hashedPassword,
           jabatan_id: 2,
           prodi_id: 2,
@@ -95,7 +95,7 @@ module.exports = {
         {
           id: 9,
           name: "Admin Dekan",
-          email: "admin.dekan.fik@gmail.com",
+          email: "admin.dekan.fik@staff.upnjatim.ac.id",
           password: hashedPassword,
           jabatan_id: 5,
           prodi_id: 1,

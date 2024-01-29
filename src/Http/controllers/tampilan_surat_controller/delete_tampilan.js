@@ -34,7 +34,9 @@ const deleteTampilan = async (req, res) => {
         return deletedTampilan;
       }
     } else {
-      res.status(404).json({ error: "Tampilan not found" });
+      if (res) {
+        res.status(404).json({ error: "Akses Surat not found" });
+      }
     }
   } catch (error) {
     console.error("Error:", error);

@@ -28,7 +28,9 @@ const deleteStatus = async (req, res) => {
         return deletedStatus;
       }
     } else {
-      res.status(404).json({ error: "Status not found" });
+      if (res) {
+        res.status(404).json({ error: "Akses Surat not found" });
+      }
     }
   } catch (error) {
     console.error("Error:", error);

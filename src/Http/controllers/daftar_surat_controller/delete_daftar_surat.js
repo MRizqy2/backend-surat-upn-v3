@@ -14,7 +14,7 @@ const {
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
-const { where } = require("sequelize");
+// const { where } = require("sequelize");
 
 const deleteSurat = async (req, res) => {
   try {
@@ -46,9 +46,7 @@ const deleteSurat = async (req, res) => {
 
     if (deletedSurat) {
       const urlFile = surat.url;
-      console.log("mmvpoewm", urlFile);
       const fileName = urlFile.split("/").pop();
-      console.log("dawdawdasd", fileName);
       const filePath = path.join(
         __dirname,
         "../../../../daftar_surat",

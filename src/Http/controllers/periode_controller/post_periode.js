@@ -17,8 +17,17 @@ const postPeriode = async (req, res) => {
         { where: { id: activePeriodeIds } }
       );
     }
+    // add periode by index
+    const latestPeriode = await Periode.findAll({
+      limit: 1,
+      order: [["id", "DESC"]],
+    });
+    const latestPeriodeId = latestPeriode[0]
+      ? parseInt(latestPeriode[0].id, 10)
+      : 0;
 
     const periode = await Periode.create({
+      id: latestPeriodeId + 1,
       tahun,
       status: true,
     });
