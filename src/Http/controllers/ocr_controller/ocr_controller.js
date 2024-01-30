@@ -46,19 +46,26 @@ const OCR = async (req, res) => {
     if (!fileName.endsWith("-acc.pdf")) {
       fileNameWithoutExtension = fileName.replace(".pdf", "-acc.pdf"); // Ganti ekstensi .pdf dengan -acc.pdf
     }
-    const outputPath = path.join(tempDir, fileNameWithoutExtension);
-    const searchText = "xxxxx";
+    //mbkm2-acc.pdf
+    const outputPath = path.join(accDir, fileNameWithoutExtension);
+    console.log("outputPath = ", outputPath); //D:\Rizal\PENS\Semester 6\Magang KP\Sejahtera Mandiri Solusindo\upn\backend-surat-upn-v3\backend-surat-upn-v3\daftar_surat\acc\mbkm2-acc.pdf
+    // fs.writeFileSync(outputPath, fileBuffer);
+    console.log("outputPath2 = ", outputPath);
+    const searchText = "XYXY";
     const newText = await Nomor_surat.findOne({
       where: { id: nomor_surat_id },
     });
+
     const savePdf = await changeTextInPdfV2(
       inputPath,
       outputPath,
       searchText,
       newText.nomor_surat
     );
+    console.log("lkhnhp", savePdf);
+
     const reqSuratUrl = {
-      body: {
+      save: {
         outputPath,
         surat_id,
       },
@@ -67,9 +74,13 @@ const OCR = async (req, res) => {
 
     console.log("Perubahan teks pada PDF berhasil disimpan ke", outputPath);
     return newText;
+    // res.status(StatusCodes.OK).json("Perubahan teks pada PDF berhasil disimpan");
   } catch (error) {
     console.error("Error:", error);
     return error;
+    // res
+    //   .status(StatusCodes.INTERNAL_SERVER_ERROR)
+    //   .json("Terjadi kesalahan dalam memproses teks di PDF");
   }
 };
 
