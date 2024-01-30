@@ -17,17 +17,13 @@ const OCR = async (req, res) => {
     });
 
     if (!surat) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: "Daftar Surat not found" });
+      return res.status(StatusCodes.NOT_FOUND).json({ error: "Daftar Surat not found" });
     }
 
     // const fileName = daftar_surat.judul;
     const fileName = path.basename(surat.judul);
     // const downloadUrl = `${surat.url}`;
-    const downloadUrl = `${surat.url}?attachment=${encodeURIComponent(
-      fileName
-    )}`;
+    const downloadUrl = `${surat.url}?attachment=${encodeURIComponent(fileName)}`;
 
     // Download file dari Cloudinary
     const response = await fetch(downloadUrl);
@@ -76,17 +72,12 @@ const OCR = async (req, res) => {
     console.log("outputPath = ", outputPath); //D:\Rizal\PENS\Semester 6\Magang KP\Sejahtera Mandiri Solusindo\upn\backend-surat-upn-v3\backend-surat-upn-v3\daftar_surat\acc\mbkm2-acc.pdf
     // fs.writeFileSync(outputPath, fileBuffer);
     console.log("outputPath2 = ", outputPath);
-    const searchText = "xxxxx";
+    const searchText = "XYXY";
     const newText = await Nomor_surat.findOne({
       where: { id: nomor_surat_id },
     });
 
-    const savePdf = await changeTextInPdfV2(
-      inputPath,
-      outputPath,
-      searchText,
-      newText.nomor_surat
-    );
+    const savePdf = await changeTextInPdfV2(inputPath, outputPath, searchText, newText.nomor_surat);
     console.log("lkhnhp", savePdf);
     const reqSuratUrl = {
       save: {
