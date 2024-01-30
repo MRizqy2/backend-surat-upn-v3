@@ -38,8 +38,8 @@ const putSuratUrl = async (req, res, next) => {
       where: { id: surat_id },
     });
     const fileName = outputPath.split("\\").pop(); //karena directori windows
-    const fileBuffer = fs.readFileSync(outputPath);
-    const judulExt = surat.judul;
+    // const fileBuffer = fs.readFileSync(outputPath);// hah?
+    const judulExt = surat.judul; //ga ke pakek// error e nek kunu
     const judulFinal = judulExt.replace(".pdf", "-acc.pdf");
 
     const downloadUrl = `${

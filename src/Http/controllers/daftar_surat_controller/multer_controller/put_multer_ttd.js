@@ -24,28 +24,36 @@ const storage = multer.diskStorage({
     cb(null, destinationPath);
   },
 
-  filename: function (req, file, cb) {
+  filename: async function (req, file, cb) {
     // Gunakan judul sebagai nama file
-    const judul = req.body.judul || "default";
-    const timestamp = Date.now();
+    const data_surat = await Daftar_surat.findOne({
+      where: { id: req.query.surat_id }, //https://0ae6-158-140-171-95.ngrok-free.app/daftar-surat/multer/download/undefined
+    });
+    console.log("opokdq", req.query.surat_id); //opokdq 7
+    const judul = data_surat.judul; //tak nyba si//ga iso delok ey// coba judul e
+    console.log("adwdasdwa", judul);
+    const timestamp = Date.now(); //jek gk bisa/linknya gk ketemu/>Cannot PUT /daftar-surat/multer/ttd
     const randomString = crypto.randomBytes(4).toString("hex");
-    const filename = `${randomString}-${timestamp}-${judul}${path.extname(
-      file.originalname
-    )}`;
-    cb(null, filename);
+    const filename = `${randomString}-${timestamp}-${judul}`;
+    cb(null, filename); //
   },
 });
+
+const upload = multer({ storage: storage }); //enek sing erro kui nek put surat url multer
 
 const putMulterTtd = async function (req, res) {
   try {
     const { surat_id } = req.query;
     if (!req.files["surat"]) {
+      //gk mlaku lek mok ilangin 0 le
+      //
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Missing files in request" });
     }
     const thumbnailUrl = "";
-    const suratUrl = `${req.files["surat"].filename}`;
+    const suratUrl = `${req.files["surat"][0].filename}`;
+    console.log("dawdadw", suratUrl); //pdf.pdf hasill
     const downloadUrl = `${
       process.env.NGROK
     }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;
