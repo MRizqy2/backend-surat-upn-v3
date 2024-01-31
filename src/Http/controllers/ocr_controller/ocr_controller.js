@@ -47,7 +47,7 @@ const OCR = async (req, res) => {
       fileNameWithoutExtension = fileName.replace(".pdf", "-acc.pdf"); // Ganti ekstensi .pdf dengan -acc.pdf
     }
     //mbkm2-acc.pdf
-    const outputPath = path.join(accDir, fileNameWithoutExtension);
+    const outputPath = path.join(tempDir, fileNameWithoutExtension);
     console.log("outputPath = ", outputPath); //D:\Rizal\PENS\Semester 6\Magang KP\Sejahtera Mandiri Solusindo\upn\backend-surat-upn-v3\backend-surat-upn-v3\daftar_surat\acc\mbkm2-acc.pdf
     // fs.writeFileSync(outputPath, fileBuffer);
     console.log("outputPath2 = ", outputPath);
@@ -65,7 +65,7 @@ const OCR = async (req, res) => {
     console.log("lkhnhp", savePdf);
 
     const reqSuratUrl = {
-      save: {
+      body: {
         outputPath,
         surat_id,
       },

@@ -4,7 +4,7 @@ require("dotenv").config();
 require("pg");
 const router = require("./src/routes/index.js");
 const cors = require("cors");
-const Color = "color:green;";
+const ColorGreen = "\x1b[32m";
 // const chalk = require("chalk");
 
 app.use(express.json());
@@ -13,8 +13,8 @@ app.use(router);
 
 app.listen(process.env.PORT, () => {
   console.log(
-    "%c %s is running on port %s",
-    Color,
+    "%c%s is running on port %s",
+    ColorGreen,
     process.env.NGROK,
     process.env.PORT
   );

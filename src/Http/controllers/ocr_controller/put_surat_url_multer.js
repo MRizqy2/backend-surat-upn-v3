@@ -7,7 +7,7 @@ const { promisify } = require("util");
 const fs = require("fs");
 const path = require("path");
 const router = express.Router();
-const multer = require("multer");
+const multer = require("multer"); // okeeh
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -37,12 +37,13 @@ const putSuratUrl = async (req, res, next) => {
     const surat = await Daftar_surat.findOne({
       where: { id: surat_id },
     });
-    const fileName = outputPath.split("\\").pop(); //karena directori windows
-    // const fileBuffer = fs.readFileSync(outputPath);// hah?
-    const judulExt = surat.judul; //ga ke pakek// error e nek kunu
+    console.log("dawdasdw", outputPath);
+    const fileName = outputPath.split("\\").pop();
+    const judulExt = surat.judul;
     const judulFinal = judulExt.replace(".pdf", "-acc.pdf");
 
     const downloadUrl = `${
+      //
       process.env.NGROK
     }/daftar-surat/multer/download/${encodeURIComponent(fileName)}`;
 
