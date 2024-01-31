@@ -1,46 +1,46 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Jabatan extends Model {
+  class JABATAN extends Model {
     static associate(models) {
-      Jabatan.hasMany(models.Notifikasi, { foreignKey: "jabatan_id_dari" });
-      Jabatan.hasMany(models.Notifikasi, { foreignKey: "jabatan_id_ke" });
-      Jabatan.hasOne(models.Users, { foreignKey: "jabatan_id" });
-      Jabatan.hasOne(models.Komentar, {
+      JABATAN.hasMany(models.NOTIFIKASI, { foreignKey: "jabatan_id_dari" });
+      JABATAN.hasMany(models.NOTIFIKASI, { foreignKey: "jabatan_id_ke" });
+      JABATAN.hasOne(models.USERS, { foreignKey: "jabatan_id" });
+      JABATAN.hasOne(models.KOMENTAR, {
         foreignKey: "jabatan_id_ke",
         as: "komentar1",
       });
-      Jabatan.hasOne(models.Komentar, {
+      JABATAN.hasOne(models.KOMENTAR, {
         foreignKey: "jabatan_id_dari",
         as: "komentar2",
       });
-      Jabatan.belongsTo(models.Jabatan, {
+      JABATAN.belongsTo(models.JABATAN, {
         foreignKey: "jabatan_atas_id",
         as: "jabatan_atas",
       });
-      Jabatan.hasOne(models.Permision, {
+      JABATAN.hasOne(models.PERMISION, {
         foreignKey: "jabatan_id",
         as: "permision",
       });
     }
   }
-  Jabatan.init(
+  JABATAN.init(
     {
       name: DataTypes.STRING,
       jabatan_atas_id: {
         type: DataTypes.INTEGER,
         // allowNull: false,
         references: {
-          model: "Daftar_surat",
+          model: "DAFTAR_SURAT",
           key: "id",
         },
       },
     },
     {
       sequelize,
-      modelName: "Jabatan",
-      tableName: "Jabatans",
+      modelName: "JABATAN",
+      tableName: "JABATANS",
     }
   );
-  return Jabatan;
+  return JABATAN;
 };

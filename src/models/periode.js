@@ -1,20 +1,20 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Periode extends Model {
+  class PERIODE extends Model {
     static associate(models) {
-      Periode.hasMany(models.Nomor_surat, { foreignKey: "periode_id" });
+      PERIODE.hasMany(models.NOMOR_SURAT, { foreignKey: "periode_id" });
     }
   }
-  Periode.init(
+  PERIODE.init(
     {
       tahun: DataTypes.DATE,
       status: DataTypes.BOOLEAN,
     },
     {
       sequelize,
-      modelName: "Periode",
+      modelName: "PERIODE",
     }
   );
-  return Periode;
+  return PERIODE;
 };

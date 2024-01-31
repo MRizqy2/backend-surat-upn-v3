@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Users", {
+    await queryInterface.createTable("USERS", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         // allowNull: false,
         references: {
-          model: "Jabatans",
+          model: "JABATANS",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -32,7 +32,7 @@ module.exports = {
       prodi_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Prodis",
+          model: "PRODIS",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -41,7 +41,7 @@ module.exports = {
       fakultas_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Fakultas",
+          model: "FAKULTAS",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -61,6 +61,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Users");
+    await queryInterface.dropTable("USERS");
   },
 };

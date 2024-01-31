@@ -1,21 +1,21 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Users extends Model {
+  class USERS extends Model {
     static associate(models) {
-      Users.belongsTo(models.Jabatan, {
+      USERS.belongsTo(models.JABATAN, {
         foreignKey: "jabatan_id",
         as: "jabatan",
       });
-      Users.belongsTo(models.Prodi, { foreignKey: "prodi_id", as: "prodi" });
-      Users.belongsTo(models.Fakultas, {
+      USERS.belongsTo(models.PRODI, { foreignKey: "prodi_id", as: "prodi" });
+      USERS.belongsTo(models.FAKULTAS, {
         foreignKey: "fakultas_id",
         as: "fakultas",
       });
-      Users.hasMany(models.Daftar_surat, { foreignKey: "user_id" });
+      USERS.hasMany(models.DAFTAR_SURAT, { foreignKey: "user_id" });
     }
   }
-  Users.init(
+  USERS.init(
     {
       name: DataTypes.STRING,
       email: {
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         // allowNull: false,
         references: {
-          model: "Jabatan",
+          model: "JABATAN",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Prodi",
+          model: "PRODI",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Fakultas",
+          model: "FAKULTAS",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -59,8 +59,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Users",
+      modelName: "USERS",
     }
   );
-  return Users;
+  return USERS;
 };

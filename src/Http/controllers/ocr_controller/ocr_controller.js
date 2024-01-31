@@ -20,12 +20,11 @@ const OCR = async (req, res) => {
         .json({ error: "Daftar Surat not found" });
     }
 
-    const fileName = surat.url.split("/").pop();
+    const fileName = decodeURIComponent(surat.url.split("/").pop());
 
     const fileBuffer = fs.readFileSync(`daftar_surat/${fileName}`);
 
     const tempDir = path.resolve("daftar_surat/");
-
     // Check if the directory exists
     if (!fs.existsSync(tempDir)) {
       // If not, create the directory

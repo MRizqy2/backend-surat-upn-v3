@@ -29,10 +29,11 @@ const getDaftarSurat = async (req, res) => {
     const start = new Date(startDate);
     dateFilter[Op.gte] = start;
   }
+
+  let end;
   if (endDate) {
-    const end = new Date(endDate);
-    end.setDate(end.getDate() + 1);
-    end.setMilliseconds(end.getMilliseconds() - 1);
+    end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
     dateFilter[Op.lte] = end;
   }
   const user = await Users.findOne({
@@ -53,7 +54,7 @@ const getDaftarSurat = async (req, res) => {
     startDate && endDate
       ? {
           tanggal: {
-            [Op.between]: [new Date(startDate), new Date(endDate)],
+            [Op.between]: [new Date(startDate), end],
           },
         }
       : {};

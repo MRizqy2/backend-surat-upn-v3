@@ -1,21 +1,21 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Akses_master extends Model {
+  class AKSES_MASTER extends Model {
     static associate(models) {
-      Akses_master.belongsTo(models.Permision, {
+      AKSES_MASTER.belongsTo(models.PERMISION, {
         as: "permision",
         foreignKey: "permision_id",
       });
     }
   }
-  Akses_master.init(
+  AKSES_MASTER.init(
     {
       permision_id: {
         type: DataTypes.INTEGER,
         allowNull: false, //sek tak coba flow surat
         references: {
-          model: "Permision",
+          model: "PERMISION",
           key: "id",
         },
       }, // wokeeh
@@ -28,8 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Akses_master",
+      modelName: "AKSES_MASTER",
     }
   );
-  return Akses_master;
+  return AKSES_MASTER;
 };
