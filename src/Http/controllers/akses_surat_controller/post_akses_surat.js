@@ -1,14 +1,14 @@
 const express = require("express");
-const { Akses_surat, Daftar_surat } = require("../../../models");
+const { AKSES_SURAT, DAFTAR_SURAT } = require("../../../models");
 const router = express.Router();
 
 const postAksesSurat = async (req, res) => {
   const { surat_id, tambah_akses_id } = req.body;
-  const surat = await Daftar_surat.findOne({
+  const surat = await DAFTAR_SURAT.findOne({
     where: { id: surat_id },
   });
   console.log("movdpw", tambah_akses_id);
-  const saveAkses = await Akses_surat.create({
+  const saveAkses = await AKSES_SURAT.create({
     surat_id,
     jabatan_id: tambah_akses_id,
   });

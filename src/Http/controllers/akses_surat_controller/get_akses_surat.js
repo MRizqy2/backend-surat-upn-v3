@@ -1,10 +1,10 @@
 const express = require("express");
 const {
-  Akses_surat,
-  Jabatan,
-  Users,
-  Daftar_surat,
-  Jenis_surat,
+  AKSES_SURAT,
+  JABATAN,
+  USERS,
+  DAFTAR_SURAT,
+  JENIS_SURAT,
 } = require("../../../models");
 const router = express.Router();
 
@@ -12,64 +12,64 @@ const getAksesSurat = async (req, res) => {
   try {
     const { akses_surat_id } = req.query;
     let aksesSurat;
-    const user = await Users.findOne({
+    const user = await USERS.findOne({
       where: { id: req.token.id },
     });
     if (!akses_surat_id) {
-      aksesSurat = await Akses_surat.findAll({
+      aksesSurat = await AKSES_SURAT.findAll({
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
         include: [
           {
-            model: Daftar_surat,
+            model: DAFTAR_SURAT,
             as: "daftar_surat",
             attributes: { exclude: ["createdAt", "updatedAt"] },
             include: [
               {
-                model: Jenis_surat,
+                model: JENIS_SURAT,
                 as: "jenis",
                 attributes: ["id", "jenis"],
               },
               {
-                model: Users,
+                model: USERS,
                 as: "user",
                 attributes: ["email", "name"],
               },
             ],
           },
           {
-            model: Jabatan,
+            model: JABATAN,
             as: "jabatan",
             attributes: ["id", "name"],
           },
         ],
       });
     } else if (akses_surat_id) {
-      aksesSurat = await Akses_surat.findOne({
+      aksesSurat = await AKSES_SURAT.findOne({
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
         include: [
           {
-            model: Daftar_surat,
+            model: DAFTAR_SURAT,
             as: "daftar_surat",
             attributes: { exclude: ["createdAt", "updatedAt"] },
             include: [
               {
-                model: Jenis_surat,
+                model: JENIS_SURAT,
                 as: "jenis",
                 attributes: ["id", "jenis"],
               },
               {
-                model: Users,
+                model: USERS,
                 as: "user",
                 attributes: ["email", "name"],
               },
             ],
           },
           {
-            model: Jabatan,
+            model: JABATAN,
             as: "jabatan",
             attributes: ["id", "name"],
           },

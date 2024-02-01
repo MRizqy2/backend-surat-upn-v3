@@ -1,5 +1,5 @@
 const express = require("express");
-const { Akses_master } = require("../../../models");
+const { AKSES_MASTER } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -16,7 +16,7 @@ const postAksesMaster = async (req, res) => {
 
   try {
     // Dapatkan ID terakhir dari tabel Akses_masters
-    const latestAksesMaster = await Akses_master.findOne({
+    const latestAksesMaster = await AKSES_MASTER.findOne({
       order: [["id", "DESC"]],
     });
 
@@ -25,7 +25,7 @@ const postAksesMaster = async (req, res) => {
     const newAksesMasterId = latestAksesMasterId + 1;
 
     // Buat data Akses_master dengan ID yang baru
-    const akses_master = await Akses_master.create({
+    const akses_master = await AKSES_MASTER.create({
       id: newAksesMasterId,
       permision_id,
       prodi,

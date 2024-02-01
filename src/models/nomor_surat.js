@@ -40,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "NOMOR_SURAT",
+      tableName: "NOMOR_SURATS",
     }
   );
   return NOMOR_SURAT;

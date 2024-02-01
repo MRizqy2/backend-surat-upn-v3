@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const { Repo } = require("../../../models");
+const { REPO } = require("../../../models");
 
 const getRepo = async (req, res) => {
-  const repo = await Repo.findAll();
+  const repo = await REPO.findAll();
   return res.json({ repo });
 };
 

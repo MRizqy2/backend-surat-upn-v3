@@ -1,17 +1,17 @@
 const express = require("express");
 const {
-  Notifikasi,
-  Users,
-  Jabatan,
-  Daftar_surat,
-  Status,
+  NOTIFIKASI,
+  USERS,
+  JABATAN,
+  DAFTAR_SURAT,
+  STATUS,
 } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const app = express.Router();
 
 const getNotif = async (req, res) => {
   try {
-    const user = await Users.findOne({
+    const user = await USERS.findOne({
       where: { id: req.token.id },
     });
 
@@ -21,22 +21,22 @@ const getNotif = async (req, res) => {
         .json({ error: "User not found" });
     }
 
-    const notifikasi = await Notifikasi.findAll({
+    const notifikasi = await NOTIFIKASI.findAll({
       where: { jabatan_id_ke: user.jabatan_id },
       attributes: ["id"],
       include: [
         {
-          model: Jabatan,
+          model: JABATAN,
           as: "pengirim",
           attributes: ["id", "name"],
         },
         {
-          model: Daftar_surat,
+          model: DAFTAR_SURAT,
           as: "surat",
           attributes: ["id", "judul"],
           include: [
             {
-              model: Status,
+              model: STATUS,
               as: "status",
               attributes: ["status", "persetujuan"],
             },

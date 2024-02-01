@@ -6,11 +6,11 @@ const upload = multer({ storage: multer.memoryStorage() });
 const path = require("path");
 const { StatusCodes } = require("http-status-codes");
 const {
-  Daftar_surat,
-  Template_surat,
-  Jabatan,
-  Users,
-  Jenis_surat,
+  DAFTAR_SURAT,
+  TEMPLATE_SURAT,
+  JABATAN,
+  USERS,
+  JENIS_SURAT,
 } = require("../../../../models");
 // const getStatus = require("./status_controller");
 // const { postStatus } = require("../../status_surat_controller/post_status");
@@ -52,7 +52,7 @@ const getDownload = async (req, res) => {
       .json({ error: "Invalid params" });
   }
 
-  const daftar_surat = await Daftar_surat.findOne({
+  const daftar_surat = await DAFTAR_SURAT.findOne({
     where: { id: surat_id },
   });
 

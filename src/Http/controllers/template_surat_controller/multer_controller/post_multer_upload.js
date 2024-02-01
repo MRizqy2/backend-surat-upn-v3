@@ -1,7 +1,7 @@
 const multer = require("multer");
 const express = require("express");
 const path = require("path");
-const { Template_surat, Jenis_surat } = require("../../../../models");
+const { TEMPLATE_SURAT, JENIS_SURAT } = require("../../../../models");
 const { StatusCodes } = require("http-status-codes");
 const crypto = require("crypto");
 const router = express.Router();
@@ -44,7 +44,7 @@ const postMulter = async function (req, res) {
       ? req.files["thumbnail"][0]
       : null;
 
-    const jenis = await Jenis_surat.findOne({
+    const jenis = await JENIS_SURAT.findOne({
       where: { id: jenis_id },
     });
 
@@ -66,7 +66,7 @@ const postMulter = async function (req, res) {
       ? `${process.env.NGROK}/download/${encodeURIComponent(lokasiThumbnail)}`
       : null;
 
-    const template_surat = await Template_surat.create({
+    const template_surat = await TEMPLATE_SURAT.create({
       judul: judulEx,
       url: downloadUrl,
       jenis_id: jenis.id || "",

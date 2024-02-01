@@ -1,17 +1,17 @@
 const {
-  Daftar_surat,
-  Template_surat,
-  Jabatan,
-  Users,
+  DAFTAR_SURAT,
+  TEMPLATE_SURAT,
+  JABATAN,
+  USERS,
 } = require("../../../models");
 
 async function catchStatus(req, res) {
   const { jabatan_id, isRead, latestStatus, persetujuan, isSigned } = req.body;
 
-  const jabatan = await Jabatan.findOne({
+  const jabatan = await JABATAN.findOne({
     where: { id: jabatan_id },
   });
-  const jabatan_atas = await Jabatan.findOne({
+  const jabatan_atas = await JABATAN.findOne({
     where: { id: jabatan.jabatan_atas_id },
   });
   console.log("myjkyu", jabatan.id);

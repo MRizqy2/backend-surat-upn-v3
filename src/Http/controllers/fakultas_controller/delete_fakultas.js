@@ -1,5 +1,5 @@
 const express = require("express");
-const { Fakultas, Prodi } = require("../../../models");
+const { FAKULTAS, PRODI } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -10,8 +10,8 @@ const deleteFakultas = async (req, res) => {
     if (!fakultas_id) {
       return res.status(400).json({ error: "Parameter id is required" });
     }
-    await Prodi.update({ fakultas_id: null }, { where: { fakultas_id } });
-    const deletedFakultas = await Fakultas.destroy({
+    await PRODI.update({ fakultas_id: null }, { where: { fakultas_id } });
+    const deletedFakultas = await FAKULTAS.destroy({
       where: { id: fakultas_id },
     });
 

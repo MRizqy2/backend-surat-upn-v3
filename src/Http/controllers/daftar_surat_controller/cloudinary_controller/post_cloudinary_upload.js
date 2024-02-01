@@ -6,11 +6,11 @@ const upload = multer({ storage: multer.memoryStorage() });
 const path = require("path");
 const { StatusCodes } = require("http-status-codes");
 const {
-  Daftar_surat,
-  Template_surat,
-  Jabatan,
-  Users,
-  Jenis_surat,
+  DAFTAR_SURAT,
+  TEMPLATE_SURAT,
+  JABATAN,
+  USERS,
+  JENIS_SURAT,
 } = require("../../../../models");
 // const getStatus = require("./status_controller");// kukirim yo cuy
 const { postStatus } = require("../../status_surat_controller/post_status");
@@ -50,20 +50,20 @@ const postUpload = async (req, res, next) => {
   try {
     const { judul, jenis_id, deskripsi } = req.body;
     const judulExt = judul + path.extname(req.files["surat"][0].originalname);
-    const jenis = await Jenis_surat.findOne({
+    const jenis = await JENIS_SURAT.findOne({
       where: { id: jenis_id },
     });
 
-    const user = await Users.findOne({
+    const user = await USERS.findOne({
       where: { id: req.token.id },
     });
-    const jabatan = await Jabatan.findOne({
+    const jabatan = await JABATAN.findOne({
       where: { id: user.jabatan_id },
     });
 
     let suratUrl;
-    let thumbnailUrl; //l//tak pushe
-    //okke
+    let thumbnailUrl;
+
     if (req.files["surat"]) {
       await new Promise((resolve, reject) => {
         cloudinary.uploader
@@ -108,7 +108,7 @@ const postUpload = async (req, res, next) => {
 
     const suratUrlHttps = suratUrl.replace(/^http:/, "https:");
 
-    const daftar_surat = await Daftar_surat.create({
+    const daftar_surat = await DAFTAR_SURAT.create({
       judul: judulExt,
       thumbnail: thumbnailUrl || "",
       jenis_id: jenis.id || "",

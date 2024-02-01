@@ -1,5 +1,5 @@
 const express = require("express");
-const { Permision } = require("../../../models");
+const { PERMISION } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -17,7 +17,7 @@ const putPermision = async (req, res) => {
       return res.status(400).json({ error: "Invalid params" });
     }
 
-    const permision = await Permision.findOne({
+    const permision = await PERMISION.findOne({
       where: { jabatan_id: jabatan_id },
     });
 

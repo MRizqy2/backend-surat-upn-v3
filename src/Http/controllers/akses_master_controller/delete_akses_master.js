@@ -1,5 +1,5 @@
 const express = require("express");
-const { Akses_master } = require("../../../models");
+const { AKSES_MASTER } = require("../../../models");
 const router = express.Router();
 
 const deleteAksesMaster = async (req, res) => {
@@ -12,7 +12,7 @@ const deleteAksesMaster = async (req, res) => {
         .json({ error: "Parameter 'akses_master_id' is required" });
     }
 
-    const deletedAksesMaster = await Akses_master.destroy({
+    const deletedAksesMaster = await AKSES_MASTER.destroy({
       where: { id: akses_master_id },
     });
 

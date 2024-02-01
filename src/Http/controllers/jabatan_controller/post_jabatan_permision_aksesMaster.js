@@ -1,5 +1,5 @@
 const express = require("express");
-const { Jabatan, Permision, Akses_master } = require("../../../models");
+const { JABATAN } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const { postPermision } = require("../permision_controller/post_permision");
 const {
@@ -27,7 +27,7 @@ const postJabatanPermisionAksesMaster = async (req, res) => {
     jenis_surat,
   } = req.body;
   try {
-    const latestJabatan = await Jabatan.findOne({
+    const latestJabatan = await JABATANfindOne({
       order: [["id", "DESC"]],
     });
     // Tentukan ID yang baru
@@ -36,7 +36,7 @@ const postJabatanPermisionAksesMaster = async (req, res) => {
 
     // Buat data Permision dengan ID yang baru
 
-    const saveJabatan = await Jabatan.create({
+    const saveJabatan = await JABATAN.create({
       id: newJabatanId,
       name,
       jabatan_atas_id: jabatan_atas_id || null,

@@ -1,5 +1,5 @@
 const express = require("express");
-const { Status } = require("../../../models");
+const { STATUS } = require("../../../models");
 const router = express.Router();
 
 const deleteStatus = async (req, res) => {
@@ -17,7 +17,7 @@ const deleteStatus = async (req, res) => {
       whereClause.surat_id = surat_id;
     }
 
-    const deletedStatus = await Status.destroy({
+    const deletedStatus = await STATUS.destroy({
       where: whereClause,
     });
 

@@ -1,5 +1,5 @@
 const express = require("express");
-const { Periode } = require("../../../models");
+const { PERIODE } = require("../../../models");
 const router = express.Router();
 
 const deletePeriode = async (req, res) => {
@@ -12,14 +12,12 @@ const deletePeriode = async (req, res) => {
         .json({ error: "Parameter 'periode_id' is required" });
     }
 
-    const hapusPeriode = await Periode.destroy({
+    const hapusPeriode = await PERIODE.destroy({
       where: { id: periode_id },
     });
 
     if (hapusPeriode) {
-      res
-        .status(200)
-        .json({ message: "Periode Surat deleted successfully" });
+      res.status(200).json({ message: "Periode Surat deleted successfully" });
     } else {
       res.status(404).json({ error: "Periode Surat not found" });
     }

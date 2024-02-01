@@ -36,6 +36,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "surat_id",
         as: "akses_surat",
       });
+      DAFTAR_SURAT.hasMany(models.REVISI, {
+        foreignKey: "surat_id_lama",
+        as: "surat_id_old",
+      });
+      DAFTAR_SURAT.hasMany(models.REVISI, {
+        foreignKey: "surat_id_baru",
+        as: "surat_id_new",
+      });
     }
   }
   DAFTAR_SURAT.init(
@@ -69,6 +77,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "DAFTAR_SURAT",
+      tableName: "DAFTAR_SURATS",
     }
   );
   return DAFTAR_SURAT;

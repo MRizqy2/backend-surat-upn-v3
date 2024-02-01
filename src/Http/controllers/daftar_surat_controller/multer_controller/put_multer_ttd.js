@@ -1,11 +1,5 @@
 const express = require("express");
-const {
-  Daftar_surat,
-  Template_surat,
-  Jabatan,
-  Users,
-  Jenis_surat,
-} = require("../../../../models");
+const { DAFTAR_SURAT, USERS } = require("../../../../models");
 const { StatusCodes } = require("http-status-codes");
 const multer = require("multer");
 const crypto = require("crypto");
@@ -26,13 +20,13 @@ const storage = multer.diskStorage({
 
   filename: async function (req, file, cb) {
     // Gunakan judul sebagai nama file
-    const data_surat = await Daftar_surat.findOne({
+    const data_surat = await DAFTAR_SURAT.findOne({
       where: { id: req.query.surat_id }, //https://0ae6-158-140-171-95.ngrok-free.app/daftar-surat/multer/download/undefined
     });
     console.log("opokdq", req.query.surat_id); //opokdq 7
-    const judul = data_surat.judul; //tak nyba si//ga iso delok ey// coba judul e
+    const judul = data_surat.judul;
     console.log("adwdasdwa", judul);
-    const timestamp = Date.now(); //jek gk bisa/linknya gk ketemu/>Cannot PUT /daftar-surat/multer/ttd
+    const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
     const filename = `${randomString}-${timestamp}-${judul}`;
     cb(null, filename); //
@@ -44,34 +38,32 @@ const upload = multer({ storage: storage }); //enek sing erro kui nek put surat 
 const putMulterTtd = async function (req, res) {
   try {
     const { surat_id } = req.query;
-    if (!req.files["surat"]) {
-      //gk mlaku lek mok ilangin 0 le
-      //
+    if (!req.files["surat"][0]) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Missing files in request" });
     }
     const thumbnailUrl = "";
     const suratUrl = `${req.files["surat"][0].filename}`;
-    console.log("dawdadw", suratUrl); //pdf.pdf hasill
+    console.log("dawdadw", suratUrl);
     const downloadUrl = `${
       process.env.NGROK
     }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;
 
-    const data_surat = await Daftar_surat.findOne({
+    const data_surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
     if (!data_surat) {
       return res.status(404).json({ error: "Data surat not found" });
     }
-    const user_surat = await Users.findOne({
+    const user_surat = await USERS.findOne({
       where: { id: data_surat.user_id },
     });
 
-    const user = await Users.findOne({
+    const user = await USERS.findOne({
       where: { id: req.token.id },
     });
-    const updateSurat = await Daftar_surat.update(
+    const updateSurat = await DAFTAR_SURAT.update(
       {
         url: downloadUrl,
         thumbnail: thumbnailUrl || "",

@@ -1,5 +1,5 @@
 const express = require("express");
-const { Fakultas } = require("../../../models");
+const { FAKULTAS } = require("../../../models");
 const router = express.Router();
 
 const putFakultas = async (req, res) => {
@@ -10,7 +10,7 @@ const putFakultas = async (req, res) => {
       return res.status(400).json({ error: "Invalid params" });
     }
 
-    const fakultas = await Fakultas.findOne({ where: { id: id } });
+    const fakultas = await FAKULTAS.findOne({ where: { id: id } });
 
     if (!fakultas) {
       return res.status(404).json({ error: "Fakultas not found" });

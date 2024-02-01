@@ -1,19 +1,19 @@
 const express = require("express");
-const { Jenis_surat } = require("../../../models");
+const { JENIS_SURAT } = require("../../../models");
 const router = express.Router();
 
 const postJenis = async function (req, res) {
   try {
     let latestJenisId;
     const { jenis, kode_jenis } = req.body;
-    const latestJenis = await Jenis_surat.findAll({
+    const latestJenis = await JENIS_SURAT.findAll({
       limit: 1,
       order: [["id", "DESC"]],
     });
     if (latestJenis.length > 0) {
       latestJenisId = parseInt(latestJenis[0].id, 10);
     }
-    const jenis_surat = await Jenis_surat.create({
+    const jenis_surat = await JENIS_SURAT.create({
       id: latestJenisId + 1 || 1,
       jenis,
       kode_jenis,

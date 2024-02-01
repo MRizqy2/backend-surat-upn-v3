@@ -1,7 +1,7 @@
 const cloudinary = require("../../../../../config/cloudinaryConfig");
 const express = require("express");
 const { StatusCodes } = require("http-status-codes");
-const { Template_surat, Jenis_surat } = require("../../../../models");
+const { TEMPLATE_SURAT, JENIS_SURAT } = require("../../../../models");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 const path = require("path");
@@ -33,7 +33,7 @@ function getResourceType(filename) {
 
 const getDetail = async (req, res) => {
   res.json(
-    await Template_surat.findOne({ where: { id: req.query.template_id } })
+    await TEMPLATE_SURAT.findOne({ where: { id: req.query.template_id } })
   );
 };
 

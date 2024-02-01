@@ -1,5 +1,5 @@
 const express = require("express");
-const { Notifikasi } = require("../../../models");
+const { NOTIFIKASI } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const app = express.Router();
 
@@ -7,7 +7,7 @@ const postNotif = async (req, res) => {
   const { surat_id, jabatan_id_dari, jabatan_id_ke } = req.body;
 
   try {
-    const notifikasi = await Notifikasi.create({
+    const notifikasi = await NOTIFIKASI.create({
       surat_id: surat_id,
       jabatan_id_dari: jabatan_id_dari,
       jabatan_id_ke: jabatan_id_ke,

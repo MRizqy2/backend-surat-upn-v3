@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "TEMPLATE_SURAT",
+      tableName: "TEMPLATE_SURATS",
     }
   );
   return TEMPLATE_SURAT;

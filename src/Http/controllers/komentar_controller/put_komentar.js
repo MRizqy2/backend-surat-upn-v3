@@ -1,5 +1,5 @@
 const express = require("express");
-const { Komentar, Users, Jabatan, Daftar_surat } = require("../../../models");
+const { KOMENTAR, USERS, JABATAN, DAFTAR_SURAT } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -8,14 +8,14 @@ const putKomentar = async function (req, res) {
     const { komentar, surat_id } = req.body;
     const { komentar_id } = req.query;
 
-    const user = await Users.findOne({ where: { id: req.token.id } });
-    const surat = await Daftar_surat.findOne({ where: { id: surat_id } });
-    const user_surat = await Users.findOne({ where: { id: surat.user_id } });
+    const user = await USERS.findOne({ where: { id: req.token.id } });
+    const surat = await DAFTAR_SURAT.findOne({ where: { id: surat_id } });
+    const user_surat = await USERS.findOne({ where: { id: surat.user_id } });
 
-    const jabatan = await Jabatan.findOne({
+    const jabatan = await JABATAN.findOne({
       where: { id: user.jabatan_id },
     });
-    const updatedKomenar = await Komentar.update(
+    const updatedKomenar = await KOMENTAR.update(
       {
         surat_id,
         jabatan_id_dari: user.jabatan_id,

@@ -1,13 +1,9 @@
 const express = require("express");
-const cloudinary = require("../../../../config/cloudinaryConfig");
 const { StatusCodes } = require("http-status-codes");
-const { Daftar_surat } = require("../../../models");
-const { PDFDocument } = require("pdf-lib");
-const { promisify } = require("util");
-const fs = require("fs");
+const { DAFTAR_SURAT } = require("../../../models");
 const path = require("path");
 const router = express.Router();
-const multer = require("multer"); // okeeh
+const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -34,7 +30,7 @@ const putSuratUrl = async (req, res, next) => {
   try {
     const { outputPath, surat_id } = req.body;
 
-    const surat = await Daftar_surat.findOne({
+    const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
     console.log("dawdasdw", outputPath);
@@ -47,7 +43,7 @@ const putSuratUrl = async (req, res, next) => {
       process.env.NGROK
     }/daftar-surat/multer/download/${encodeURIComponent(fileName)}`;
 
-    const update_surat = await Daftar_surat.update(
+    const update_surat = await DAFTAR_SURAT.update(
       {
         judul: judulFinal,
         url: downloadUrl,

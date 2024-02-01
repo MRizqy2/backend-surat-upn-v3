@@ -5,12 +5,12 @@ const path = require("path");
 const { changeTextInPdfV2 } = require("./post_coordinate_controller");
 const { putSuratUrl } = require("./put_surat_url_multer");
 const { StatusCodes } = require("http-status-codes"); // Tambahkan import StatusCodes
-const { Nomor_surat, Daftar_surat } = require("../../../models");
+const { NOMOR_SURAT, DAFTAR_SURAT } = require("../../../models");
 
 const OCR = async (req, res) => {
   try {
     const { nomor_surat_id, surat_id } = req.save;
-    const surat = await Daftar_surat.findOne({
+    const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
 
@@ -51,7 +51,7 @@ const OCR = async (req, res) => {
     // fs.writeFileSync(outputPath, fileBuffer);
     console.log("outputPath2 = ", outputPath);
     const searchText = "XYXY";
-    const newText = await Nomor_surat.findOne({
+    const newText = await NOMOR_SURAT.findOne({
       where: { id: nomor_surat_id },
     });
 

@@ -1,10 +1,9 @@
 const express = require("express");
 const {
-  Daftar_surat,
-  Template_surat,
-  Jabatan,
-  Users,
-  Jenis_surat,
+  DAFTAR_SURAT,
+  JABATAN,
+  USERS,
+  JENIS_SURAT,
 } = require("../../../../models");
 const { StatusCodes } = require("http-status-codes");
 const multer = require("multer");
@@ -52,18 +51,18 @@ const postMulter = async function (req, res) {
     const downloadUrl = `${
       process.env.NGROK
     }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;
-    const jenis = await Jenis_surat.findOne({
+    const jenis = await JENIS_SURAT.findOne({
       where: { id: jenis_id },
     });
 
-    const user = await Users.findOne({
+    const user = await USERS.findOne({
       where: { id: req.token.id },
     });
-    const jabatan = await Jabatan.findOne({
+    const jabatan = await JABATAN.findOne({
       where: { id: user.jabatan_id },
     });
 
-    const daftar_surat = await Daftar_surat.create({
+    const daftar_surat = await DAFTAR_SURAT.create({
       judul: judulExt,
       thumbnail: thumbnailUrl || "",
       jenis_id: jenis.id || "",
@@ -149,3 +148,26 @@ router.post(
 );
 
 module.exports = router;
+
+// const handleDownload = async () => {
+//   const user = session.data?.user as User;
+//   const token = user.accessToken;
+
+//   const response = await axios.get(`${singleData?.url}`, {
+//     responseType: "arraybuffer",
+//     headers: {
+//       Authorization: "Bearer " + token,
+//     },
+//   });
+//   const url = window.URL.createObjectURL(
+//     new Blob([response.data], {
+//       type: "application/pdf",
+//     }) //res.end(buffer);
+//   );
+//   let link = document.createElement("a");
+//   link.href = url;
+//   link.setAttribute("download", `${singleData?.judul.split(".")[0]}.pdf`);
+//   document.body.appendChild(link);
+//   link.click();
+//   link.remove();
+// };

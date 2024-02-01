@@ -1,5 +1,5 @@
 const express = require("express");
-const { Tampilan } = require("../../../models");
+const { TAMPILAN } = require("../../../models");
 const router = express.Router();
 
 const deleteTampilan = async (req, res) => {
@@ -23,7 +23,7 @@ const deleteTampilan = async (req, res) => {
       whereClause.jabatan_id = jabatan_id;
     }
 
-    const deletedTampilan = await Tampilan.destroy({
+    const deletedTampilan = await TAMPILAN.destroy({
       where: whereClause,
     });
 

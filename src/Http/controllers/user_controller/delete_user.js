@@ -1,5 +1,5 @@
 const express = require("express");
-const { Users } = require("../../../models");
+const { USERS } = require("../../../models");
 const router = express.Router();
 const { StatusCodes } = require("http-status-codes");
 
@@ -12,7 +12,7 @@ const deleteUser = async (req, res) => {
       });
     }
 
-    const deleted = await Users.destroy({
+    const deleted = await USERS.destroy({
       where: { id: user_id },
     });
 

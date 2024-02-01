@@ -1,5 +1,5 @@
 const express = require("express");
-const { Jenis_surat } = require("../../../models");
+const { JENIS_SURAT } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -8,14 +8,14 @@ const putJenis = async function (req, res) {
     const { jenis } = req.body;
     const { jenis_id } = req.query;
 
-    const searchJenis = await Jenis_surat.findOne({ where: { id: jenis_id } });
+    const searchJenis = await JENIS_SURAT.findOne({ where: { id: jenis_id } });
 
     if (!searchJenis) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Invalid params" });
     }
-    const jenis_surat = await Jenis_surat.update(
+    const jenis_surat = await JENIS_SURAT.update(
       {
         jenis,
       },

@@ -1,5 +1,5 @@
 const express = require("express");
-const { Permision } = require("../../../models");
+const { PERMISION } = require("../../../models");
 const router = express.Router();
 
 const deletePermision = async (req, res) => {
@@ -12,7 +12,7 @@ const deletePermision = async (req, res) => {
         .json({ error: "Parameter 'permision_id' is required" });
     }
 
-    const deletedPermision = await Permision.destroy({
+    const deletedPermision = await PERMISION.destroy({
       where: { id: permision_id },
     });
 

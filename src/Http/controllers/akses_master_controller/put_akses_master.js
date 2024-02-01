@@ -1,5 +1,5 @@
 const express = require("express");
-const { Akses_master, Permision } = require("../../../models");
+const { AKSES_MASTER, PERMISION } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -19,18 +19,18 @@ const putAksesMaster = async (req, res) => {
       return res.status(400).json({ error: "Invalid params" });
     }
 
-    const permision = await Permision.findOne({
+    const permision = await PERMISION.findOne({
       where: { jabatan_id: jabatan_id },
     });
 
-    const akses_master = await Akses_master.findOne({
+    const akses_master = await AKSES_MASTER.findOne({
       where: { permision_id: permision.id },
     });
 
     if (!akses_master) {
       return res.status(404).json({ error: "akses master not found" });
     }
-    const akses_master_update = await Akses_master.update(
+    const akses_master_update = await AKSES_MASTER.update(
       {
         prodi,
         template,

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Tampilan, Daftar_surat, Users, Jabatan } = require("../../../models");
+const { TAMPILAN, DAFTAR_SURAT, USERS, JABATAN } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const { Sequelize } = require("sequelize");
 
@@ -29,7 +29,7 @@ const getTampilan = async (req, res) => {
     }
 
     console.log("omvweop", whereClause);
-    tampilan = await Tampilan.findAll({
+    tampilan = await TAMPILAN.findAll({
       where: whereClause,
       order: [["id", "ASC"]],
     });

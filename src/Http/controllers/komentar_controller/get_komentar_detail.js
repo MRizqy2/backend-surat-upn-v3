@@ -1,20 +1,20 @@
 const express = require("express");
-const { Komentar, Users, Jabatan, Daftar_surat } = require("../../../models");
+const { KOMENTAR, JABATAN } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
 const getDetail = async function (req, res) {
   try {
-    const komen = await Komentar.findOne({
+    const komen = await KOMENTAR.findOne({
       where: { surat_id: req.query.surat_id },
       include: [
         {
-          model: Jabatan,
+          model: JABATAN,
           as: "jabatan_ke",
           attributes: ["name"],
         },
         {
-          model: Jabatan,
+          model: JABATAN,
           as: "jabatan_dari",
           attributes: ["name"],
         },

@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
-const { Users } = require("../../../models/index.js");
+const { USERS } = require("../../../models/index.js");
 const config = require("../../../../config/config.js");
 const crypto = require("crypto");
 const authMiddleware = require("../../middleware/authMiddleware.js");
@@ -17,13 +17,13 @@ const putResetPassword =
       }
       const password = crypto.randomBytes(10).toString("hex");
       const hashedPassword = await bcrypt.hash(password, 10);
-      const updated = await Users.update(
+      const updated = await USERS.update(
         { password: hashedPassword },
         {
           where: { id: user_id },
         }
       );
-      const search_user = await Users.findOne({
+      const search_user = await USERS.findOne({
         where: { id: user_id },
         attributes: ["id", "email", "password"],
       });

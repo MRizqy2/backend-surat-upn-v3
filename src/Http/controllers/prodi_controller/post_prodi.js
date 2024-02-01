@@ -1,12 +1,12 @@
 const express = require("express");
-const { Prodi, Fakultas } = require("../../../models");
+const { PRODI, FAKULTAS } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
 const postProdi = async (req, res) => {
   const { name, kode_prodi, fakultas_id } = req.body;
   try {
-    const fakultas_name = await Fakultas.findOne({
+    const fakultas_name = await FAKULTAS.findOne({
       where: { id: fakultas_id },
     });
 
@@ -14,14 +14,14 @@ const postProdi = async (req, res) => {
       res.send("fakultas_id not found");
     }
 
-    const latestProdi = await Prodi.findAll({
+    const latestProdi = await PRODI.findAll({
       limit: 1,
       order: [["id", "DESC"]],
     });
 
     const latestProdiId = parseInt(latestProdi[0].id, 10);
 
-    const prodi = await Prodi.create({
+    const prodi = await PRODI.create({
       id: latestProdiId + 1,
       name,
       kode_prodi,

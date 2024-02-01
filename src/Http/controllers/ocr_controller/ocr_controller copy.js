@@ -6,7 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const { changeTextInPdfV2 } = require("./post_coordinate_controller");
 const { putSuratUrl } = require("./put_surat_url");
-const { Nomor_surat, Daftar_surat } = require("../../../models");
+const { NOMOR_SURAT, DAFTAR_SURAT } = require("../../../models");
 
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
@@ -22,7 +22,7 @@ const { Nomor_surat, Daftar_surat } = require("../../../models");
 const OCR = async (req, res) => {
   const { nomor_surat_id, surat_id } = req.save;
 
-  const daftar_surat = await Daftar_surat.findOne({ where: { id: surat_id } });
+  const daftar_surat = await DAFTAR_SURAT.findOne({ where: { id: surat_id } });
 
   if (!daftar_surat) {
     return res

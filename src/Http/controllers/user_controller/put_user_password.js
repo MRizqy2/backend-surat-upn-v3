@@ -1,5 +1,5 @@
 const express = require("express");
-const { Users } = require("../../../models");
+const { USERS } = require("../../../models");
 const bcrypt = require("bcryptjs");
 
 const app = express.Router();
@@ -8,7 +8,7 @@ const putUserPass = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
 
-    const user = await Users.findOne({ where: { id: req.token.id } });
+    const user = await USERS.findOne({ where: { id: req.token.id } });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -21,7 +21,7 @@ const putUserPass = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const [updated] = await Users.update(
+    const [updated] = await USERS.update(
       { password: hashedPassword },
       {
         where: { id: req.token.id },

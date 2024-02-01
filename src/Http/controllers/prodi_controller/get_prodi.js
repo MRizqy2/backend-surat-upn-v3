@@ -1,5 +1,5 @@
 const express = require("express");
-const { Prodi } = require("../../../models");
+const { PRODI } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -10,11 +10,11 @@ const getProdi = async (req, res) => {
     let prodi;
 
     if (!prodi_id) {
-      prodi = await Prodi.findAll({
+      prodi = await PRODI.findAll({
         order: [["id", "ASC"]],
       });
     } else {
-      prodi = await Prodi.findOne({
+      prodi = await PRODI.findOne({
         where: { id: prodi_id },
         order: [["id", "ASC"]],
       });

@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const { Users } = require("../../../models/index.js");
+const { USERS } = require("../../../models/index.js");
 const config = require("../../../../config/config.js");
 const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");
@@ -14,7 +14,7 @@ const putAktivasi =
       if (user_id == 1) {
         return res.json("Error : The User is Admin");
       }
-      const [updated] = await Users.update(
+      const [updated] = await USERS.update(
         { aktif },
         {
           where: { id: user_id },

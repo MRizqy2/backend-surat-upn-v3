@@ -6,11 +6,11 @@ const upload = multer({ storage: multer.memoryStorage() });
 const path = require("path");
 const { StatusCodes } = require("http-status-codes");
 const {
-  Daftar_surat,
-  Template_surat,
-  Jabatan,
-  Users,
-  Jenis_surat,
+  DAFTAR_SURAT,
+  TEMPLATE_SURAT,
+  JABATAN,
+  USERS,
+  JENIS_SURAT,
 } = require("../../../../models");
 // const getStatus = require("./status_controller");
 const {
@@ -49,17 +49,17 @@ function getResourceType(filename) {
 const getDetail = async (req, res) => {
   try {
     const { daftar_surat_id } = req.body;
-    const user = await Users.findOne({
+    const user = await USERS.findOne({
       where: { id: req.token.id },
     });
-    const jabatan = await Jabatan.findOne({
+    const jabatan = await JABATAN.findOne({
       where: { id: user.jabatan_id },
     });
 
     const statusArray = getStatus(jabatan.id, true);
     const status = statusArray.join(", ");
 
-    const surat = await Daftar_surat.findOne({
+    const surat = await DAFTAR_SURAT.findOne({
       where: { id: daftar_surat_id },
     });
 
@@ -70,7 +70,7 @@ const getDetail = async (req, res) => {
     }
 
     if (!surat.dibaca) {
-      const [affectedRowsCount, affectedRows] = await Daftar_surat.update(
+      const [affectedRowsCount, affectedRows] = await DAFTAR_SURAT.update(
         {
           dibaca: true,
           status,

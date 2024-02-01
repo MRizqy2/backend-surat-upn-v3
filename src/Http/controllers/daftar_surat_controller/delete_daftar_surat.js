@@ -1,5 +1,5 @@
 const express = require("express");
-const { Daftar_surat } = require("../../../models");
+const { DAFTAR_SURAT } = require("../../../models");
 const {
   deleteAksesSurat,
 } = require("../akses_surat_controller/delete_akses_surat");
@@ -37,10 +37,10 @@ const deleteSurat = async (req, res) => {
     const deletedKomentar = await deleteKomentar(reqDelete);
     const deletedNotifikasi = await deleteNotifikasi(reqDelete);
 
-    const surat = await Daftar_surat.findOne({
+    const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
-    const deletedSurat = await Daftar_surat.destroy({
+    const deletedSurat = await DAFTAR_SURAT.destroy({
       where: { id: surat_id },
     });
 

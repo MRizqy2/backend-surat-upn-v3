@@ -1,5 +1,5 @@
 const express = require("express");
-const { Prodi } = require("../../../models");
+const { PRODI } = require("../../../models");
 const router = express.Router();
 
 const deleteProdi = async (req, res) => {
@@ -10,7 +10,7 @@ const deleteProdi = async (req, res) => {
       return res.status(400).json({ error: "Parameter prodi_id is required" });
     }
 
-    const deletedProdi = await Prodi.destroy({
+    const deletedProdi = await PRODI.destroy({
       where: { id: prodi_id },
     });
 

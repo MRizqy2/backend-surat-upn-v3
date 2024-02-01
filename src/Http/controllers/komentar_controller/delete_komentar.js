@@ -1,5 +1,5 @@
 const express = require("express");
-const { Komentar } = require("../../../models");
+const { KOMENTAR } = require("../../../models");
 const router = express.Router();
 
 const deleteKomentar = async (req, res) => {
@@ -14,7 +14,7 @@ const deleteKomentar = async (req, res) => {
       whereClause.surat_id = surat_id;
     }
 
-    const komentar = await Komentar.findOne({
+    const komentar = await KOMENTAR.findOne({
       where: whereClause,
     });
     if (!komentar) {
@@ -25,7 +25,7 @@ const deleteKomentar = async (req, res) => {
       }
     }
 
-    const hapusKomentar = await Komentar.destroy({
+    const hapusKomentar = await KOMENTAR.destroy({
       where: whereClause,
     });
 

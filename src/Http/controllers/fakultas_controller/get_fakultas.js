@@ -1,11 +1,11 @@
 const express = require("express");
-const { Fakultas } = require("../../../models");
+const { FAKULTAS } = require("../../../models");
 const { Op } = require("sequelize");
 const router = express.Router();
 
 const getFakultas = async (req, res) => {
   res.send(
-    await Fakultas.findAll({
+    await FAKULTAS.findAll({
       where: {
         id: {
           [Op.ne]: 1, // Menghindari data dengan id 1

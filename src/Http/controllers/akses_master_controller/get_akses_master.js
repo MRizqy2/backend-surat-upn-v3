@@ -1,5 +1,5 @@
 const express = require("express");
-const { Akses_master } = require("../../../models");
+const { AKSES_MASTER } = require("../../../models");
 const router = express.Router();
 
 const getAksesMaster = async (req, res) => {
@@ -8,13 +8,13 @@ const getAksesMaster = async (req, res) => {
 
     if (!akses_master_id) {
       // Mendapatkan semua data
-      const allData = await Akses_master.findAll({
+      const allData = await AKSES_MASTER.findAll({
         order: [["id", "ASC"]],
       });
       res.send(allData);
     } else if (akses_master_id) {
       // Mendapatkan data berdasarkan ID
-      const findOneData = await Akses_master.findOne({
+      const findOneData = await AKSES_MASTER.findOne({
         where: { id: akses_master_id },
       });
 

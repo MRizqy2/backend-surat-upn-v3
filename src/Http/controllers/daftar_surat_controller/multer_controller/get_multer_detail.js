@@ -2,16 +2,16 @@ const express = require("express");
 const app = express.Router();
 const router = express.Router();
 const {
-  Daftar_surat,
-  Users,
-  Jabatan,
-  Prodi,
-  Fakultas,
-  Status,
-  Jenis_surat,
-  Komentar,
-  Nomor_surat,
-  Periode,
+  DAFTAR_SURAT,
+  USERS,
+  JABATAN,
+  PRODI,
+  FAKULTAS,
+  STATUS,
+  JENIS_SURAT,
+  KOMENTAR,
+  NOMOR_SURAT,
+  PERIODE,
 } = require("../../../../models");
 
 app.use(express.json());
@@ -20,70 +20,70 @@ app.use(express.urlencoded({ extended: true }));
 const getDaftarSurat = async (req, res) => {
   const { surat_id } = req.query;
   let surat;
-  const user = await Users.findOne({
+  const user = await USERS.findOne({
     where: { id: req.token.id },
   });
-  const jabatan = await Jabatan.findOne({
+  const jabatan = await JABATAN.findOne({
     where: { id: user.jabatan_id },
   });
-  const prodi = await Prodi.findOne({
+  const prodi = await PRODI.findOne({
     where: { id: user.prodi_id },
   });
-  const fakultas = await Fakultas.findOne({
+  const fakultas = await FAKULTAS.findOne({
     where: { id: user.fakultas_id },
   });
 
-  surat = await Daftar_surat.findOne({
+  surat = await DAFTAR_SURAT.findOne({
     where: { id: surat_id },
     attributes: { exclude: ["createdAt", "updatedAt"] },
     include: [
       {
-        model: Status,
+        model: STATUS,
         as: "status",
         attributes: ["status", "persetujuan"],
       },
       {
-        model: Jenis_surat,
+        model: JENIS_SURAT,
         as: "jenis",
         attributes: { exclude: ["createdAt", "updatedAt"] },
       },
       {
-        model: Komentar,
+        model: KOMENTAR,
         as: "komentar",
         attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
         required: false,
       },
       {
-        model: Nomor_surat,
+        model: NOMOR_SURAT,
         as: "nomor_surat",
         attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
         required: false,
         include: [
           {
-            model: Periode,
+            model: PERIODE,
             as: "periode",
             attributes: { exclude: ["createdAt", "updatedAt"] },
           },
         ],
       },
       {
-        model: Users,
+        model: USERS,
         as: "user",
         attributes: ["email", "name"],
         include: [
           {
-            model: Prodi,
+            model: PRODI,
             as: "prodi",
             attributes: ["id", "name"],
             where: { id: prodi.id },
           },
           {
-            model: Jabatan,
+            model: JABATAN,
             as: "jabatan",
             attributes: ["id", "name"],
           },
           {
-            model: Fakultas,
+            model: FAKULTAS,
             as: "fakultas",
             attributes: ["id", "name"],
           },

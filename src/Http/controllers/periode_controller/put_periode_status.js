@@ -1,5 +1,5 @@
 const express = require("express");
-const { Periode } = require("../../../models");
+const { PERIODE } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -13,13 +13,11 @@ const putPeriodeStatus = async (req, res) => {
         .json({ error: "Invalid params" });
     }
 
-    const activePeriodes = await Periode.findAll({ where: { status: true } });
+    const activePeriodes = await PERIODE.findAll({ where: { status: true } });
 
     if (activePeriodes.length > 0) {
       // Mendapatkan id dari semua periode yang memiliki status true
-      const activePeriodeIds = activePeriodes.map(
-        (periode) => periode.id
-      );
+      const activePeriodeIds = activePeriodes.map((periode) => periode.id);
 
       // Melakukan update status menjadi false pada semua periode yang memiliki status true
       await Periode.update(
@@ -28,7 +26,7 @@ const putPeriodeStatus = async (req, res) => {
       );
     }
 
-    const data_periode = await Periode.findOne({ where: { id: periode_id } });
+    const data_periode = await PERIODE.findOne({ where: { id: periode_id } });
 
     if (!data_periode) {
       return res
@@ -36,7 +34,7 @@ const putPeriodeStatus = async (req, res) => {
         .json({ error: "Periode not found" });
     }
 
-    const periode = await Periode.update(
+    const periode = await PERIODE.update(
       {
         status,
       },

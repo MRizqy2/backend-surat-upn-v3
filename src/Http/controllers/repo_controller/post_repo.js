@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const {
-  Repo,
-  Daftar_surat,
-  Users,
-  Role_user,
-  Fakultas,
-  Prodi,
-  Jenis_surat,
+  REPO,
+  DAFTAR_SURAT,
+  USERS,
+  JABATAN,
+  FAKULTAS,
+  PRODI,
+  JENIS_SURAT,
 } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 
@@ -21,7 +21,7 @@ const postRepo = async (req, res) => {
     } else {
       surat_id = req.save.surat_id;
     }
-    const surat = await Daftar_surat.findOne({
+    const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
 
@@ -31,25 +31,25 @@ const postRepo = async (req, res) => {
         .json({ error: "Surat not found" });
     }
 
-    const user = await Users.findOne({
+    const user = await USERS.findOne({
       where: { id: surat.user_id },
     });
-    const role = await Role_user.findOne({
+    const role = await JABATAN.findOne({
       where: { id: user.role_id },
     });
 
-    const jenis = await Jenis_surat.findOne({
+    const jenis = await JENIS_SURAT.findOne({
       where: { id: surat.jenis_id },
     });
 
-    const prodi = await Prodi.findOne({
+    const prodi = await PRODI.findOne({
       where: { id: user.prodi_id },
     });
-    const fakultas = await Fakultas.findOne({
+    const fakultas = await FAKULTAS.findOne({
       where: { id: user.fakultas_id },
     });
     const data_user = `${user.id}/${user.name}/${role.name}/${prodi.name}/${fakultas.name}`;
-    const repo = await Repo.create({
+    const repo = await REPO.create({
       judul: surat.judul,
       jenis: jenis.jenis,
       data_user: data_user,

@@ -1,10 +1,10 @@
 const express = require("express");
 const {
-  Nomor_surat,
-  Periode,
-  Daftar_surat,
-  Users,
-  Jenis,
+  NOMOR_SURAT,
+  PERIODE,
+  DAFTAR_SURAT,
+  USERS,
+  JENIS_SURAT,
 } = require("../../../models");
 const router = express.Router();
 
@@ -13,28 +13,28 @@ const getNomorSurat = async function (req, res) {
     let nomor_surat;
     const { nomor_surat_id } = req.query;
     if (!nomor_surat_id) {
-      nomor_surat = await Nomor_surat.findAll({
+      nomor_surat = await NOMOR_SURAT.findAll({
         attributes: ["id", "nomor_surat"],
         include: [
           {
-            model: Daftar_surat,
+            model: DAFTAR_SURAT,
             as: "daftar_surat",
             attributes: { exclude: ["createdAt", "updatedAt"] },
             include: [
               {
-                model: Jenis,
+                model: JENIS_SURAT,
                 as: "jenis",
                 attributes: ["id", "jenis"],
               },
               {
-                model: Users,
+                model: USERS,
                 as: "user",
                 attributes: ["id", "email", "name"],
               },
             ],
           },
           {
-            model: Periode,
+            model: PERIODE,
             as: "periode",
             attributes: ["id", "tahun", "status"],
           },
@@ -43,28 +43,28 @@ const getNomorSurat = async function (req, res) {
         order: [["id", "ASC"]],
       });
     } else if (nomor_surat_id) {
-      nomor_surat = await Nomor_surat.findOne({
+      nomor_surat = await NOMOR_SURAT.findOne({
         attributes: ["nomor_surat"],
         include: [
           {
-            model: Daftar_surat,
+            model: DAFTAR_SURAT,
             as: "daftar_surat",
             attributes: { exclude: ["createdAt", "updatedAt"] },
             include: [
               {
-                model: Jenis,
+                model: JENIS_SURAT,
                 as: "jenis",
                 attributes: ["id", "jenis"],
               },
               {
-                model: Users,
+                model: USERS,
                 as: "user",
                 attributes: ["id", "email", "name"],
               },
             ],
           },
           {
-            model: Periode,
+            model: PERIODE,
             as: "periode",
             attributes: ["id", "tahun", "status"],
           },

@@ -1,16 +1,16 @@
 const express = require("express");
 const { StatusCodes } = require("http-status-codes");
-const { Template_surat, Jenis_surat } = require("../../../../models");
+const { TEMPLATE_SURAT, JENIS_SURAT } = require("../../../../models");
 const router = express.Router();
 
 const getDetail = async (req, res) => {
   try {
     const { template_id } = req.query;
-    const template_surat = await Template_surat.findOne({
+    const template_surat = await TEMPLATE_SURAT.findOne({
       where: { id: template_id },
       include: [
         {
-          model: Jenis_surat,
+          model: JENIS_SURAT,
           as: "jenis",
           attributes: ["id", "jenis"],
         },

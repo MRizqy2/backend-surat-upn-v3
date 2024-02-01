@@ -1,5 +1,5 @@
 const express = require("express");
-const { Nomor_surat } = require("../../../models");
+const { NOMOR_SURAT } = require("../../../models");
 const router = express.Router();
 
 const deleteNomorSurat = async (req, res) => {
@@ -12,7 +12,7 @@ const deleteNomorSurat = async (req, res) => {
         .json({ error: "Parameter 'nomor_surat_id' is required" });
     }
 
-    const hapusNomorSurat = await Nomor_surat.destroy({
+    const hapusNomorSurat = await NOMOR_SURAT.destroy({
       where: { id: nomor_surat_id },
     });
 

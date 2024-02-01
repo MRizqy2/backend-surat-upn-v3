@@ -19,6 +19,7 @@ const permisionController = require("../Http/controllers/permision_controller/pe
 const aksesSuratController = require("../Http/controllers/akses_surat_controller/akses_surat_controller");
 // const nomorController = require("../Http/controllers/nomor_surat_controller");
 const notifikasiController = require("../Http/controllers/notifikasi_controller/notifikasi_controller");
+const downloadSurat = require("../Http/controllers/daftar_surat_controller/multer_controller/get_multer_download");
 
 // const {
 //   app: tampilanController,
@@ -30,6 +31,8 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 // router.use(cors());
+// router.use("/daftar-surat/multer/download/:filename", downloadSurat);
+
 router.use("/akses-master", authMiddleware, aksesMasterController);
 router.use("/permision", authMiddleware, permisionController);
 router.use("/jabatan", authMiddleware, jabatanController);

@@ -1,5 +1,5 @@
 const express = require("express");
-const { Akses_master, Permision } = require("../../../models");
+const { AKSES_MASTER, PERMISION } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -14,7 +14,7 @@ const postPermision = async (req, res) => {
   } = req.body;
   try {
     // Dapatkan ID terakhir dari tabel Permision
-    const latestPermision = await Akses_master.findOne({
+    const latestPermision = await AKSES_MASTER.findOne({
       order: [["id", "DESC"]],
     });
     // Tentukan ID yang baru
@@ -22,7 +22,7 @@ const postPermision = async (req, res) => {
     const newPermisionId = latestPermisionId + 1;
 
     // Buat data Permision dengan ID yang baru
-    const permision = await Permision.create({
+    const permision = await PERMISION.create({
       id: newPermisionId,
       jabatan_id,
       buat_surat,

@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express.Router();
 const router = express.Router();
-const { Tampilan, Daftar_surat, Users, Jabatan } = require("../../../models");
+const { TAMPILAN, DAFTAR_SURAT, USERS, JABATAN } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const { Sequelize } = require("sequelize");
 
@@ -12,14 +12,14 @@ const postTampilan = async (req, res) => {
   try {
     const { surat_id, jabatan_id } = req.body;
 
-    const surat = await Daftar_surat.findOne({
+    const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
-    const user = await Users.findOne({
+    const user = await USERS.findOne({
       where: { id: req.token.id },
     });
 
-    const jabatan = await Jabatan.findOne({
+    const jabatan = await JABATAN.findOne({
       where: {
         id: jabatan_id || user.jabatan_id,
       },
@@ -37,7 +37,7 @@ const postTampilan = async (req, res) => {
     //   where: { id: jabatan.jabatan_atas_id },
     // });
 
-    tamp_surat_atas = await Tampilan.create({
+    tamp_surat_atas = await TAMPILAN.create({
       pin: false,
       dibaca: false,
       surat_id: surat.id,
