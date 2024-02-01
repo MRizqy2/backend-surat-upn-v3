@@ -1,19 +1,24 @@
 const express = require("express");
 const { FAKULTAS } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const putFakultas = async (req, res) => {
   try {
     const { nama, jenjang, kode_fakultas } = req.body;
     const { id } = req.query;
     if (!id) {
-      return res.status(400).json({ error: "Invalid params" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Invalid params" });
     }
 
     const fakultas = await FAKULTAS.findOne({ where: { id: id } });
 
     if (!fakultas) {
-      return res.status(404).json({ error: "Fakultas not found" });
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "Fakultas not found" });
     }
 
     fakultas.name = nama;
@@ -29,7 +34,9 @@ const putFakultas = async (req, res) => {
     });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

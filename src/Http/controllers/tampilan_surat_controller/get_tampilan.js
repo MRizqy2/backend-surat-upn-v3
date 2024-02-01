@@ -1,18 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { TAMPILAN, DAFTAR_SURAT, USERS, JABATAN } = require("../../../models");
+const { TAMPILAN } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
-const { Sequelize } = require("sequelize");
-
-const { Op } = require("sequelize");
-
-// ...
 
 const getTampilan = async (req, res) => {
   try {
     const { tampilan_id, jabatan_id, surat_id } = req.query;
     let tampilan;
-    console.log("nyon[p", tampilan_id); //undefined bisa
 
     const whereClause = {};
 
@@ -28,7 +22,6 @@ const getTampilan = async (req, res) => {
       whereClause.surat_id = surat_id;
     }
 
-    console.log("omvweop", whereClause);
     tampilan = await TAMPILAN.findAll({
       where: whereClause,
       order: [["id", "ASC"]],
@@ -47,8 +40,6 @@ const getTampilan = async (req, res) => {
     });
   }
 };
-
-// ...
 
 router.get("/", getTampilan);
 

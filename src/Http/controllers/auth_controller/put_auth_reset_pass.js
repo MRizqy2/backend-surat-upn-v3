@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
 const { USERS } = require("../../../models/index.js");
-const config = require("../../../../config/config.js");
 const crypto = require("crypto");
 const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");

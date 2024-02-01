@@ -1,10 +1,5 @@
 const express = require("express");
-const {
-  DAFTAR_SURAT,
-  JABATAN,
-  USERS,
-  JENIS_SURAT,
-} = require("../../../../models");
+const { DAFTAR_SURAT, JABATAN, USERS } = require("../../../../models");
 const { StatusCodes } = require("http-status-codes");
 const multer = require("multer");
 const crypto = require("crypto");

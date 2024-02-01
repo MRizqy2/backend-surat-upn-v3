@@ -33,13 +33,11 @@ const putSuratUrl = async (req, res, next) => {
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
-    console.log("dawdasdw", outputPath);
     const fileName = outputPath.split("\\").pop();
     const judulExt = surat.judul;
     const judulFinal = judulExt.replace(".pdf", "-acc.pdf");
 
     const downloadUrl = `${
-      //
       process.env.NGROK
     }/daftar-surat/multer/download/${encodeURIComponent(fileName)}`;
 

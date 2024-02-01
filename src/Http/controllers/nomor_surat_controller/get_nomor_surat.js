@@ -7,6 +7,7 @@ const {
   JENIS_SURAT,
 } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const getNomorSurat = async function (req, res) {
   try {
@@ -76,7 +77,9 @@ const getNomorSurat = async function (req, res) {
     res.json(nomor_surat);
   } catch (error) {
     console.error("Error getting users:", error);
-    res.status(500).json({ error: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
   }
 };
 

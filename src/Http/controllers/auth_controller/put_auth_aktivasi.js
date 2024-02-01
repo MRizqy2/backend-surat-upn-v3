@@ -1,6 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
 const { USERS } = require("../../../models/index.js");
-const config = require("../../../../config/config.js");
 const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");
 const router = express.Router();

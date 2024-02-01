@@ -52,7 +52,6 @@ module.exports = (sequelize, DataTypes) => {
       thumbnail: DataTypes.STRING,
       jenis_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
         references: {
           model: "JENIS_SURAT",
           key: "id",
@@ -62,7 +61,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       user_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
         references: {
           model: "USERS",
           key: "id",

@@ -1,6 +1,7 @@
 const express = require("express");
 const { JENIS_SURAT } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const postJenis = async function (req, res) {
   try {
@@ -22,7 +23,9 @@ const postJenis = async function (req, res) {
     return res.json({ message: "Berhasil", jenis_surat });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

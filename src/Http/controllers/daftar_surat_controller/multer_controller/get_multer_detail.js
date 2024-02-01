@@ -12,6 +12,7 @@ const {
   KOMENTAR,
   NOMOR_SURAT,
   PERIODE,
+  REVISI,
 } = require("../../../../models");
 
 app.use(express.json());
@@ -20,18 +21,6 @@ app.use(express.urlencoded({ extended: true }));
 const getDaftarSurat = async (req, res) => {
   const { surat_id } = req.query;
   let surat;
-  const user = await USERS.findOne({
-    where: { id: req.token.id },
-  });
-  const jabatan = await JABATAN.findOne({
-    where: { id: user.jabatan_id },
-  });
-  const prodi = await PRODI.findOne({
-    where: { id: user.prodi_id },
-  });
-  const fakultas = await FAKULTAS.findOne({
-    where: { id: user.fakultas_id },
-  });
 
   surat = await DAFTAR_SURAT.findOne({
     where: { id: surat_id },
@@ -75,7 +64,6 @@ const getDaftarSurat = async (req, res) => {
             model: PRODI,
             as: "prodi",
             attributes: ["id", "name"],
-            // where: { id: prodi.id },
           },
           {
             model: JABATAN,
@@ -92,8 +80,39 @@ const getDaftarSurat = async (req, res) => {
     ],
     order: [["id", "ASC"]],
   });
+  const revisi = await REVISI.findAll({
+    where: { surat_id_baru: surat_id },
+    attributes: [],
+    include: [
+      {
+        model: DAFTAR_SURAT,
+        as: "surat_id_old",
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: NOMOR_SURAT,
+            as: "nomor_surat",
+            attributes: {
+              exclude: ["surat_id", "periode_id", "createdAt", "updatedAt"],
+            },
+            required: false,
+            include: [
+              {
+                model: PERIODE,
+                as: "periode",
+                attributes: {
+                  exclude: ["createdAt", "updatedAt"],
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    order: [["id", "ASC"]],
+  });
 
-  res.json(surat);
+  res.json({ surat, revisi });
 };
 
 router.get("/", getDaftarSurat);

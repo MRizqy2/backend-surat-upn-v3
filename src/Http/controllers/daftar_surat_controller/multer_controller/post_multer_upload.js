@@ -148,26 +148,3 @@ router.post(
 );
 
 module.exports = router;
-
-// const handleDownload = async () => {
-//   const user = session.data?.user as User;
-//   const token = user.accessToken;
-
-//   const response = await axios.get(`${singleData?.url}`, {
-//     responseType: "arraybuffer",
-//     headers: {
-//       Authorization: "Bearer " + token,
-//     },
-//   });
-//   const url = window.URL.createObjectURL(
-//     new Blob([response.data], {
-//       type: "application/pdf",
-//     }) //res.end(buffer);
-//   );
-//   let link = document.createElement("a");
-//   link.href = url;
-//   link.setAttribute("download", `${singleData?.judul.split(".")[0]}.pdf`);
-//   document.body.appendChild(link);
-//   link.click();
-//   link.remove();
-// };

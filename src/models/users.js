@@ -25,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING,
       jabatan_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
         references: {
           model: "JABATAN",
           key: "id",

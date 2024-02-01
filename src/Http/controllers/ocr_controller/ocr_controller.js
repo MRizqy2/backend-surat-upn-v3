@@ -9,7 +9,7 @@ const { NOMOR_SURAT, DAFTAR_SURAT } = require("../../../models");
 
 const OCR = async (req, res) => {
   try {
-    const { nomor_surat_id, surat_id } = req.save;
+    const { nomor_surat_id, surat_id } = req.body;
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
@@ -41,15 +41,12 @@ const OCR = async (req, res) => {
     const inputPath = finalFilePath;
 
     let fileNameWithoutExtension = fileName;
-    console.log("fileNameWithoutExtension = ", fileNameWithoutExtension);
+
     if (!fileName.endsWith("-acc.pdf")) {
       fileNameWithoutExtension = fileName.replace(".pdf", "-acc.pdf"); // Ganti ekstensi .pdf dengan -acc.pdf
     }
-    //mbkm2-acc.pdf
     const outputPath = path.join(tempDir, fileNameWithoutExtension);
-    console.log("outputPath = ", outputPath); //D:\Rizal\PENS\Semester 6\Magang KP\Sejahtera Mandiri Solusindo\upn\backend-surat-upn-v3\backend-surat-upn-v3\daftar_surat\acc\mbkm2-acc.pdf
-    // fs.writeFileSync(outputPath, fileBuffer);
-    console.log("outputPath2 = ", outputPath);
+
     const searchText = "XYXY";
     const newText = await NOMOR_SURAT.findOne({
       where: { id: nomor_surat_id },
@@ -61,7 +58,6 @@ const OCR = async (req, res) => {
       searchText,
       newText.nomor_surat
     );
-    console.log("lkhnhp", savePdf);
 
     const reqSuratUrl = {
       body: {
@@ -72,14 +68,12 @@ const OCR = async (req, res) => {
     const saveSuratUrl = await putSuratUrl(reqSuratUrl);
 
     console.log("Perubahan teks pada PDF berhasil disimpan ke", outputPath);
-    return newText;
-    // res.status(StatusCodes.OK).json("Perubahan teks pada PDF berhasil disimpan");
+    if (req.body.from) {
+      return newText;
+    } else res.json("Nomor surat tercetak");
   } catch (error) {
     console.error("Error:", error);
     return error;
-    // res
-    //   .status(StatusCodes.INTERNAL_SERVER_ERROR)
-    //   .json("Terjadi kesalahan dalam memproses teks di PDF");
   }
 };
 

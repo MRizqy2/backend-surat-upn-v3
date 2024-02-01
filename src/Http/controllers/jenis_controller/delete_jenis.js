@@ -1,6 +1,7 @@
 const express = require("express");
 const { JENIS_SURAT } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deleteJenis = async (req, res) => {
   try {
@@ -8,7 +9,7 @@ const deleteJenis = async (req, res) => {
 
     if (!jenis_id) {
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Parameter 'jenis_id' is required" });
     }
 
@@ -17,13 +18,19 @@ const deleteJenis = async (req, res) => {
     });
 
     if (hapusJenis) {
-      res.status(200).json({ message: "Jenis Surat deleted successfully" });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Jenis Surat deleted successfully" });
     } else {
-      res.status(404).json({ error: "Jenis Surat not found" });
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Jenis Surat not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

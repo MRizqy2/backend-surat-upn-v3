@@ -136,7 +136,7 @@ const postNomorSurat = async (req, res) => {
       nomor_surat = `${nomor_surat}/${kode_fakultas}/${kode_jenis_surat}/TU-${kode_prodi}/${tahun_periode}`;
     }
     nomor_surat = String(nomor_surat);
-    console.log("testitn 2", nomor_surat);
+
     const saveNomorSurat = await NOMOR_SURAT.create({
       nomor_surat: nomor_surat,
       surat_id: surat_id,
@@ -144,13 +144,13 @@ const postNomorSurat = async (req, res) => {
     });
 
     const reqOcr = {
-      save: {
+      body: {
         nomor_surat_id: saveNomorSurat.id,
         surat_id: saveNomorSurat.surat_id,
         from: `nomor_surat_controller`,
       },
     };
-    console.log("ompo[k");
+
     const saveOcr = await OCR(reqOcr);
     if (!saveOcr) {
       return res

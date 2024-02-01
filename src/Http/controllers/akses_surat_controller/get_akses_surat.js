@@ -7,14 +7,13 @@ const {
   JENIS_SURAT,
 } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const getAksesSurat = async (req, res) => {
   try {
     const { akses_surat_id } = req.query;
     let aksesSurat;
-    const user = await USERS.findOne({
-      where: { id: req.token.id },
-    });
+
     if (!akses_surat_id) {
       aksesSurat = await AKSES_SURAT.findAll({
         attributes: {
@@ -79,7 +78,9 @@ const getAksesSurat = async (req, res) => {
     res.json(aksesSurat);
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 router.get("/", getAksesSurat);

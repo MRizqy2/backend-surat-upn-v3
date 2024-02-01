@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express.Router();
-const router = express.Router();
 const { STATUS } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 
@@ -20,7 +19,6 @@ const getStatus = async (req, res) => {
       where: whereClause,
       order: [["id", "ASC"]],
     });
-    console.log("mdwqpo", status[0]);
 
     if (req.query.from) {
       return status;

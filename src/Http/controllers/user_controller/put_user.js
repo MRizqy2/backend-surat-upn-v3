@@ -16,7 +16,7 @@ const putUser = async (req, res) => {
       {
         name: name || user.name,
         email: email || user.email,
-        // password: password || ,
+        // password: password || ,jangan dihapus
         jabatan_id: jabatan_id || user.jabatan_id,
         prodi_id: prodi_id || user.prodi_id,
         fakultas_id: fakultas_id || user.fakultas_id,

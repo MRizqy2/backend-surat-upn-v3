@@ -1,6 +1,7 @@
 const express = require("express");
 const { KOMENTAR } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deleteKomentar = async (req, res) => {
   try {
@@ -19,7 +20,7 @@ const deleteKomentar = async (req, res) => {
     });
     if (!komentar) {
       if (!req.query.from) {
-        res.status(404).json({ error: "Komentar not found" });
+        res.status(StatusCodes.NOT_FOUND).json({ error: "Komentar not found" });
       } else {
         return komentar;
       }
@@ -32,17 +33,21 @@ const deleteKomentar = async (req, res) => {
     if (hapusKomentar) {
       if (!req.query.from) {
         res
-          .status(200)
+          .status(StatusCodes.OK)
           .json({ message: "Komentar surat deleted successfully" });
       } else {
         return hapusKomentar;
       }
     } else {
-      res.status(404).json({ error: "Komentar Surat not found" });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "Komentar Surat not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

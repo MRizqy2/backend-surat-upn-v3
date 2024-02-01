@@ -1,15 +1,6 @@
 const express = require("express");
-const {
-  REVISI,
-  DAFTAR_SURAT,
-  JABATAN,
-  USERS,
-  JENIS_SURAT,
-} = require("../../../models");
+const { REVISI } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
-const multer = require("multer");
-const crypto = require("crypto");
-const path = require("path");
 
 const router = express.Router();
 

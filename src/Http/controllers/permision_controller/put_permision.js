@@ -14,7 +14,9 @@ const putPermision = async (req, res) => {
     } = req.body;
     const { jabatan_id } = req.query;
     if (!jabatan_id) {
-      return res.status(400).json({ error: "Invalid params" });
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "Invalid params" });
     }
 
     const permision = await PERMISION.findOne({
@@ -26,7 +28,6 @@ const putPermision = async (req, res) => {
     }
     const permision_update = await Permision.update(
       {
-        // jabatan_id,
         buat_surat,
         download_surat,
         generate_nomor_surat,
@@ -42,7 +43,9 @@ const putPermision = async (req, res) => {
     res.status(StatusCodes.OK).json({ permision: permision_update });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

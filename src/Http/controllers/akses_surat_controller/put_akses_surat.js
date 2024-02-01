@@ -8,9 +8,6 @@ const putAksesSurat = async (req, res) => {
     const { surat_id, jabatan_id } = req.body;
     const { akses_surat_id } = req.query;
 
-    const akses_surat = await AKSES_SURAT.findOne({
-      where: { id: akses_surat_id },
-    });
     const updateAksesSurat = await AKSES_SURAT.update(
       {
         surat_id,

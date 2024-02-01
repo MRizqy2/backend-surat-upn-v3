@@ -1,9 +1,4 @@
-const {
-  DAFTAR_SURAT,
-  TEMPLATE_SURAT,
-  JABATAN,
-  USERS,
-} = require("../../../models");
+const { JABATAN } = require("../../../models");
 
 async function catchStatus(req, res) {
   const { jabatan_id, isRead, latestStatus, persetujuan, isSigned } = req.body;
@@ -14,7 +9,6 @@ async function catchStatus(req, res) {
   const jabatan_atas = await JABATAN.findOne({
     where: { id: jabatan.jabatan_atas_id },
   });
-  console.log("myjkyu", jabatan.id);
   const isiStatus = [
     "",
     `Di Daftar Tunggu ${jabatan.name}`,
@@ -27,7 +21,6 @@ async function catchStatus(req, res) {
     `Ditolak ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
     "Surat Telah Ditandatangani",
   ];
-  console.log("dawdawd");
 
   const statusMap = {
     [jabatan.id]: !isRead ? isiStatus[3] : isiStatus[2],
@@ -52,24 +45,15 @@ async function catchStatus(req, res) {
       return isiStatus[7];
     }
 
-    console.log("tytntm");
-    console.log("hhhhyyyy", updatedStatusMap[jabatan.id]);
-    console.log("adsdw", latestStatus);
-
     if (latestStatus != updatedStatusMap[jabatan.id]) {
       //diproses TU != Disetujui Dekan
-      console.log("bkpoerb");
       if (persetujuan) {
         return updatedStatusMap[jabatan.id] || "";
       } else if (!persetujuan && !isRead) {
-        console.log("bkpoerb");
         return updatedStatusMap[jabatan.id] || "";
       }
-      console.log("jajajaj", updatedStatusMap[jabatan.id]);
       return updatedStatusMap[jabatan.id] || "";
     }
-
-    console.log("hhhhyyyy", updatedStatusMap[jabatan.id]);
   } else {
     return latestStatus;
   }

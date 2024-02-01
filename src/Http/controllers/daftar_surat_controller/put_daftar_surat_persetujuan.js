@@ -1,20 +1,7 @@
 const express = require("express");
-const app = express.Router();
 const router = express.Router();
-const {
-  DAFTAR_SURAT,
-  USERS,
-  JABATAN,
-  PRODI,
-  FAKULTAS,
-  STATUS,
-  TAMPILAN,
-} = require("../../../models");
-const auth = require("../../middleware/authMiddleware");
-const cloudinaryController = require("./cloudinary_controller/cloudinary_controller");
+const { DAFTAR_SURAT, USERS, JABATAN } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
-const getStatus = require("../status_surat_controller/status_controller");
-const { Op, Sequelize } = require("sequelize");
 
 const putPersetujuan = async (req, res) => {
   try {

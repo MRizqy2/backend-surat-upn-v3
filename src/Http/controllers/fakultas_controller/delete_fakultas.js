@@ -8,7 +8,9 @@ const deleteFakultas = async (req, res) => {
     const { fakultas_id } = req.query;
 
     if (!fakultas_id) {
-      return res.status(400).json({ error: "Parameter id is required" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Parameter id is required" });
     }
     await PRODI.update({ fakultas_id: null }, { where: { fakultas_id } });
     const deletedFakultas = await FAKULTAS.destroy({
@@ -16,13 +18,17 @@ const deleteFakultas = async (req, res) => {
     });
 
     if (deletedFakultas) {
-      res.status(200).json({ message: "Fakultas deleted successfully" });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Fakultas deleted successfully" });
     } else {
-      res.status(404).json({ error: "Fakultas not found" });
+      res.status(StatusCodes.BAD_REQUEST).json({ error: "Fakultas not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

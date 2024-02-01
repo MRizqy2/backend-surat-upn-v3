@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const authMiddleware = require("../Http/middleware/authMiddleware");
 const authController = require("../Http/controllers/auth_controller/authentication_controller");
 const daftarSuratController = require("../Http/controllers/daftar_surat_controller/daftar_surat_controller");
@@ -17,21 +16,14 @@ const repoController = require("../Http/controllers/repo_controller/repo_control
 const aksesMasterController = require("../Http/controllers/akses_master_controller/akses_master_controller");
 const permisionController = require("../Http/controllers/permision_controller/permision_controller");
 const aksesSuratController = require("../Http/controllers/akses_surat_controller/akses_surat_controller");
-// const nomorController = require("../Http/controllers/nomor_surat_controller");
 const notifikasiController = require("../Http/controllers/notifikasi_controller/notifikasi_controller");
-const downloadSurat = require("../Http/controllers/daftar_surat_controller/multer_controller/get_multer_download");
+const ocrController =
+  require("../Http/controllers/ocr_controller/ocr_controller").router;
 
-// const {
-//   app: tampilanController,
-// } = require("../Http/controllers/tampilan_surat_controller");
-//masalah e export e objek
 const router = express.Router();
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
-
-// router.use(cors());
-// router.use("/daftar-surat/multer/download/:filename", downloadSurat);
 
 router.use("/akses-master", authMiddleware, aksesMasterController);
 router.use("/permision", authMiddleware, permisionController);
@@ -44,9 +36,10 @@ router.use("/user", authMiddleware, usersController);
 router.use("/periode", authMiddleware, periodeController);
 router.use("/jenis", authMiddleware, jenisController);
 router.use("/fakultas", authMiddleware, fakultasController);
-router.use("/prodi", authMiddleware, prodiController); //info lempar2 token piye
+router.use("/prodi", authMiddleware, prodiController);
+router.use("/ocr", authMiddleware, ocrController);
 
-router.use("/daftar-surat", authMiddleware, daftarSuratController); //wat iyo;v//sek
+router.use("/daftar-surat", authMiddleware, daftarSuratController);
 router.use("/template-surat", authMiddleware, templateController);
 router.use("/tampilan", authMiddleware, tampilanController);
 router.use("/status", authMiddleware, statusController);
@@ -54,9 +47,5 @@ router.use("/komentar", authMiddleware, komentarController);
 router.use("/notifikasi", authMiddleware, notifikasiController);
 
 router.use("/repo", authMiddleware, repoController);
-
-// router.use("/notifikasi", authMiddleware, notifikasiController);
-
-// router.use("/nomor-surat", authMiddleware, nomorController);
 
 module.exports = router;

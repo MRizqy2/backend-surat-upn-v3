@@ -23,9 +23,9 @@ const deleteTemplate = async (req, res) => {
 
     if (deletedTemplate) {
       const urlFile = template.url;
-      console.log("mmvpoewm", urlFile);
+
       const fileName = urlFile.split("/").pop();
-      console.log("dawdawdasd", fileName);
+
       const filePath = path.join(
         __dirname,
         "../../../../template_surat",
@@ -34,11 +34,13 @@ const deleteTemplate = async (req, res) => {
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error("Error:", err);
-          return res.status(500).json({ error: "Failed to delete file" });
+          return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json({ error: "Failed to delete file" });
         }
 
         res
-          .status(200)
+          .status(StatusCodes.OK)
           .json({ message: "Template surat deleted successfully" });
       });
     } else {

@@ -14,7 +14,6 @@ const { StatusCodes } = require("http-status-codes");
 const postRepo = async (req, res) => {
   try {
     let surat_id;
-    console.log("sadw", req.save.surat_id);
     if (req && typeof req.body !== "undefined") {
       surat_id = req.body.surat_id;
       user_id = req.b;

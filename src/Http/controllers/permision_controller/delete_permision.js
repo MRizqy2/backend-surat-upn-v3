@@ -1,6 +1,7 @@
 const express = require("express");
 const { PERMISION } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deletePermision = async (req, res) => {
   try {
@@ -8,7 +9,7 @@ const deletePermision = async (req, res) => {
 
     if (!permision_id) {
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Parameter 'permision_id' is required" });
     }
 
@@ -17,13 +18,17 @@ const deletePermision = async (req, res) => {
     });
 
     if (deletedPermision) {
-      res.status(200).json({ message: "Permision deleted successfully" });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Permision deleted successfully" });
     } else {
-      res.status(404).json({ error: "Permision not found" });
+      res.status(StatusCodes.NOT_FOUND).json({ error: "Permision not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

@@ -3,7 +3,6 @@ const { DAFTAR_SURAT, USERS } = require("../../../../models");
 const { StatusCodes } = require("http-status-codes");
 const multer = require("multer");
 const crypto = require("crypto");
-const path = require("path");
 const { putStatus } = require("../../status_surat_controller/put_status");
 const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
 const router = express.Router();
@@ -21,19 +20,18 @@ const storage = multer.diskStorage({
   filename: async function (req, file, cb) {
     // Gunakan judul sebagai nama file
     const data_surat = await DAFTAR_SURAT.findOne({
-      where: { id: req.query.surat_id }, //https://0ae6-158-140-171-95.ngrok-free.app/daftar-surat/multer/download/undefined
+      where: { id: req.query.surat_id },
     });
-    console.log("opokdq", req.query.surat_id); //opokdq 7
+
     const judul = data_surat.judul;
-    console.log("adwdasdwa", judul);
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
     const filename = `${randomString}-${timestamp}-${judul}`;
-    cb(null, filename); //
+    cb(null, filename);
   },
 });
 
-const upload = multer({ storage: storage }); //enek sing erro kui nek put surat url multer
+const upload = multer({ storage: storage });
 
 const putMulterTtd = async function (req, res) {
   try {
@@ -45,7 +43,7 @@ const putMulterTtd = async function (req, res) {
     }
     const thumbnailUrl = "";
     const suratUrl = `${req.files["surat"][0].filename}`;
-    console.log("dawdadw", suratUrl);
+
     const downloadUrl = `${
       process.env.NGROK
     }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;

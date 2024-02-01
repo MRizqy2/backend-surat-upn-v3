@@ -30,7 +30,9 @@ const putKomentar = async function (req, res) {
     return res.json({ message: "Berhasil", updatedKomenar });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

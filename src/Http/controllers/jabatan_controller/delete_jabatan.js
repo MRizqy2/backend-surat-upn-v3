@@ -7,6 +7,7 @@ const {
   AKSES_SURAT,
 } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deleteJabatan = async (req, res) => {
   try {
@@ -14,7 +15,7 @@ const deleteJabatan = async (req, res) => {
 
     if (!jabatan_id) {
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Parameter 'jabatan_id' is required" });
     }
     const users = await USERS.findAll({
@@ -52,13 +53,17 @@ const deleteJabatan = async (req, res) => {
     });
 
     if (deletedJabatan) {
-      res.status(200).json({ message: "Jabatan deleted successfully" });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Jabatan deleted successfully" });
     } else {
-      res.status(404).json({ error: "Jabatan not found" });
+      res.status(StatusCodes.NOT_FOUND).json({ error: "Jabatan not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

@@ -28,7 +28,9 @@ const putJenis = async function (req, res) {
     return res.json({ message: "update berhasil", jenis_surat });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

@@ -1,14 +1,12 @@
 const express = require("express");
 const { STATUS } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deleteStatus = async (req, res) => {
   try {
     const { status_id, surat_id } = req.query;
 
-    // if (!status_id) {
-    //   return res.status(400).json({ error: "Parameter status_id is required" });
-    // }
     const whereClause = {};
     if (req.query && status_id !== undefined) {
       whereClause.id = status_id;
@@ -23,18 +21,24 @@ const deleteStatus = async (req, res) => {
 
     if (deletedStatus) {
       if (!req.query.from) {
-        res.status(200).json({ message: "Status deleted successfully" });
+        res
+          .status(StatusCodes.OK)
+          .json({ message: "Status deleted successfully" });
       } else {
         return deletedStatus;
       }
     } else {
       if (res) {
-        res.status(404).json({ error: "Akses Surat not found" });
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ error: "Akses Surat not found" });
       }
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

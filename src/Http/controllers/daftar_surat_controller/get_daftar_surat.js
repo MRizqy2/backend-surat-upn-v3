@@ -1,5 +1,4 @@
 const express = require("express");
-// const app = express.Router();
 const router = express.Router();
 const {
   DAFTAR_SURAT,
@@ -49,7 +48,6 @@ const getDaftarSurat = async (req, res) => {
     where: { id: user.fakultas_id },
   });
 
-  // const whereClause = {};
   const whereClause =
     startDate && endDate
       ? {
@@ -114,7 +112,6 @@ const getDaftarSurat = async (req, res) => {
               model: PRODI,
               as: "prodi",
               attributes: ["id", "name"],
-              // where: { id: prodi.id },
             },
             {
               model: JABATAN,
@@ -188,7 +185,6 @@ const getDaftarSurat = async (req, res) => {
               model: PRODI,
               as: "prodi",
               attributes: ["id", "name"],
-              // where: { id: prodi.id },
             },
             {
               model: JABATAN,

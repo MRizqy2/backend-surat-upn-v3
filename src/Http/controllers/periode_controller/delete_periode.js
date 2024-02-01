@@ -1,6 +1,7 @@
 const express = require("express");
 const { PERIODE } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deletePeriode = async (req, res) => {
   try {
@@ -8,7 +9,7 @@ const deletePeriode = async (req, res) => {
 
     if (!periode_id) {
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Parameter 'periode_id' is required" });
     }
 
@@ -17,13 +18,19 @@ const deletePeriode = async (req, res) => {
     });
 
     if (hapusPeriode) {
-      res.status(200).json({ message: "Periode Surat deleted successfully" });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Periode Surat deleted successfully" });
     } else {
-      res.status(404).json({ error: "Periode Surat not found" });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "Periode Surat not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

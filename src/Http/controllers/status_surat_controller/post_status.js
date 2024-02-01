@@ -13,8 +13,7 @@ const postStatus = async (req, res) => {
     const { surat_id } = req.body;
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
-    }); //cuy/info get daftar surat/"Both 'month' and 'year' parameters are required"/ ss no postmanmu ae
-    //sek nambah maneh
+    });
     const user = await USERS.findOne({
       where: { id: req.body.user_id || req.token.id },
     });
@@ -22,34 +21,27 @@ const postStatus = async (req, res) => {
     const jabatan = await JABATAN.findOne({
       where: { id: user.jabatan_id },
     });
-    // const jabatan_atas = await Jabatan.findOne({
-    //   where: { id: jabatan.jabatan_atas_id },
-    // });
-    // console.log("sdadwdaw", jabatan_atas.id); //kok 2/ iyo/ malah kosong/ statusse kosong
     if (!surat) {
       return res.status(StatusCodes.NOT_FOUND).json({
         error: "Daftar surat not found",
       });
     }
-    console.log(",uiikliyk", jabatan.id);
     const reqStatus = {
       body: {
-        jabatan_id: jabatan.id, //"status": "Di Daftar Tunggu prodi", kan harusse TU
-        isRead: false, //aman
+        jabatan_id: jabatan.id,
+        isRead: false,
         latestStatus: "",
         persetujuan: "",
         isSigned: false,
       },
-    }; //asdnvni Promise { <pending> }
+    };
 
     const saveStatus = await catchStatus(reqStatus);
-    console.log("uiio;", saveStatus);
     const surat_kesetujuan = await STATUS.create({
       surat_id: surat.id,
       persetujuan: "",
       status: saveStatus,
     });
-    console.log("Sadwasdwas");
     if (!req.body.from) {
       res.status(StatusCodes.OK).json({ surat: surat_kesetujuan });
     } else {

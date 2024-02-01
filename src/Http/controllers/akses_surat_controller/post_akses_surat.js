@@ -7,9 +7,9 @@ const postAksesSurat = async (req, res) => {
   const surat = await DAFTAR_SURAT.findOne({
     where: { id: surat_id },
   });
-  console.log("movdpw", tambah_akses_id);
+
   const saveAkses = await AKSES_SURAT.create({
-    surat_id,
+    surat_id: surat.id,
     jabatan_id: tambah_akses_id,
   });
 

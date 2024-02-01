@@ -1,6 +1,7 @@
 const express = require("express");
 const { NOTIFIKASI } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deleteNotifikasi = async (req, res) => {
   try {
@@ -17,7 +18,9 @@ const deleteNotifikasi = async (req, res) => {
     });
     if (!notifikasi) {
       if (!req.query.from) {
-        res.status(404).json({ error: "Notifikasi not found" });
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ error: "Notifikasi not found" });
       } else {
         return notifikasi;
       }
@@ -28,17 +31,21 @@ const deleteNotifikasi = async (req, res) => {
     if (hapusNotifikasi) {
       if (!req.query.from) {
         res
-          .status(200)
+          .status(StatusCodes.OK)
           .json({ message: "Notifikasi surat deleted successfully" });
       } else {
         return hapusNotifikasi;
       }
     } else {
-      res.status(404).json({ error: "Notifikasi Surat not found" });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "Notifikasi Surat not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 router.delete("/", deleteNotifikasi);

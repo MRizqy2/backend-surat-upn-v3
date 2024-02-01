@@ -5,7 +5,6 @@ require("pg");
 const router = require("./src/routes/index.js");
 const cors = require("cors");
 const ColorGreen = "\x1b[32m";
-// const chalk = require("chalk");
 
 app.use(express.json());
 app.use(cors());

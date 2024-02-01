@@ -1,10 +1,9 @@
-"use strict"; //inpo pindah .env
+"use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class PRODI extends Model {
     static associate(models) {
       PRODI.hasMany(models.USERS, { foreignKey: "prodi_id" });
-      // Prodi.hasMany(models.Periode, { foreignKey: "prodi_id" });
       PRODI.belongsTo(models.FAKULTAS, { foreignKey: "fakultas_id" });
     }
   }
@@ -14,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
       kode_prodi: DataTypes.STRING,
       fakultas_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
         references: {
           model: "FAKULTAS",
           key: "id",

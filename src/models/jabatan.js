@@ -29,7 +29,6 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       jabatan_atas_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
         references: {
           model: "DAFTAR_SURAT",
           key: "id",
