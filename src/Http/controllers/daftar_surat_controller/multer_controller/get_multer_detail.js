@@ -75,7 +75,7 @@ const getDaftarSurat = async (req, res) => {
             model: PRODI,
             as: "prodi",
             attributes: ["id", "name"],
-            where: { id: prodi.id },
+            // where: { id: prodi.id },
           },
           {
             model: JABATAN,
