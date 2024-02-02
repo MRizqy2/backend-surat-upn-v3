@@ -27,7 +27,7 @@ const postJabatanPermisionAksesMaster = async (req, res) => {
     jenis_surat,
   } = req.body;
   try {
-    const latestJabatan = await JABATANfindOne({
+    const latestJabatan = await JABATAN.findOne({
       order: [["id", "DESC"]],
     });
     // Tentukan ID yang baru

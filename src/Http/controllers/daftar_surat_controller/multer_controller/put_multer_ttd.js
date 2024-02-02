@@ -90,6 +90,8 @@ const putMulterTtd = async function (req, res) {
         surat_id: data_surat.id,
         jabatan_id_dari: user.jabatan_id,
         jabatan_id_ke: user_surat.jabatan_id,
+        isSign: true,
+        persetujuan: false,
         from: `daftar_surat_controller/multer_controller/put_multer_ttd`,
       },
     };

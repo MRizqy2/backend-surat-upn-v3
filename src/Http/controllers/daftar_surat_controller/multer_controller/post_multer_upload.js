@@ -125,6 +125,8 @@ const postMulter = async function (req, res) {
         surat_id: daftar_surat.id,
         jabatan_id_dari: jabatan.id,
         jabatan_id_ke: jabatan.jabatan_atas_id,
+        isSign: null,
+        persetujuan: null,
         from: `daftar_surat_controller/multer_controller/post_multer_upload`,
       },
     };

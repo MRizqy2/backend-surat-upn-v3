@@ -20,7 +20,7 @@ const putPeriodeStatus = async (req, res) => {
       const activePeriodeIds = activePeriodes.map((periode) => periode.id);
 
       // Melakukan update status menjadi false pada semua periode yang memiliki status true
-      await Periode.update(
+      await PERIODE.update(
         { status: false },
         { where: { id: activePeriodeIds } }
       );

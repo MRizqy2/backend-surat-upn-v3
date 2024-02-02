@@ -43,6 +43,9 @@ const putStatus = async (req, res) => {
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
+    const user_surat = await USERS.findOne({
+      where: { id: surat.user_id },
+    });
     const status_surat = await STATUS.findOne({
       where: { surat_id: surat.id },
     });
@@ -104,6 +107,18 @@ const putStatus = async (req, res) => {
       );
     }
 
+    const reqNotif = {
+      body: {
+        surat_id: surat_id,
+        jabatan_id_dari: jabatan.id,
+        jabatan_id_ke: user_surat.jabatan_id,
+        isSign: false,
+        persetujuan: persetujuan,
+        from: `status_surat_controller/put_status`,
+      },
+    };
+    await postNotif(reqNotif);
+
     if (persetujuan && persetujuan.toLowerCase().includes("disetujui")) {
       if (jabatan.jabatan_atas_id) {
         reqTampilan = {
@@ -123,15 +138,17 @@ const putStatus = async (req, res) => {
           },
         };
         await postAksesSurat(reqAkses);
-        const reqNotif = {
+        const reqNotif2 = {
           body: {
             surat_id: surat_id,
             jabatan_id_dari: jabatan.id,
             jabatan_id_ke: jabatan.jabatan_atas_id,
+            isSign: false,
+            persetujuan: false,
             from: `status_surat_controller/put_status`,
           },
         };
-        await postNotif(reqNotif);
+        await postNotif(reqNotif2);
       }
 
       const permision = await PERMISION.findOne({
@@ -147,20 +164,6 @@ const putStatus = async (req, res) => {
           await postNomorSuratRevisi(reqTampilan);
         }
       } //surat_id
-    }
-    if (persetujuan && persetujuan.toLowerCase().includes("ditolak")) {
-      const user_surat = await USERS.findOne({
-        where: { id: surat.user_id },
-      });
-      const reqNotif = {
-        body: {
-          surat_id: surat_id,
-          jabatan_id_dari: jabatan.id,
-          jabatan_id_ke: user_surat.jabatan_id,
-          from: `status_surat_controller/put_status`,
-        },
-      };
-      await postNotif(reqNotif);
     }
 
     if (req.body.from) {

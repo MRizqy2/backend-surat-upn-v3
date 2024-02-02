@@ -48,6 +48,9 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
+      pesan: {
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,
