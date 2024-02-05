@@ -59,7 +59,7 @@ const getNotif = async (req, res) => {
           jabatan_id_ke: user.jabatan_id,
           "$surat.user.prodi.id$": user.prodi_id, // Menambahkan kondisi where berdasarkan prodi user
         },
-        attributes: ["id", "pesan"],
+        attributes: ["id", "pesan", "createdAt"],
         include: [
           {
             model: JABATAN,
