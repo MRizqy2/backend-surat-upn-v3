@@ -19,9 +19,6 @@ const OCR = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "Daftar Surat not found" });
     }
-
-    // const fileName = decodeURIComponent(surat.path.split("/").pop());
-    // const fileName = decodeURIComponent(surat.path.split("/").pop());
     const fileName = decodeURIComponent(surat.path.split("\\").pop());
     console.log("fileName", fileName);
     const fileBuffer = fs.readFileSync(decodeURIComponent(surat.path));
