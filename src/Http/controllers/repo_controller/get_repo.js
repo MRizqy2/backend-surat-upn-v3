@@ -4,7 +4,13 @@ const router = express.Router();
 const { REPO } = require("../../../models");
 
 const getRepo = async (req, res) => {
-  const repo = await REPO.findAll();
+  const { folder_id } = req.query;
+
+  const whereClause = {};
+  if (req.query && folder_id !== undefined) {
+    whereClause.folder_id = folder_id;
+  }
+  const repo = await REPO.findAll({ where: whereClause });
   return res.json({ repo });
 };
 
