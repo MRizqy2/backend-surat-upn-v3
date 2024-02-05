@@ -1,44 +1,49 @@
 const express = require("express");
 const router = express.Router();
-const {
-  REPO,
-  DAFTAR_SURAT,
-  USERS,
-  JABATAN,
-  FAKULTAS,
-  PRODI,
-  JENIS_SURAT,
-} = require("../../../models");
+const { REPO, USERS, JABATAN, FAKULTAS, PRODI, JENIS_SURAT, FOLDER } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
+const multer = require("multer");
+const crypto = require("crypto");
+
+const storage = multer.diskStorage({
+  destination: async function (req, file, cb) {
+    const folder = await FOLDER.findOne({
+      where: { id: req.body.folder_id },
+    });
+    const destinationPath = `repo/${folder.name}`;
+    cb(null, destinationPath);
+  },
+
+  filename: function (req, file, cb) {
+    const judul = file.originalname || "default";
+    const timestamp = Date.now();
+    const randomString = crypto.randomBytes(4).toString("hex");
+    const filename = `${randomString}-${timestamp}-${judul}`;
+    cb(null, filename);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 const postRepo = async (req, res) => {
   try {
-    let surat_id;
-    if (req && typeof req.body !== "undefined") {
-      surat_id = req.body.surat_id;
-      user_id = req.b;
-    } else {
-      surat_id = req.save.surat_id;
-    }
-    const surat = await DAFTAR_SURAT.findOne({
-      where: { id: surat_id },
-    });
+    const { nomor_surat, jenis_id, folder_id } = req.body;
 
-    if (!surat) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: "Surat not found" });
-    }
+    const suratFile = req.files["surat"][0];
+    const suratUrl = `${suratFile.filename}`;
+    const judul = suratFile.filename;
+    const url = `${encodeURIComponent(suratUrl)}`;
 
     const user = await USERS.findOne({
-      where: { id: surat.user_id },
+      where: { id: req.token.id },
     });
-    const role = await JABATAN.findOne({
-      where: { id: user.role_id },
+
+    const jabatan = await JABATAN.findOne({
+      where: { id: user.jabatan_id },
     });
 
     const jenis = await JENIS_SURAT.findOne({
-      where: { id: surat.jenis_id },
+      where: { id: jenis_id },
     });
 
     const prodi = await PRODI.findOne({
@@ -47,30 +52,43 @@ const postRepo = async (req, res) => {
     const fakultas = await FAKULTAS.findOne({
       where: { id: user.fakultas_id },
     });
-    const data_user = `${user.id}/${user.name}/${role.name}/${prodi.name}/${fakultas.name}`;
-    const repo = await REPO.create({
-      judul: surat.judul,
-      jenis: jenis.jenis,
-      data_user: data_user,
-      tanggal: surat.tanggal,
-      url: surat.url,
+
+    const folder = await FOLDER.findOne({
+      where: { id: folder_id },
     });
 
-    if (req && typeof req.body !== "undefined") {
-      return res
-        .status(StatusCodes.CREATED)
-        .json({ message: "Repo created successfully", repo });
-    } else {
-      return `repo telah dibuat`;
-    }
+    // let data_user = `${user.id}/${user.name}/${jabatan.name}/${prodi.name}/${fakultas.name}`;
+    const data_user = JSON.stringify({
+      id: user.id,
+      name: user.name,
+      jabatan: jabatan.name,
+      prodi: prodi.name,
+      fakultas: fakultas.name,
+    });
+    const repo = await REPO.create({
+      judul,
+      nomor_surat,
+      jenis: jenis.jenis,
+      data_user: data_user,
+      tanggal: Date.now(),
+      url,
+      folder_id: folder.id,
+    });
+    res.status(StatusCodes.OK).json({ message: `repo telah dibuat`, repo });
+    // res.json( `repo telah dibuat`);
   } catch (error) {
     console.error("Error:", error);
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Internal Server Error" });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
   }
 };
 
-router.post("/", postRepo);
+router.post(
+  "/",
+  upload.fields([
+    { name: "surat", maxCount: 1 },
+    // { name: "thumbnail", maxCount: 1 },
+  ]),
+  postRepo
+);
 
 module.exports = { postRepo, router };

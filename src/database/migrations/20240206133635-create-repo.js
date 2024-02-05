@@ -16,13 +16,20 @@ module.exports = {
         type: Sequelize.STRING,
       },
       data_user: {
-        type: Sequelize.STRING,
+        type: Sequelize.JSON,
       },
       tanggal: {
         type: Sequelize.DATE,
       },
       url: {
         type: Sequelize.STRING,
+      },
+      folder_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "FOLDERS",
+          key: "id",
+        },
       },
       createdAt: {
         allowNull: false,

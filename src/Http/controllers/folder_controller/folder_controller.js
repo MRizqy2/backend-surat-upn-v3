@@ -1,12 +1,12 @@
 const express = require("express");
 const app = express.Router();
-const postRepo = require("./post_repo").router;
-const { getRepo } = require("./get_repo.js");
+const { postFolder } = require("./post_folder.js");
+const { getFolder } = require("./get_folder.js");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post("/", postRepo);
-app.get("/", getRepo);
+app.post("/", postFolder);
+app.get("/", getFolder);
 
 module.exports = app;
