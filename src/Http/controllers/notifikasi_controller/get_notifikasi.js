@@ -25,7 +25,7 @@ const getNotif = async (req, res) => {
     if (user.prodi_id === 1 || !user.prodi_id) {
       notifikasi = await NOTIFIKASI.findAll({
         where: { jabatan_id_ke: user.jabatan_id },
-        attributes: ["id", "pesan"],
+        attributes: ["id", "pesan", "createdAt"],
         include: [
           {
             model: JABATAN,

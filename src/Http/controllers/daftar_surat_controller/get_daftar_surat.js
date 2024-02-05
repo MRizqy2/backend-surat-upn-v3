@@ -14,9 +14,9 @@ const {
   NOMOR_SURAT,
   PERIODE,
 } = require("../../../models");
-const { Op } = require("sequelize");
+const { Op } = require("sequelize"); //
 
-router.use(express.json());
+router.use(express.json()); // nambahi get tampilan nek detail ?
 router.use(express.urlencoded({ extended: true }));
 
 const getDaftarSurat = async (req, res) => {

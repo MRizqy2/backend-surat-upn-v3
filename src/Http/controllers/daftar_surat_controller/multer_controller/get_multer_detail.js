@@ -13,6 +13,7 @@ const {
   NOMOR_SURAT,
   PERIODE,
   REVISI,
+  TAMPILAN,
 } = require("../../../../models");
 
 app.use(express.json());
@@ -20,6 +21,11 @@ app.use(express.urlencoded({ extended: true }));
 
 const getDaftarSurat = async (req, res) => {
   const { surat_id } = req.query;
+
+  const user = await USERS.findOne({
+    where: { id: req.token.id },
+  });
+
   let surat;
 
   surat = await DAFTAR_SURAT.findOne({
@@ -30,6 +36,12 @@ const getDaftarSurat = async (req, res) => {
         model: STATUS,
         as: "status",
         attributes: ["status", "persetujuan"],
+      },
+      {
+        model: TAMPILAN,
+        as: "tampilan",
+        attributes: ["pin", "dibaca"],
+        where: { jabatan_id: user.jabatan_id },
       },
       {
         model: JENIS_SURAT,
