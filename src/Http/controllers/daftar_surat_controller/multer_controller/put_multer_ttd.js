@@ -6,15 +6,13 @@ const crypto = require("crypto");
 const { putStatus } = require("../../status_surat_controller/put_status");
 const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
 const router = express.Router();
+const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const isThumbnail = file.fieldname === "thumbnail";
-    const destinationPath = isThumbnail
-      ? "daftar_surat/thumbnail/"
-      : "daftar_surat/";
+    const destination = "daftar_surat/";
 
-    cb(null, destinationPath);
+    cb(null, destination);
   },
 
   filename: async function (req, file, cb) {
@@ -41,12 +39,10 @@ const putMulterTtd = async function (req, res) {
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Missing files in request" });
     }
-    const thumbnailUrl = "";
-    const suratUrl = `${req.files["surat"][0].filename}`;
-
-    const downloadUrl = `${
-      process.env.NGROK
-    }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;
+    const suratFile = req.files["surat"][0];
+    const suratPath = path
+      .join(suratFile.destination, suratFile.filename)
+      .replaceAll(" ", "%20");
 
     const data_surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
@@ -63,8 +59,7 @@ const putMulterTtd = async function (req, res) {
     });
     const updateSurat = await DAFTAR_SURAT.update(
       {
-        url: downloadUrl,
-        thumbnail: thumbnailUrl || "",
+        path: suratPath,
       },
       {
         where: { id: surat_id }, // Gantilah dengan kriteria yang sesuai
@@ -108,13 +103,6 @@ const putMulterTtd = async function (req, res) {
   }
 };
 
-router.put(
-  "/",
-  upload.fields([
-    { name: "surat", maxCount: 1 },
-    { name: "thumbnail", maxCount: 1 },
-  ]),
-  putMulterTtd
-);
+router.put("/", upload.fields([{ name: "surat", maxCount: 1 }]), putMulterTtd);
 
 module.exports = router;

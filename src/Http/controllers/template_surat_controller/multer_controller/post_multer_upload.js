@@ -14,12 +14,9 @@ router.use(express.urlencoded({ extended: true }));
 // Konfigurasi Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const isThumbnail = file.fieldname === "thumbnail";
-    const destinationPath = isThumbnail
-      ? "template_surat/thumbnail/"
-      : "template_surat/";
+    const destination = "template_surat/";
 
-    cb(null, destinationPath);
+    cb(null, destination);
   },
   filename: function (req, file, cb) {
     // Gunakan judul sebagai nama file
@@ -37,40 +34,22 @@ const upload = multer({ storage: storage });
 // Route untuk endpoint /multer
 const postMulter = async function (req, res) {
   try {
-    let lokasiThumbnail;
     const { judul, deskripsi, jenis_id } = req.body;
     const suratFile = req.files["surat"][0];
-    const thumbnailFile = req.files["thumbnail"]
-      ? req.files["thumbnail"][0]
-      : null;
+
+    const judulEx = judul + path.extname(suratFile.originalname);
+    const suratPath = path
+      .join(suratFile.destination, suratFile.filename)
+      .replaceAll(" ", "%20");
 
     const jenis = await JENIS_SURAT.findOne({
       where: { id: jenis_id },
     });
 
-    const judulEx = judul + path.extname(suratFile.originalname);
-    const suratUrl = `${suratFile.filename}`;
-    const downloadUrl = `${
-      process.env.NGROK
-    }/template-surat/multer/download/${encodeURIComponent(suratUrl)}`;
-
-    if (thumbnailFile) {
-      lokasiThumbnail = path.join(
-        __dirname,
-        "../../../../template_surat/thumbnail",
-        thumbnailFile.filename
-      );
-    }
-
-    const downloadThumbnail = lokasiThumbnail
-      ? `${process.env.NGROK}/download/${encodeURIComponent(lokasiThumbnail)}`
-      : null;
-
     const template_surat = await TEMPLATE_SURAT.create({
       judul: judulEx,
-      url: downloadUrl,
+      path: suratPath,
       jenis_id: jenis.id || "",
-      thumnail: downloadThumbnail || "",
       deskripsi: deskripsi || "",
     });
 
@@ -85,13 +64,6 @@ const postMulter = async function (req, res) {
   }
 };
 
-router.post(
-  "/",
-  upload.fields([
-    { name: "surat", maxCount: 1 },
-    { name: "thumbnail", maxCount: 1 },
-  ]),
-  postMulter
-);
+router.post("/", upload.fields([{ name: "surat", maxCount: 1 }]), postMulter);
 
 module.exports = router;

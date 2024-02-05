@@ -34,6 +34,9 @@ module.exports = {
       persetujuan: {
         type: Sequelize.BOOLEAN,
       },
+      upload_repo: {
+        type: Sequelize.BOOLEAN,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

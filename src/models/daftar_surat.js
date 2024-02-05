@@ -49,7 +49,6 @@ module.exports = (sequelize, DataTypes) => {
   DAFTAR_SURAT.init(
     {
       judul: DataTypes.STRING,
-      thumbnail: DataTypes.STRING,
       jenis_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -70,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       deskripsi: DataTypes.STRING,
       tanggal: DataTypes.DATE,
-      url: DataTypes.STRING,
+      path: DataTypes.STRING,
     },
     {
       sequelize,

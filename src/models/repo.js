@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       jenis: DataTypes.STRING,
       data_user: DataTypes.STRING,
       tanggal: DataTypes.DATE,
-      url: DataTypes.STRING,
+      path: DataTypes.STRING,
       folder_id: {
         type: DataTypes.INTEGER,
         references: {

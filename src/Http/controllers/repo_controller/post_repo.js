@@ -1,17 +1,26 @@
 const express = require("express");
 const router = express.Router();
-const { REPO, USERS, JABATAN, FAKULTAS, PRODI, JENIS_SURAT, FOLDER } = require("../../../models");
+const {
+  REPO,
+  USERS,
+  JABATAN,
+  FAKULTAS,
+  PRODI,
+  JENIS_SURAT,
+  FOLDER,
+} = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const multer = require("multer");
 const crypto = require("crypto");
+const path = require("path");
 
 const storage = multer.diskStorage({
   destination: async function (req, file, cb) {
     const folder = await FOLDER.findOne({
       where: { id: req.body.folder_id },
     });
-    const destinationPath = `repo/${folder.name}`;
-    cb(null, destinationPath);
+    const destination = `repo/${folder.name}`;
+    cb(null, destination);
   },
 
   filename: function (req, file, cb) {
@@ -30,10 +39,10 @@ const postRepo = async (req, res) => {
     const { nomor_surat, jenis_id, folder_id } = req.body;
 
     const suratFile = req.files["surat"][0];
-    const suratUrl = `${suratFile.filename}`;
+    const suratPath = `${suratFile.destination}`;
     const judul = suratFile.filename;
-    const url = `${encodeURIComponent(suratUrl)}`;
-
+    let pathFile = path.join(suratPath, judul);
+    pathFile = pathFile.replaceAll(" ", "%20");
     const user = await USERS.findOne({
       where: { id: req.token.id },
     });
@@ -71,14 +80,16 @@ const postRepo = async (req, res) => {
       jenis: jenis.jenis,
       data_user: data_user,
       tanggal: Date.now(),
-      url,
+      path: pathFile,
       folder_id: folder.id,
     });
     res.status(StatusCodes.OK).json({ message: `repo telah dibuat`, repo });
     // res.json( `repo telah dibuat`);
   } catch (error) {
     console.error("Error:", error);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

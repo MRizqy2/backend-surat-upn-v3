@@ -12,7 +12,7 @@ module.exports = {
       judul: {
         type: Sequelize.STRING,
       },
-      url: {
+      path: {
         type: Sequelize.STRING,
       },
       jenis_id: {
@@ -24,9 +24,6 @@ module.exports = {
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
-      },
-      thumbnail: {
-        type: Sequelize.STRING,
       },
       deskripsi: {
         type: Sequelize.TEXT,

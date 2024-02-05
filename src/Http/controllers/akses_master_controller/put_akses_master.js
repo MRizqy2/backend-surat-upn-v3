@@ -35,6 +35,7 @@ const putAksesMaster = async (req, res) => {
         fakultas,
         jabatan,
         jenis_surat,
+        folder_repo,
       },
       {
         where: { id: akses_master.id },

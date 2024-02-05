@@ -19,12 +19,9 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const isThumbnail = file.fieldname === "thumbnail";
-    const destinationPath = isThumbnail
-      ? "daftar_surat/thumbnail/"
-      : "daftar_surat/";
+    const destination = "daftar_surat/";
 
-    cb(null, destinationPath);
+    cb(null, destination);
   },
 
   filename: function (req, file, cb) {
@@ -45,12 +42,10 @@ const postMulter = async function (req, res) {
   try {
     const { judul, jenis_id, deskripsi } = req.body;
     const suratFile = req.files["surat"][0];
-    const thumbnailUrl = "";
     const judulExt = judul + path.extname(suratFile.originalname);
-    const suratUrl = `${suratFile.filename}`;
-    const downloadUrl = `${
-      process.env.NGROK
-    }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;
+    const suratPath = path
+      .join(suratFile.destination, suratFile.filename)
+      .replaceAll(" ", "%20");
     const jenis = await JENIS_SURAT.findOne({
       where: { id: jenis_id },
     });
@@ -64,12 +59,11 @@ const postMulter = async function (req, res) {
 
     const daftar_surat = await DAFTAR_SURAT.create({
       judul: judulExt,
-      thumbnail: thumbnailUrl || "",
       jenis_id: jenis.id || "",
       user_id: req.token.id,
       deskripsi: deskripsi || "",
       tanggal: Date(),
-      url: downloadUrl,
+      path: suratPath,
     });
 
     const reqStatus = {
@@ -140,13 +134,6 @@ const postMulter = async function (req, res) {
   }
 };
 
-router.post(
-  "/",
-  upload.fields([
-    { name: "surat", maxCount: 1 },
-    { name: "thumbnail", maxCount: 1 },
-  ]),
-  postMulter
-);
+router.post("/", upload.fields([{ name: "surat", maxCount: 1 }]), postMulter);
 
 module.exports = router;

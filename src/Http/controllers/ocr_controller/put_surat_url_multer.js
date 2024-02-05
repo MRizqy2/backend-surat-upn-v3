@@ -7,12 +7,9 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const isThumbnail = file.fieldname === "thumbnail";
-    const destinationPath = isThumbnail
-      ? "daftar_surat/thumbnail/"
-      : "daftar_surat/";
+    const destination = "daftar_surat/";
 
-    cb(null, destinationPath);
+    cb(null, destination);
   },
   filename: function (req, file, cb) {
     // Gunakan judul sebagai nama file
@@ -33,18 +30,21 @@ const putSuratUrl = async (req, res, next) => {
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
-    const fileName = outputPath.split("\\").pop();
-    const judulExt = surat.judul;
-    const judulFinal = judulExt.replace(".pdf", "-acc.pdf");
+    // const fileName = outputPath.split("\\").pop();
+    const judul = surat.judul.replace(".pdf", "-acc.pdf");
+    const path = surat.path.replace(".pdf", "-acc.pdf");
 
-    const downloadUrl = `${
-      process.env.NGROK
-    }/daftar-surat/multer/download/${encodeURIComponent(fileName)}`;
+    // const suratFile = req.files["surat"][0];
+    const suratPath = path.replaceAll(" ", "%20");
+
+    // const downloadUrl = `${
+    //   process.env.NGROK
+    // }/daftar-surat/multer/download/${encodeURIComponent(fileName)}`;
 
     const update_surat = await DAFTAR_SURAT.update(
       {
-        judul: judulFinal,
-        url: downloadUrl,
+        judul: judul,
+        path: suratPath,
       },
       {
         where: { id: surat_id },

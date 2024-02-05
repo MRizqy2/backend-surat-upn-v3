@@ -17,8 +17,10 @@ const aksesMasterController = require("../Http/controllers/akses_master_controll
 const permisionController = require("../Http/controllers/permision_controller/permision_controller");
 const aksesSuratController = require("../Http/controllers/akses_surat_controller/akses_surat_controller");
 const notifikasiController = require("../Http/controllers/notifikasi_controller/notifikasi_controller");
-const ocrController = require("../Http/controllers/ocr_controller/ocr_controller").router;
+const ocrController =
+  require("../Http/controllers/ocr_controller/ocr_controller").router;
 const folderController = require("../Http/controllers/folder_controller/folder_controller");
+const downloadController = require("../Http/controllers/download_controller/download_controller");
 
 const router = express.Router();
 
@@ -48,5 +50,6 @@ router.use("/notifikasi", authMiddleware, notifikasiController);
 
 router.use("/repo", authMiddleware, repoController);
 router.use("/folder", authMiddleware, folderController);
+router.use("/download", authMiddleware, downloadController);
 
 module.exports = router;

@@ -15,12 +15,9 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const isThumbnail = file.fieldname === "thumbnail";
-    const destinationPath = isThumbnail
-      ? "daftar_surat/thumbnail/"
-      : "daftar_surat/";
+    const destination = "daftar_surat/";
 
-    cb(null, destinationPath);
+    cb(null, destination);
   },
 
   filename: function (req, file, cb) {
@@ -41,12 +38,10 @@ const postMulterRevisi = async function (req, res) {
   try {
     const { surat_id, judul, deskripsi } = req.body;
     const suratFile = req.files["surat"][0];
-    const thumbnailUrl = "";
     const judulExt = judul + path.extname(suratFile.originalname);
-    const suratUrl = `${suratFile.filename}`;
-    const downloadUrl = `${
-      process.env.NGROK
-    }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;
+    const suratPath = path
+      .join(suratFile.destination, suratFile.filename)
+      .replaceAll(" ", "%20");
 
     const surat_lama = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
@@ -61,12 +56,11 @@ const postMulterRevisi = async function (req, res) {
 
     const daftar_surat = await DAFTAR_SURAT.create({
       judul: judulExt,
-      thumbnail: thumbnailUrl || "",
       jenis_id: surat_lama.jenis_id || "",
       user_id: surat_lama.user_id,
       deskripsi: deskripsi || "",
       tanggal: Date(),
-      url: downloadUrl,
+      path: suratPath,
     });
 
     const reqRevisi = {
@@ -148,10 +142,7 @@ const postMulterRevisi = async function (req, res) {
 
 router.post(
   "/",
-  upload.fields([
-    { name: "surat", maxCount: 1 },
-    { name: "thumbnail", maxCount: 1 },
-  ]),
+  upload.fields([{ name: "surat", maxCount: 1 }]),
   postMulterRevisi
 );
 

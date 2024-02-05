@@ -21,7 +21,7 @@ module.exports = {
       tanggal: {
         type: Sequelize.DATE,
       },
-      url: {
+      path: {
         type: Sequelize.STRING,
       },
       folder_id: {

@@ -11,6 +11,7 @@ const postPermision = async (req, res) => {
     generate_nomor_surat,
     upload_tandatangan,
     persetujuan,
+    upload_repo,
   } = req.body;
   try {
     // Dapatkan ID terakhir dari tabel Permision
@@ -30,6 +31,7 @@ const postPermision = async (req, res) => {
       generate_nomor_surat,
       upload_tandatangan,
       persetujuan,
+      upload_repo,
     });
     if (req.body.from) {
       return permision;

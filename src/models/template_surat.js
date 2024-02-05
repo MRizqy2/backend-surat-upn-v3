@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
   TEMPLATE_SURAT.init(
     {
       judul: DataTypes.STRING,
-      url: DataTypes.STRING,
+      path: DataTypes.STRING,
       jenis_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -23,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      thumbnail: DataTypes.STRING,
       deskripsi: DataTypes.TEXT,
     },
     {
