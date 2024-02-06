@@ -11,7 +11,11 @@ const postFolder = async function (req, res) {
       name,
     });
 
-    const folderPath = `repo/${folder.name}`;
+    const mainPath = "repo";
+    if (!fs.existsSync(mainPath)) {
+      fs.mkdirSync(mainPath);
+    }
+    const folderPath = `${mainPath}/${folder.name}`;
     if (!fs.existsSync(folderPath)) {
       fs.mkdirSync(folderPath);
     }

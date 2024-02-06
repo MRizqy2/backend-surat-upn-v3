@@ -2,6 +2,10 @@
 # config/
 
 .env
+.gitignore
+repo/
+daftar_surat/
+
 
 # template_surat/
 # daftar_surat/
