@@ -52,6 +52,7 @@ const getNotif = async (req, res) => {
             ],
           },
         ],
+        order: [["createdAt", "DESC"]],
       });
     } else {
       notifikasi = await NOTIFIKASI.findAll({
@@ -86,6 +87,7 @@ const getNotif = async (req, res) => {
             ],
           },
         ],
+        order: [["createdAt", "DESC"]],
       });
     }
 
