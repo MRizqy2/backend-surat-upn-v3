@@ -19,9 +19,34 @@ const { Op } = require("sequelize"); //
 router.use(express.json()); // nambahi get tampilan nek detail ?
 router.use(express.urlencoded({ extended: true }));
 
+const getDaftarSuratByStatus = async (req, res) => {
+  const { repo } = req.query;
+  if (repo) {
+    const status = "Surat Telah Ditandatangani";
+    const repo = await DAFTAR_SURAT.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+        include: [
+          {
+            model: STATUS,
+            as: "status",
+            attributes: ["status", "persetujuan"],
+            where: { status: status },
+          },
+        ],
+      },
+    });
+    res.json(repo);
+  } else {
+    res.json({ message: "tidak ada surat" });
+  }
+};
+
 const getDaftarSurat = async (req, res) => {
   let surat;
   const { startDate, endDate } = req.query;
+  const { repo } = req.query;
+  const { prodi_id } = req.query;
 
   let dateFilter = {};
   if (startDate) {
@@ -67,7 +92,71 @@ const getDaftarSurat = async (req, res) => {
     }
   }
 
-  if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
+  if (repo || (repo && prodi_id)) {
+    const status = "Surat Telah Ditandatangani";
+    if (prodi_id) {
+      whereClause["$user.prodi.id$"] = prodi_id || "";
+    }
+
+    const repo = await DAFTAR_SURAT.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+      where: {
+        ...whereClause,
+      },
+      include: [
+        {
+          model: STATUS,
+          as: "status",
+          attributes: ["status", "persetujuan"],
+          where: { status: status },
+        },
+        {
+          model: JENIS_SURAT,
+          as: "jenis",
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+        {
+          model: NOMOR_SURAT,
+          as: "nomor_surat",
+          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
+          include: [
+            {
+              model: PERIODE,
+              as: "periode",
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
+          ],
+        },
+        {
+          model: USERS,
+          as: "user",
+          attributes: ["email", "name"],
+          include: [
+            {
+              model: PRODI,
+              as: "prodi",
+              attributes: ["id", "name"],
+            },
+            {
+              model: JABATAN,
+              as: "jabatan",
+              attributes: ["id", "name"],
+            },
+            {
+              model: FAKULTAS,
+              as: "fakultas",
+              attributes: ["id", "name"],
+            },
+          ],
+        },
+      ],
+      order: [["id", "ASC"]],
+    });
+    res.json(repo);
+  } else if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
     surat = await DAFTAR_SURAT.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
       where: {

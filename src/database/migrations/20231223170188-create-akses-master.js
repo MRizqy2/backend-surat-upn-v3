@@ -37,7 +37,7 @@ module.exports = {
       jenis_surat: {
         type: Sequelize.BOOLEAN,
       },
-      folder_repo: {
+      sikoja: {
         type: Sequelize.BOOLEAN,
       },
       createdAt: {

@@ -3,8 +3,8 @@
 
 .env
 .gitignore
-repo/
-daftar_surat/
+sikoja/*
+daftar_surat/*
 
 
 # template_surat/

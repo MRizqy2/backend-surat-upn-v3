@@ -12,7 +12,7 @@ const postAksesMaster = async (req, res) => {
     fakultas,
     jabatan,
     jenis_surat,
-    folder_repo,
+    sikoja,
   } = req.body;
 
   try {
@@ -35,7 +35,7 @@ const postAksesMaster = async (req, res) => {
       fakultas,
       jabatan,
       jenis_surat,
-      folder_repo,
+      sikoja,
     });
 
     if (req.body.from) {

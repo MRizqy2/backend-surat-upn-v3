@@ -19,28 +19,6 @@ const { Op } = require("sequelize"); //
 router.use(express.json()); // nambahi get tampilan nek detail ?
 router.use(express.urlencoded({ extended: true }));
 
-const getDaftarSuratByStatus = async (req, res) => {
-  const { repo } = req.query;
-
-  if (repo) {
-    const status = "Surat Telah Ditandatangani";
-    const repo = await DAFTAR_SURAT.findAll({
-      attributes: {
-        exclude: ["createdAt", "updatedAt"],
-        include: [
-          {
-            model: STATUS,
-            as: "status",
-            attributes: ["status", "persetujuan"],
-            where: { status: status },
-          },
-        ],
-      },
-    });
-    res.json(repo);
-  }
-};
-
 const getDaftarSurat = async (req, res) => {
   let surat;
   const { startDate, endDate } = req.query;

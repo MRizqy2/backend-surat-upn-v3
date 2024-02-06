@@ -34,7 +34,7 @@ module.exports = {
       persetujuan: {
         type: Sequelize.BOOLEAN,
       },
-      upload_repo: {
+      view_all_repo: {
         type: Sequelize.BOOLEAN,
       },
       createdAt: {
