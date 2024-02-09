@@ -3,11 +3,7 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class INDIKATOR extends Model {
     static associate(models) {
-      INDIKATOR.belongsTo(models.STRATEGI, {
-        foreignKey: "strategi_id",
-        as: "strategi",
-      });
-      INDIKATOR.hasMany(models.SIKOJA, {
+      INDIKATOR.hasMany(models.REPO, {
         foreignKey: "indikator_id",
         as: "indikator",
       });
@@ -16,14 +12,7 @@ module.exports = (sequelize, DataTypes) => {
   INDIKATOR.init(
     {
       name: DataTypes.STRING,
-      nomor: DataTypes.INTEGER,
-      strategi_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: "STRATEGIS",
-          key: "id",
-        },
-      },
+      nomor: DataTypes.STRING,
     },
     {
       sequelize,

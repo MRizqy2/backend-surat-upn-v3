@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express.Router();
-const postRepo = require("./post_repo").router;
+const { postRepo } = require("./post_repo");
 const { getRepo } = require("./get_repo_all.js");
 const { getRepoDetail } = require("./get_repo_detail.js");
 

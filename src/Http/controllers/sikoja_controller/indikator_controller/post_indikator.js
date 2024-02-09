@@ -1,15 +1,14 @@
 const express = require("express");
-const { INDIKATOR } = require("../../../models/");
 const router = express.Router();
+const { INDIKATOR } = require("../../../models/");
 const { StatusCodes } = require("http-status-codes");
 
 const postIndikator = async (req, res) => {
   try {
-    const { nama, nomor, strategi_id } = req.body;
+    const { name, nomor } = req.body;
     const indikator = await INDIKATOR.create({
-      nama,
+      name,
       nomor,
-      strategi_id,
     });
     res.status(StatusCodes.CREATED).json(indikator);
   } catch (error) {
@@ -23,4 +22,5 @@ router.post("/", postIndikator);
 
 module.exports = {
   postIndikator,
+  router,
 };

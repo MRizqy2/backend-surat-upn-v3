@@ -6,12 +6,11 @@ const { StatusCodes } = require("http-status-codes");
 const putIndikator = async (req, res) => {
   try {
     const { indikator_id } = req.query;
-    const { nama, nomor, strategi_id } = req.body;
+    const { nama, nomor } = req.body;
     const indikator = await INDIKATOR.update(
       {
         nama,
         nomor,
-        strategi_id,
       },
       {
         where: {

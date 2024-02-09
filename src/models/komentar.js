@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
+      visible: DataTypes.BOOLEAN,
       komentar: DataTypes.TEXT,
     },
     {

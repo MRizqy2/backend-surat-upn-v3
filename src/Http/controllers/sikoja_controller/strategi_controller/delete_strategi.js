@@ -14,9 +14,13 @@ const deleteStrategi = async (req, res) => {
         .json({ message: "Strategi not found" });
     }
 
-    await strategi.destroy();
+    await STRATEGI.destroy({
+      where: { id: strategi_id },
+    });
 
-    return res.status(StatusCodes.OK).json({ message: "Strategi deleted" });
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: "Strategi deleted", strategi });
   } catch (error) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

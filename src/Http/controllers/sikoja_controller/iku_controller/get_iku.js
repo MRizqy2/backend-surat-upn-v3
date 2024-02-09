@@ -1,20 +1,20 @@
-const { INDIKATOR } = require("../../../models");
+const { IKU } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const express = require("express");
 const router = express.Router();
 
-const getIndikator = async (req, res) => {
+const getIku = async (req, res) => {
   try {
-    const { indikator_id } = req.query;
+    const { iku_id } = req.query;
 
-    if (!indikator_id) {
+    if (!iku_id) {
       // Mendapatkan semua data
-      const allData = await INDIKATOR.findAll({ order: [["id", "ASC"]] });
+      const allData = await IKU.findAll({ order: [["id", "ASC"]] });
       res.send(allData);
-    } else if (akses_master_id) {
+    } else if (iku_id) {
       // Mendapatkan data berdasarkan ID
-      const findOneData = await INDIKATOR.findOne({
-        where: { id: indikator_id },
+      const findOneData = await IKU.findOne({
+        where: { id: iku_id },
       });
 
       if (findOneData) {
@@ -32,6 +32,6 @@ const getIndikator = async (req, res) => {
   }
 };
 
-router.get("/", getIndikator);
+router.get("/", getIku);
 
-module.exports = { router, getIndikator };
+module.exports = { router, getIku };

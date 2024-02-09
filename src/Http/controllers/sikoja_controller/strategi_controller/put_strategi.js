@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { STRATEGI } = require("../../../models");
+const { STRATEGI } = require("../../../../models");
 const { StatusCodes } = require("http-status-codes");
 
 const putStrategi = async (req, res) => {

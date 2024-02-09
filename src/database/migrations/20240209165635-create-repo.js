@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("KOMENTARS", {
+    await queryInterface.createTable("REPOS", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -16,35 +16,33 @@ module.exports = {
           model: "DAFTAR_SURATS",
           key: "id",
         },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
-      jabatan_id_ke: {
+      kode_url: {
+        type: Sequelize.STRING,
+      },
+      strategi_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "JABATANS",
+          model: "STRATEGIS",
           key: "id",
         },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
-      jabatan_id_dari: {
+      iku_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "JABATANS",
+          model: "IKUS",
           key: "id",
         },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
-      visible: {
-        type: Sequelize.BOOLEAN,
+      indikator_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      komentar: {
-        type: Sequelize.TEXT,
+        references: {
+          model: "INDIKATORS",
+          key: "id",
+        },
       },
       createdAt: {
         allowNull: false,
@@ -57,6 +55,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("KOMENTARS");
+    await queryInterface.dropTable("REPOS");
   },
 };

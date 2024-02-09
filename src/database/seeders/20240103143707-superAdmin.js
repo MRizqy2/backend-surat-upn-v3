@@ -28,7 +28,7 @@ module.exports = {
           generate_nomor_surat: false,
           upload_tandatangan: false,
           persetujuan: false,
-          view_all_repo: false,
+          tagging: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

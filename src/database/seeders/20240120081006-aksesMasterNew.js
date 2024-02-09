@@ -40,7 +40,7 @@ module.exports = {
           fakultas: false,
           jabatan: false,
           jenis_surat: false,
-          sikoja: false,
+          sikoja: true,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

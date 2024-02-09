@@ -13,16 +13,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       nomor: {
-        type: Sequelize.INTEGER,
-      },
-      strategi_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "STRATEGIS",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

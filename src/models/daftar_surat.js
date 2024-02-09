@@ -44,6 +44,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "surat_id_baru",
         as: "surat_id_new",
       });
+      DAFTAR_SURAT.hasMany(models.PERBAIKAN, {
+        foreignKey: "surat_id",
+        as: "perbaikan",
+      });
     }
   }
   DAFTAR_SURAT.init(
