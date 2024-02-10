@@ -1,5 +1,5 @@
 const express = require("express");
-const { STRATEGI } = require("../../../models/");
+const { STRATEGI } = require("../../../../models/");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 

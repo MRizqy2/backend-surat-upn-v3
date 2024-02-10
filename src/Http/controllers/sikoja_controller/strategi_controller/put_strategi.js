@@ -11,7 +11,7 @@ const putStrategi = async (req, res) => {
 
   const updatedStrategi = await strategi.update(
     {
-      name,
+      name: name || strategi.name,
     },
     {
       where: { id: strategi_id },

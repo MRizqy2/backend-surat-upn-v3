@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { StatusCodes } = require("http-status-codes");
-const { REPO } = require("../../../models");
+const { REPO } = require("../../../../models");
 
 const getRepoDetail = async (req, res) => {
   try {

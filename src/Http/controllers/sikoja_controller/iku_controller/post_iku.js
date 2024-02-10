@@ -6,7 +6,14 @@ const { IKU } = require("../../../../models");
 const postIku = async (req, res) => {
   try {
     const { name } = req.body;
+    const latestIku = await IKU.findAll({
+      limit: 1,
+      order: [["id", "DESC"]],
+    });
+
+    const latestIkuId = parseInt(latestIku[0].id, 10);
     const iku = await IKU.create({
+      id: latestIkuId + 1,
       name,
     });
     res.status(StatusCodes.CREATED).json(iku);

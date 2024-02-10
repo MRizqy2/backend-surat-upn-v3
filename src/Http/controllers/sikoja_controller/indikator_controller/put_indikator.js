@@ -6,22 +6,32 @@ const { StatusCodes } = require("http-status-codes");
 const putIndikator = async (req, res) => {
   try {
     const { indikator_id } = req.query;
-    const { nama, nomor } = req.body;
-    const indikator = await INDIKATOR.update(
+    const { name, nomor } = req.body;
+
+    const dataIndikator = await INDIKATOR.findOne({
+      where: {
+        id: indikator_id,
+      },
+    });
+    if (!dataIndikator) {
+      return res.status(StatusCodes.NOT_FOUND).json("Data indikator not found");
+    }
+
+    const putIndikator = await INDIKATOR.update(
       {
-        nama,
-        nomor,
+        name: name || dataIndikator.name,
+        nomor: nomor || dataIndikator.nomor,
       },
       {
         where: {
-          indikator_id,
+          id: indikator_id,
         },
         returning: true,
       }
     );
     res.status(StatusCodes.OK).json({
       message: "Indikator updated successfully",
-      indikator,
+      putIndikator,
     });
   } catch (error) {
     return res

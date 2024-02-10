@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       kode_url: DataTypes.STRING,
       strategi_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "STRATEGI",
           key: "id",
@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       iku_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "IKU",
           key: "id",
@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       indikator_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "INDIKATOR",
           key: "id",

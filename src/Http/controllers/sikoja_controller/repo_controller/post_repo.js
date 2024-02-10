@@ -1,20 +1,25 @@
 const express = require("express");
 const router = express.Router();
-const { REPO } = require("../../../models");
+const { REPO } = require("../../../../models");
 const { StatusCodes } = require("http-status-codes");
-const multer = require("multer");
 const crypto = require("crypto");
-const path = require("path");
 
 const postRepo = async (req, res) => {
   try {
     const { surat_id, strategi_id, iku_id, indikator_id } = req.body;
+
+    const latestRepo = await REPO.findAll({
+      limit: 1,
+      order: [["id", "DESC"]],
+    });
+    const latestRepoId = parseInt(latestRepo[0].id, 10);
 
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
     const kode_url = `${randomString}-${timestamp}`;
 
     const repo = await REPO.create({
+      id: latestRepoId + 1,
       surat_id,
       kode_url,
       strategi_id,
@@ -32,6 +37,9 @@ const postRepo = async (req, res) => {
   }
 };
 
+router.post("/", postRepo);
+
+module.exports = { postRepo, router };
 // const suratFile = req.files["surat"][0];
 //     const suratPath = `${suratFile.destination}`;
 //     const judul = suratFile.filename;
@@ -87,13 +95,13 @@ const postRepo = async (req, res) => {
 //   }
 // };
 
-router.post(
-  "/",
-  upload.fields([
-    { name: "surat", maxCount: 1 },
-    // { name: "thumbnail", maxCount: 1 },
-  ]),
-  postRepo
-);
+// router.post(
+//   "/",
+//   // upload.fields([
+//   //   { name: "surat", maxCount: 1 },
+//   //   // { name: "thumbnail", maxCount: 1 },
+//   // ]),
+//   postRepo
+// );
 
-module.exports = { postRepo, router };
+// module.exports = { postRepo, router };

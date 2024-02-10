@@ -22,7 +22,7 @@ module.exports = {
       },
       strategi_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "STRATEGIS",
           key: "id",
@@ -30,7 +30,7 @@ module.exports = {
       },
       iku_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "IKUS",
           key: "id",
@@ -38,7 +38,7 @@ module.exports = {
       },
       indikator_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "INDIKATORS",
           key: "id",

@@ -1,4 +1,4 @@
-const { IKU } = require("../../../models");
+const { IKU } = require("../../../../models");
 const { StatusCodes } = require("http-status-codes");
 const express = require("express");
 const router = express.Router();

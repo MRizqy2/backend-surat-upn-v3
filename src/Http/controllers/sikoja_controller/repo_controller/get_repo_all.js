@@ -15,7 +15,7 @@ const {
   // AKSES_SURAT,
   PRODI,
   FAKULTAS,
-} = require("../../../models");
+} = require("../../../../models");
 const catchStatus = require("../../status_surat_controller/catch_status");
 
 const getRepo = async (req, res) => {

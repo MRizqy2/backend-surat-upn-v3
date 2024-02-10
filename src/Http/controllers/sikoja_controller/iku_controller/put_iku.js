@@ -7,21 +7,23 @@ const putIku = async (req, res) => {
   try {
     const { iku_id } = req.query;
     const { name } = req.body;
-    const iku = await IKU.update(
+    const dataIku = await IKU.findOne({
+      where: { id: iku_id },
+    });
+    const putIku = await IKU.update(
       {
-        name,
-        nomor,
+        name: name || dataIku.name,
       },
       {
         where: {
-          iku_id,
+          id: iku_id,
         },
         returning: true,
       }
     );
     res.status(StatusCodes.OK).json({
       message: "iku updated successfully",
-      iku,
+      putIku,
     });
   } catch (error) {
     return res

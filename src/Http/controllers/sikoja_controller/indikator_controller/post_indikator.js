@@ -1,12 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const { INDIKATOR } = require("../../../models/");
+const { INDIKATOR } = require("../../../../models/");
 const { StatusCodes } = require("http-status-codes");
 
 const postIndikator = async (req, res) => {
   try {
     const { name, nomor } = req.body;
+    const latestIndikator = await INDIKATOR.findAll({
+      limit: 1,
+      order: [["id", "DESC"]],
+    });
+
+    const latestIndikatorId = parseInt(latestIndikator[0].id, 10);
     const indikator = await INDIKATOR.create({
+      id: latestIndikatorId + 1,
       name,
       nomor,
     });
