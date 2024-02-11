@@ -3,9 +3,9 @@
 
 .env
 .gitignore
-sikoja/*
-daftar_surat/*
-
+sikoja/
+daftar_surat/
+node_modules/
 
 template_surat/*
 # daftar_surat/

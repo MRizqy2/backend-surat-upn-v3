@@ -16,8 +16,7 @@ const aksesMasterController = require("../Http/controllers/akses_master_controll
 const permisionController = require("../Http/controllers/permision_controller/permision_controller");
 const aksesSuratController = require("../Http/controllers/akses_surat_controller/akses_surat_controller");
 const notifikasiController = require("../Http/controllers/notifikasi_controller/notifikasi_controller");
-const ocrController =
-  require("../Http/controllers/ocr_controller/ocr_controller").router;
+const ocrController = require("../Http/controllers/ocr_controller/ocr_controller").router;
 const downloadController = require("../Http/controllers/download_controller/download_controller");
 const sikojaController = require("../Http/controllers/sikoja_controller/sikoja_controller");
 
