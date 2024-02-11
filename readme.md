@@ -1,17 +1,13 @@
 npm install
-
 change the 'config.json' and .env
+mkdir daftar_surat
+mkdir template_surat
 
 npx sequelize-cli db:create
-
 npx sequelize-cli db:migrate
-
 npx sequelize-cli db:migrate:undo --name nama-file-migrasi.js
-
 npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
-
 npx sequelize-cli db:seed:all
-
 npx sequelize-cli db:seed:undo --seed nama-file-migrasi.js
 
 > npm run api-service
