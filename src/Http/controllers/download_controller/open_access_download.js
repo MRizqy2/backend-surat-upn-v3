@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { REPO, DAFTAR_SURAT } = require("../../../models");
+const { StatusCodes } = require("http-status-codes");
 
 async function get_file_path(url_code) {
   const repo = await REPO.findOne({ where: { url_code: url_code } });
@@ -21,11 +22,15 @@ router.get(`/`, async (req, res) => {
     const path = await get_file_path(url_code);
     const filepath = path.resolve(__dirname, "../../../../", get_file_path);
     if (!fs.existsSync(filepath)) {
-      return res.status(StatusCodes.NOT_FOUND).json({ error: "File not found" });
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "File not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
   // res.json({ message: "Hello from open access download" });
 });
