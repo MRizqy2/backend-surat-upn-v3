@@ -10,7 +10,6 @@ const postIndikator = async (req, res) => {
       limit: 1,
       order: [["id", "DESC"]],
     });
-
     const latestIndikatorId = parseInt(latestIndikator[0].id, 10);
     const indikator = await INDIKATOR.create({
       id: latestIndikatorId + 1,
