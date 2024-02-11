@@ -1,21 +1,20 @@
 const express = require("express");
-const { Jenis_surat } = require("../../../models");
+const { JENIS_SURAT } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const postJenis = async function (req, res) {
   try {
     let latestJenisId;
     const { jenis, kode_jenis } = req.body;
-    const latestJenis = await Jenis_surat.findAll({
+    const latestJenis = await JENIS_SURAT.findAll({
       limit: 1,
       order: [["id", "DESC"]],
     });
-    console.log("movmpe ", latestJenis.length);
     if (latestJenis.length > 0) {
-      console.log("movmpe ", latestJenis.length);
       latestJenisId = parseInt(latestJenis[0].id, 10);
     }
-    const jenis_surat = await Jenis_surat.create({
+    const jenis_surat = await JENIS_SURAT.create({
       id: latestJenisId + 1 || 1,
       jenis,
       kode_jenis,
@@ -24,7 +23,9 @@ const postJenis = async function (req, res) {
     return res.json({ message: "Berhasil", jenis_surat });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

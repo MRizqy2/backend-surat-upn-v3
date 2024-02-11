@@ -1,35 +1,37 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Akses_master extends Model {
+  class AKSES_MASTER extends Model {
     static associate(models) {
-      Akses_master.belongsTo(models.Permision, {
+      AKSES_MASTER.belongsTo(models.PERMISION, {
         as: "permision",
         foreignKey: "permision_id",
       });
     }
   }
-  Akses_master.init(
+  AKSES_MASTER.init(
     {
       permision_id: {
         type: DataTypes.INTEGER,
-        allowNull: false, //sek tak coba flow surat
+        allowNull: false,
         references: {
-          model: "Permision",
+          model: "PERMISION",
           key: "id",
         },
-      }, // wokeeh
+      },
       prodi: DataTypes.BOOLEAN,
       template: DataTypes.BOOLEAN,
       periode: DataTypes.BOOLEAN,
       fakultas: DataTypes.BOOLEAN,
       jabatan: DataTypes.BOOLEAN,
       jenis_surat: DataTypes.BOOLEAN,
+      sikoja: DataTypes.BOOLEAN,
     },
     {
       sequelize,
-      modelName: "Akses_master",
+      modelName: "AKSES_MASTER",
+      tableName: "AKSES_MASTERS",
     }
   );
-  return Akses_master;
+  return AKSES_MASTER;
 };

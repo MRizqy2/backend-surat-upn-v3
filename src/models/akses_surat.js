@@ -1,25 +1,25 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Akses_surat extends Model {
+  class AKSES_SURAT extends Model {
     static associate(models) {
-      Akses_surat.belongsTo(models.Daftar_surat, {
+      AKSES_SURAT.belongsTo(models.DAFTAR_SURAT, {
         foreignKey: "surat_id",
         as: "daftar_surat",
       });
-      Akses_surat.belongsTo(models.Jabatan, {
+      AKSES_SURAT.belongsTo(models.JABATAN, {
         foreignKey: "jabatan_id",
         as: "jabatan",
       });
     }
   }
-  Akses_surat.init(
+  AKSES_SURAT.init(
     {
       surat_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Daftar_surat",
+          model: "DAFTAR_SURAT",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Jabatan",
+          model: "JABATAN",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -38,8 +38,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Akses_surat",
+      modelName: "AKSES_SURAT",
+      tableName: "AKSES_SURATS",
     }
   );
-  return Akses_surat;
+  return AKSES_SURAT;
 };

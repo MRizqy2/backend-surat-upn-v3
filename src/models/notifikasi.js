@@ -1,28 +1,28 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Notifikasi extends Model {
+  class NOTIFIKASI extends Model {
     static associate(models) {
-      Notifikasi.belongsTo(models.Daftar_surat, {
+      NOTIFIKASI.belongsTo(models.DAFTAR_SURAT, {
         foreignKey: "surat_id",
         as: "surat",
       });
-      Notifikasi.belongsTo(models.Jabatan, {
+      NOTIFIKASI.belongsTo(models.JABATAN, {
         foreignKey: "jabatan_id_dari",
         as: "pengirim",
       });
-      Notifikasi.belongsTo(models.Jabatan, {
+      NOTIFIKASI.belongsTo(models.JABATAN, {
         foreignKey: "jabatan_id_ke",
       });
     }
   }
-  Notifikasi.init(
+  NOTIFIKASI.init(
     {
       surat_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Daftar_surat",
+          model: "DAFTAR_SURAT",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Jabatan",
+          model: "JABATAN",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -42,18 +42,21 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Jabatan",
+          model: "JABATAN",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
+      pesan: {
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,
-      modelName: "Notifikasi",
-      // tableName: "Notifikasis",
+      modelName: "NOTIFIKASI",
+      tableName: "NOTIFIKASIS",
     }
   );
-  return Notifikasi;
+  return NOTIFIKASI;
 };

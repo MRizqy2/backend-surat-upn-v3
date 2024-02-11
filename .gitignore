@@ -1,7 +1,4 @@
-# node_modules/
-# config/
-
 .env
-
-# template_surat/
-# daftar_surat/
+daftar_surat/*
+node_modules/
+template_surat/*

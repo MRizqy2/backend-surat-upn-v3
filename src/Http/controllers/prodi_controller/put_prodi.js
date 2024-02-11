@@ -1,5 +1,5 @@
 const express = require("express");
-const { Prodi, Fakultas } = require("../../../models");
+const { PRODI } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -13,11 +13,11 @@ const putProdi = async (req, res) => {
         .json({ error: "Invalid params" });
     }
 
-    const prodi = await Prodi.findOne({
+    const prodi = await PRODI.findOne({
       where: { id: prodi_id },
     });
 
-    const [updatedRows] = await Prodi.update(
+    const [updatedRows] = await PRODI.update(
       {
         name: name || prodi.name,
         kode_prodi: kode_prodi || prodi.kode_prodi,

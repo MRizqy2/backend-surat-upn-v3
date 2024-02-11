@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert(
-      "Fakultas",
+      "FAKULTAS",
       [
         // {
         //   id: 1,
@@ -17,7 +17,7 @@ module.exports = {
           id: 2,
           name: "FAKULTAS ILMU KOMPUTER ",
           jenjang: "S1",
-          kode_fakultas: "UN 63.7",
+          kode_fakultas: "UN63.7",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -27,6 +27,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("Fakultas", null, {});
+    return queryInterface.bulkDelete("FAKULTAS", null, {});
   },
 };

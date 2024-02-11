@@ -1,22 +1,20 @@
-"use strict"; //inpo pindah .env
+"use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Prodi extends Model {
+  class PRODI extends Model {
     static associate(models) {
-      Prodi.hasMany(models.Users, { foreignKey: "prodi_id" });
-      // Prodi.hasMany(models.Periode, { foreignKey: "prodi_id" });
-      Prodi.belongsTo(models.Fakultas, { foreignKey: "fakultas_id" });
+      PRODI.hasMany(models.USERS, { foreignKey: "prodi_id" });
+      PRODI.belongsTo(models.FAKULTAS, { foreignKey: "fakultas_id" });
     }
   }
-  Prodi.init(
+  PRODI.init(
     {
       name: DataTypes.STRING,
       kode_prodi: DataTypes.STRING,
       fakultas_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
         references: {
-          model: "Fakultas",
+          model: "FAKULTAS",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -25,8 +23,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Prodi",
+      modelName: "PRODI",
+      tableName: "PRODIS",
     }
   );
-  return Prodi;
+  return PRODI;
 };

@@ -1,20 +1,22 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Jenis_surat extends Model {
+  class JENIS_SURAT extends Model {
     static associate(models) {
-      Jenis_surat.hasMany(models.Daftar_surat, { foreignKey: "jenis_id" });
+      JENIS_SURAT.hasMany(models.DAFTAR_SURAT, { foreignKey: "jenis_id" });
+      JENIS_SURAT.hasMany(models.TEMPLATE_SURAT, { foreignKey: "jenis_id" });
     }
   }
-  Jenis_surat.init(
+  JENIS_SURAT.init(
     {
       jenis: DataTypes.STRING,
       kode_jenis: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: "Jenis_surat",
+      modelName: "JENIS_SURAT",
+      tableName: "JENIS_SURATS",
     }
   );
-  return Jenis_surat;
+  return JENIS_SURAT;
 };

@@ -1,13 +1,12 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Fakultas extends Model {
+  class FAKULTAS extends Model {
     static associate(models) {
-      Fakultas.hasMany(models.Prodi, { foreignKey: "fakultas_id" });
-      // Fakultas.hasMany(models.Nomor_surat, { foreignKey: "fakultas_id" });
+      FAKULTAS.hasMany(models.PRODI, { foreignKey: "fakultas_id" });
     }
   }
-  Fakultas.init(
+  FAKULTAS.init(
     {
       name: DataTypes.STRING,
       jenjang: DataTypes.STRING,
@@ -15,8 +14,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Fakultas",
+      modelName: "FAKULTAS",
+      tableName: "FAKULTAS",
     }
   );
-  return Fakultas;
+  return FAKULTAS;
 };

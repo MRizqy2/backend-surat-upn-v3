@@ -9,7 +9,7 @@ module.exports = {
       const password = "admin";
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      await queryInterface.bulkInsert("Jabatans", [
+      await queryInterface.bulkInsert("JABATANS", [
         {
           id: 1,
           name: "Super Admin",
@@ -19,7 +19,7 @@ module.exports = {
         },
       ]);
 
-      await queryInterface.bulkInsert("Permisions", [
+      await queryInterface.bulkInsert("PERMISIONS", [
         {
           id: 1,
           jabatan_id: 1,
@@ -28,12 +28,13 @@ module.exports = {
           generate_nomor_surat: false,
           upload_tandatangan: false,
           persetujuan: false,
+          tagging: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
       ]);
 
-      await queryInterface.bulkInsert("Akses_masters", [
+      await queryInterface.bulkInsert("AKSES_MASTERS", [
         {
           id: 1,
           permision_id: 1,
@@ -43,12 +44,13 @@ module.exports = {
           fakultas: true,
           jabatan: true,
           jenis_surat: true,
+          sikoja: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
       ]);
 
-      await queryInterface.bulkInsert("Fakultas", [
+      await queryInterface.bulkInsert("FAKULTAS", [
         {
           id: 1,
           name: "-",
@@ -59,7 +61,7 @@ module.exports = {
         },
       ]);
 
-      await queryInterface.bulkInsert("Prodis", [
+      await queryInterface.bulkInsert("PRODIS", [
         {
           id: 1,
           name: "-",
@@ -70,7 +72,7 @@ module.exports = {
         },
       ]);
 
-      await queryInterface.bulkInsert("Users", [
+      await queryInterface.bulkInsert("USERS", [
         {
           id: 1,
           name: "Super Admin",
@@ -91,12 +93,12 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     try {
-      await queryInterface.bulkDelete("Jabatans", null, {});
-      await queryInterface.bulkDelete("Permisions", null, {});
-      await queryInterface.bulkDelete("Akses_masters", null, {});
-      await queryInterface.bulkDelete("Fakultas", null, {});
-      await queryInterface.bulkDelete("Prodis", null, {});
-      await queryInterface.bulkDelete("Users", null, {});
+      await queryInterface.bulkDelete("JABATANS", null, {});
+      await queryInterface.bulkDelete("PERMISIONS", null, {});
+      await queryInterface.bulkDelete("AKSES_MASTERS", null, {});
+      await queryInterface.bulkDelete("FAKULTAS", null, {});
+      await queryInterface.bulkDelete("PRODIS", null, {});
+      await queryInterface.bulkDelete("USERS", null, {});
     } catch (error) {
       console.error("Error in seeder rollback:", error);
     }

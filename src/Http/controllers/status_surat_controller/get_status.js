@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express.Router();
-const router = express.Router();
-const { Status, Daftar_surat, Users, Jabatan } = require("../../../models");
+const { STATUS } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 
 const getStatus = async (req, res) => {
@@ -16,11 +15,10 @@ const getStatus = async (req, res) => {
     if (surat_id) {
       whereClause.surat_id = surat_id;
     }
-    status = await Status.findAll({
+    status = await STATUS.findAll({
       where: whereClause,
       order: [["id", "ASC"]],
     });
-    console.log("mdwqpo", status[0]);
 
     if (req.query.from) {
       return status;

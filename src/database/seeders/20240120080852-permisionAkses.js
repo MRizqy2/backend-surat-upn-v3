@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert(
-      "Permisions",
+      "PERMISIONS",
       [
         {
           id: 2,
@@ -13,6 +13,7 @@ module.exports = {
           generate_nomor_surat: false,
           upload_tandatangan: false,
           persetujuan: false,
+          tagging: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -24,6 +25,7 @@ module.exports = {
           generate_nomor_surat: false,
           upload_tandatangan: false,
           persetujuan: true,
+          tagging: true,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -35,6 +37,7 @@ module.exports = {
           generate_nomor_surat: true,
           upload_tandatangan: false,
           persetujuan: true,
+          tagging: true,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -46,6 +49,7 @@ module.exports = {
           generate_nomor_surat: false,
           upload_tandatangan: true,
           persetujuan: false,
+          tagging: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -55,6 +59,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("Permisions", null, {});
+    return queryInterface.bulkDelete("PERMISIONS", null, {});
   },
 };

@@ -1,35 +1,35 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Template_surat extends Model {
+  class TEMPLATE_SURAT extends Model {
     static associate(models) {
-      Template_surat.belongsTo(models.Jenis_surat, {
+      TEMPLATE_SURAT.belongsTo(models.JENIS_SURAT, {
         foreignKey: "jenis_id",
         as: "jenis",
       });
     }
   }
-  Template_surat.init(
+  TEMPLATE_SURAT.init(
     {
       judul: DataTypes.STRING,
-      url: DataTypes.STRING,
+      path: DataTypes.STRING,
       jenis_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Jenis_surat",
+          model: "JENIS_SURAT",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      thumbnail: DataTypes.STRING,
       deskripsi: DataTypes.TEXT,
     },
     {
       sequelize,
-      modelName: "Template_surat",
+      modelName: "TEMPLATE_SURAT",
+      tableName: "TEMPLATE_SURATS",
     }
   );
-  return Template_surat;
+  return TEMPLATE_SURAT;
 };

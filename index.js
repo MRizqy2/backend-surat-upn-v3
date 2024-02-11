@@ -4,14 +4,21 @@ require("dotenv").config();
 require("pg");
 const router = require("./src/routes/index.js");
 const cors = require("cors");
+const ColorGreen = "\x1b[32m";
+const zip = require("express-easy-zip");
 
 app.use(express.json());
 app.use(cors());
+app.use(zip());
 app.use(router);
 
-const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || "localhost";
+app.listen(process.env.PORT, () => {
+  console.log(
+    "%c%s is running on port %s",
+    ColorGreen,
+    process.env.NGROK,
+    process.env.PORT
+  );
 
-app.listen(PORT, HOST, () => {
-  console.log(`Server is running at http://${HOST}:${PORT}`);
+  console.log(`${process.env.NGROK} on port ${process.env.PORT}`);
 });

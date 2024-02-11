@@ -1,33 +1,20 @@
 const express = require("express");
-const app = express.Router();
 const router = express.Router();
-const {
-  Daftar_surat,
-  Users,
-  Jabatan,
-  Prodi,
-  Fakultas,
-  Status,
-  Tampilan,
-} = require("../../../models");
-const auth = require("../../middleware/authMiddleware");
-const cloudinaryController = require("./cloudinary_controller/cloudinary_controller");
+const { DAFTAR_SURAT, USERS, JABATAN } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
-const getStatus = require("../status_surat_controller/status_controller");
-const { Op, Sequelize } = require("sequelize");
 
 const putPersetujuan = async (req, res) => {
   try {
     const { status, persetujuan } = req.body;
     const { id } = req.query;
-    const user = await Users.findOne({
+    const user = await USERS.findOne({
       where: { id: req.token.id },
     });
-    const jabatan = await Jabatan.findOne({
+    const jabatan = await JABATAN.findOne({
       where: { id: user.jabatan_id },
     });
 
-    const surat = await Daftar_surat.findOne({
+    const surat = await DAFTAR_SURAT.findOne({
       where: { id: id },
     });
 
@@ -37,7 +24,7 @@ const putPersetujuan = async (req, res) => {
       });
     }
 
-    const surat_per = await Daftar_surat.update(
+    const surat_per = await DAFTAR_SURAT.update(
       {
         persetujuan,
         status,
