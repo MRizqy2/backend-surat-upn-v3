@@ -1,12 +1,13 @@
 const express = require("express");
 const {
-  Jabatan,
-  Akses_master,
-  Permision,
-  Users,
-  Akses_surat,
+  JABATAN,
+  AKSES_MASTER,
+  PERMISION,
+  USERS,
+  AKSES_SURAT,
 } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deleteJabatan = async (req, res) => {
   try {
@@ -14,10 +15,10 @@ const deleteJabatan = async (req, res) => {
 
     if (!jabatan_id) {
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Parameter 'jabatan_id' is required" });
     }
-    const users = await Users.findAll({
+    const users = await USERS.findAll({
       where: { jabatan_id: jabatan_id },
     });
 
@@ -26,39 +27,43 @@ const deleteJabatan = async (req, res) => {
       user.jabatan_id = null;
       await user.save();
     }
-    const akses_surat = await Akses_surat.findAll({
+    const akses_surat = await AKSES_SURAT.findAll({
       where: { jabatan_id: jabatan_id },
     });
     for (let akseSurat of akses_surat) {
       akseSurat.jabatan_id = null;
       await akseSurat.save();
     }
-    const permisions = await Permision.findAll({
+    const permisions = await PERMISION.findAll({
       where: { jabatan_id: jabatan_id },
     });
 
     for (let permision of permisions) {
-      await Akses_master.destroy({
+      await AKSES_MASTER.destroy({
         where: { permision_id: permision.id },
       });
     }
 
-    await Permision.destroy({
+    await PERMISION.destroy({
       where: { jabatan_id: jabatan_id },
     });
 
-    const deletedJabatan = await Jabatan.destroy({
+    const deletedJabatan = await JABATAN.destroy({
       where: { id: jabatan_id },
     });
 
     if (deletedJabatan) {
-      res.status(200).json({ message: "Jabatan deleted successfully" });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Jabatan deleted successfully" });
     } else {
-      res.status(404).json({ error: "Jabatan not found" });
+      res.status(StatusCodes.NOT_FOUND).json({ error: "Jabatan not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

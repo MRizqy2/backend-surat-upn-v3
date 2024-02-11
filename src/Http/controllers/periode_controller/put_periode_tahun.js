@@ -1,5 +1,5 @@
 const express = require("express");
-const { Periode } = require("../../../models");
+const { PERIODE } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -13,7 +13,7 @@ const putPeriodeTahun = async (req, res) => {
         .json({ error: "Invalid params" });
     }
 
-    const data_periode = await Periode.findOne({ where: { id: periode_id } });
+    const data_periode = await PERIODE.findOne({ where: { id: periode_id } });
 
     if (!data_periode) {
       return res
@@ -21,7 +21,7 @@ const putPeriodeTahun = async (req, res) => {
         .json({ error: "Periode not found" });
     }
 
-    const periode = await Periode.update(
+    const periode = await PERIODE.update(
       {
         tahun,
       },

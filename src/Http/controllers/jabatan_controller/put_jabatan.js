@@ -1,21 +1,26 @@
 const express = require("express");
-const { Jabatan } = require("../../../models");
+const { JABATAN } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const putJabatan = async (req, res) => {
   try {
     const { name, jabatan_atas_id } = req.body;
     const { jabatan_id } = req.query;
     if (!jabatan_id) {
-      return res.status(400).json({ error: "Invalid params" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Invalid params" });
     }
 
-    const jabatan = await Jabatan.findOne({ where: { id: jabatan_id } });
+    const jabatan = await JABATAN.findOne({ where: { id: jabatan_id } });
 
     if (!jabatan) {
-      return res.status(404).json({ error: "Jabatan not found" });
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "Jabatan not found" });
     }
-    const jabatan_update = await Jabatan.update(
+    const jabatan_update = await JABATAN.update(
       {
         name,
         jabatan_atas_id: jabatan_atas_id || null,

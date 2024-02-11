@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Akses_masters", {
+    await queryInterface.createTable("AKSES_MASTERS", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Permisions",
+          model: "PERMISIONS",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -37,6 +37,9 @@ module.exports = {
       jenis_surat: {
         type: Sequelize.BOOLEAN,
       },
+      sikoja: {
+        type: Sequelize.BOOLEAN,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -48,6 +51,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Akses_masters");
+    await queryInterface.dropTable("AKSES_MASTERS");
   },
 };

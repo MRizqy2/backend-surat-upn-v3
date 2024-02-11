@@ -1,10 +1,8 @@
 const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
-const { Users, Jabatan, Prodi, Fakultas } = require("../../../models/index.js");
+const { USERS, JABATAN, PRODI, FAKULTAS } = require("../../../models/index.js");
 const config = require("../../../../config/config.js");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
-const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");
 const { getJabatan } = require("../jabatan_controller/get_jabatan.js");
 const router = express.Router();
@@ -15,11 +13,12 @@ const secretKey = config[environment].secret_key;
 
 const postLogin = async (req, res) => {
   try {
-    const user = await Users.findOne({
+    const { email } = req.body;
+    const user = await USERS.findOne({
       where: {
         email: sequelize.where(
           sequelize.fn("LOWER", sequelize.col("email")),
-          req.body.email.toLowerCase()
+          email.toLowerCase()
         ),
       },
     });
@@ -33,19 +32,19 @@ const postLogin = async (req, res) => {
       const token = jwt.sign({ id: user.id, aktif: user.aktif }, secretKey, {
         expiresIn: "7d",
       });
-      const searchUser = await Users.findOne({
+      const searchUser = await USERS.findOne({
         where: { id: user.id },
       });
 
-      const user_response = await Users.findOne({
+      const user_response = await USERS.findOne({
         include: [
           {
-            model: Prodi,
+            model: PRODI,
             as: "prodi",
             attributes: ["id", "name"],
           },
           {
-            model: Jabatan,
+            model: JABATAN,
             as: "jabatan",
             attributes: {
               exclude: ["jabatan_atas_id", "createdAt", "UpdatedAt"],
@@ -53,7 +52,7 @@ const postLogin = async (req, res) => {
             where: { id: searchUser.jabatan_id },
           },
           {
-            model: Fakultas,
+            model: FAKULTAS,
             as: "fakultas",
             attributes: ["id", "name"],
           },

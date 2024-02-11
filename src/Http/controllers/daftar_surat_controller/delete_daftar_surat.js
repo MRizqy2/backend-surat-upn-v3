@@ -1,5 +1,5 @@
 const express = require("express");
-const { Daftar_surat } = require("../../../models");
+const { DAFTAR_SURAT } = require("../../../models");
 const {
   deleteAksesSurat,
 } = require("../akses_surat_controller/delete_akses_surat");
@@ -14,14 +14,16 @@ const {
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
-const { where } = require("sequelize");
+const { StatusCodes } = require("http-status-codes");
 
 const deleteSurat = async (req, res) => {
   try {
     const { surat_id } = req.query;
 
     if (!surat_id) {
-      return res.status(400).json({ error: "Parameter 'id' is required" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Parameter 'id' is required" });
     }
 
     const reqDelete = {
@@ -37,18 +39,16 @@ const deleteSurat = async (req, res) => {
     const deletedKomentar = await deleteKomentar(reqDelete);
     const deletedNotifikasi = await deleteNotifikasi(reqDelete);
 
-    const surat = await Daftar_surat.findOne({
+    const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
-    const deletedSurat = await Daftar_surat.destroy({
+    const deletedSurat = await DAFTAR_SURAT.destroy({
       where: { id: surat_id },
     });
 
     if (deletedSurat) {
       const urlFile = surat.url;
-      console.log("mmvpoewm", urlFile);
       const fileName = urlFile.split("/").pop();
-      console.log("dawdawdasd", fileName);
       const filePath = path.join(
         __dirname,
         "../../../../daftar_surat",
@@ -57,17 +57,23 @@ const deleteSurat = async (req, res) => {
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error("Error:", err);
-          return res.status(500).json({ error: "Failed to delete file" });
+          return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json({ error: "Failed to delete file" });
         }
 
-        res.status(200).json({ message: "Surat deleted successfully" });
+        res
+          .status(StatusCodes.OK)
+          .json({ message: "Surat deleted successfully" });
       });
     } else {
-      res.status(404).json({ error: "Surat not found" });
+      res.status(StatusCodes.NOT_FOUND).json({ error: "Surat not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

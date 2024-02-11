@@ -1,8 +1,11 @@
-# node_modules/
-# config/
-
 .env
+<<<<<<< HEAD
 
 template_surat/
 daftar_surat/
 node_modules
+=======
+daftar_surat/*
+node_modules/
+template_surat/*
+>>>>>>> dev

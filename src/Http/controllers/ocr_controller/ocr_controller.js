@@ -5,12 +5,12 @@ const path = require("path");
 const { changeTextInPdfV2 } = require("./post_coordinate_controller");
 const { putSuratUrl } = require("./put_surat_url_multer");
 const { StatusCodes } = require("http-status-codes"); // Tambahkan import StatusCodes
-const { Nomor_surat, Daftar_surat } = require("../../../models");
+const { NOMOR_SURAT, DAFTAR_SURAT } = require("../../../models");
 
 const OCR = async (req, res) => {
   try {
-    const { nomor_surat_id, surat_id } = req.save;
-    const surat = await Daftar_surat.findOne({
+    const { nomor_surat_id, surat_id } = req.body;
+    const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
 
@@ -19,13 +19,11 @@ const OCR = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "Daftar Surat not found" });
     }
-
-    const fileName = surat.url.split("/").pop();
-
-    const fileBuffer = fs.readFileSync(`daftar_surat/${fileName}`);
+    const fileName = decodeURIComponent(surat.path.split("\\").pop());
+    console.log("fileName", fileName);
+    const fileBuffer = fs.readFileSync(decodeURIComponent(surat.path));
 
     const tempDir = path.resolve("daftar_surat/");
-
     // Check if the directory exists
     if (!fs.existsSync(tempDir)) {
       // If not, create the directory
@@ -42,21 +40,24 @@ const OCR = async (req, res) => {
     const inputPath = finalFilePath;
 
     let fileNameWithoutExtension = fileName;
-    console.log("fileNameWithoutExtension = ", fileNameWithoutExtension);
+
     if (!fileName.endsWith("-acc.pdf")) {
       fileNameWithoutExtension = fileName.replace(".pdf", "-acc.pdf"); // Ganti ekstensi .pdf dengan -acc.pdf
     }
     const outputPath = path.join(tempDir, fileNameWithoutExtension);
-    const searchText = "xxxxx";
-    const newText = await Nomor_surat.findOne({
+
+    const searchText = "XYXY";
+    const newText = await NOMOR_SURAT.findOne({
       where: { id: nomor_surat_id },
     });
+
     const savePdf = await changeTextInPdfV2(
       inputPath,
       outputPath,
       searchText,
       newText.nomor_surat
     );
+
     const reqSuratUrl = {
       body: {
         outputPath,
@@ -66,7 +67,9 @@ const OCR = async (req, res) => {
     const saveSuratUrl = await putSuratUrl(reqSuratUrl);
 
     console.log("Perubahan teks pada PDF berhasil disimpan ke", outputPath);
-    return newText;
+    if (req.body.from) {
+      return newText;
+    } else res.json("Nomor surat tercetak");
   } catch (error) {
     console.error("Error:", error);
     return error;

@@ -1,45 +1,31 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Status extends Model {
+  class STATUS extends Model {
     static associate(models) {
-      Status.belongsTo(models.Daftar_surat, { foreignKey: "surat_id" });
-      // Status.belongsTo(models.Jabatan, {
-      //   foreignKey: "jabatan_id",
-      //   as: "jabatan",/migrate ulang ;v
-      // });
+      STATUS.belongsTo(models.DAFTAR_SURAT, { foreignKey: "surat_id" });
     }
-  } //wkwkwk :v
-  Status.init(
+  }
+  STATUS.init(
     {
       surat_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Daftar_surat",
+          model: "DAFTAR_SURAT",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      // jabatan_id: {
-      //   type: DataTypes.INTEGER,
-      //   allowNull: false,
-      //   references: {
-      //     model: "Jabatan",
-      //     key: "id",
-      //   },
-      //   onUpdate: "CASCADE",
-      //   onDelete: "SET NULL",
-      // },
       status: DataTypes.STRING,
       persetujuan: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: "Status",
-      tableName: "Status",
+      modelName: "STATUS",
+      tableName: "STATUS",
     }
   );
-  return Status;
+  return STATUS;
 };

@@ -1,5 +1,5 @@
 const express = require("express");
-const { Template_surat } = require("../../../models/index.js");
+const { TEMPLATE_SURAT } = require("../../../models/index.js");
 const { StatusCodes } = require("http-status-codes");
 const fs = require("fs");
 const path = require("path");
@@ -14,18 +14,19 @@ const deleteTemplate = async (req, res) => {
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Parameter 'template_id' is required" });
     }
-    const template = await Template_surat.findOne({
+    const template = await TEMPLATE_SURAT.findOne({
       where: { id: template_id },
     });
-    const deletedTemplate = await Template_surat.destroy({
+    const deletedTemplate = await TEMPLATE_SURAT.destroy({
       where: { id: template_id },
     });
 
     if (deletedTemplate) {
       const urlFile = template.url;
-      console.log("mmvpoewm", urlFile);
-      const fileName = urlFile.split("/").pop();
-      console.log("dawdawdasd", fileName);
+      console.log("url", urlFile);
+
+      const fileName = urlFile.split("\\").pop();
+
       const filePath = path.join(
         __dirname,
         "../../../../template_surat",
@@ -34,11 +35,13 @@ const deleteTemplate = async (req, res) => {
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error("Error:", err);
-          return res.status(500).json({ error: "Failed to delete file" });
+          return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json({ error: "Failed to delete file" });
         }
 
         res
-          .status(200)
+          .status(StatusCodes.OK)
           .json({ message: "Template surat deleted successfully" });
       });
     } else {

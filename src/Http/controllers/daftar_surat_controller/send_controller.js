@@ -1,4 +1,3 @@
-const express = require("express");
 const {
   postAksesSurat,
 } = require("../akses_surat_controller/post_akses_surat");
@@ -13,7 +12,6 @@ const send = async (req, res) => {
       from: from,
     },
   };
-  console.log("pwvmo", reqAksesSurat.body.tambah_akses_id);
   const saveAkses = await postAksesSurat(reqAksesSurat);
   return saveAkses;
 };

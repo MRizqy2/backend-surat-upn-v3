@@ -1,6 +1,7 @@
 const express = require("express");
-const { Nomor_surat } = require("../../../models");
+const { NOMOR_SURAT } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deleteNomorSurat = async (req, res) => {
   try {
@@ -8,24 +9,28 @@ const deleteNomorSurat = async (req, res) => {
 
     if (!nomor_surat_id) {
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Parameter 'nomor_surat_id' is required" });
     }
 
-    const hapusNomorSurat = await Nomor_surat.destroy({
+    const hapusNomorSurat = await NOMOR_SURAT.destroy({
       where: { id: nomor_surat_id },
     });
 
     if (hapusNomorSurat) {
       res
-        .status(200)
+        .status(StatusCodes.OK)
         .json({ message: "Nomor_surat Surat deleted successfully" });
     } else {
-      res.status(404).json({ error: "Nomor_surat Surat not found" });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "Nomor_surat Surat not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

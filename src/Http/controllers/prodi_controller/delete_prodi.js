@@ -1,27 +1,34 @@
 const express = require("express");
-const { Prodi } = require("../../../models");
+const { PRODI } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deleteProdi = async (req, res) => {
   try {
     const { prodi_id } = req.query;
 
     if (!prodi_id) {
-      return res.status(400).json({ error: "Parameter prodi_id is required" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Parameter prodi_id is required" });
     }
 
-    const deletedProdi = await Prodi.destroy({
+    const deletedProdi = await PRODI.destroy({
       where: { id: prodi_id },
     });
 
     if (deletedProdi) {
-      res.status(200).json({ message: "Prodi deleted successfully" });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Prodi deleted successfully" });
     } else {
-      res.status(404).json({ error: "Prodi not found" });
+      res.status(StatusCodes.NOT_FOUND).json({ error: "Prodi not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

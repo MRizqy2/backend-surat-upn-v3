@@ -1,6 +1,7 @@
 const express = require("express");
-const { Akses_master } = require("../../../models");
+const { AKSES_MASTER } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deleteAksesMaster = async (req, res) => {
   try {
@@ -8,22 +9,28 @@ const deleteAksesMaster = async (req, res) => {
 
     if (!akses_master_id) {
       return res
-        .status(400)
+        .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Parameter 'akses_master_id' is required" });
     }
 
-    const deletedAksesMaster = await Akses_master.destroy({
+    const deletedAksesMaster = await AKSES_MASTER.destroy({
       where: { id: akses_master_id },
     });
 
     if (deletedAksesMaster) {
-      res.status(200).json({ message: "Akses Master deleted successfully" });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Akses Master deleted successfully" });
     } else {
-      res.status(404).json({ error: "Akses Master not found" });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "Akses Master not found" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

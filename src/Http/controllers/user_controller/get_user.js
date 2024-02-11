@@ -1,5 +1,5 @@
 const express = require("express");
-const { Users, Jabatan, Fakultas, Prodi } = require("../../../models");
+const { USERS, JABATAN, FAKULTAS, PRODI } = require("../../../models");
 const router = express.Router();
 const { StatusCodes } = require("http-status-codes");
 
@@ -7,25 +7,24 @@ const getUser = async (req, res) => {
   try {
     const { user_id } = req.query;
     let user;
-
     if (!user_id) {
-      user = await Users.findAll({
+      user = await USERS.findAll({
         include: [
           {
-            model: Prodi,
+            model: PRODI,
             as: "prodi",
             attributes: {
               exclude: ["kode_prodi", "fakultas_id", "createdAt", "updatedAt"],
             },
           },
           {
-            model: Jabatan,
+            model: JABATAN,
             as: "jabatan",
             attributes: {
               exclude: ["jabatan_atas_id", "createdAt", "updatedAt"],
             },
             include: {
-              model: Jabatan,
+              model: JABATAN,
               as: "jabatan_atas",
               attributes: {
                 exclude: ["jabatan_atas_id", "createdAt", "updatedAt"],
@@ -33,7 +32,7 @@ const getUser = async (req, res) => {
             },
           },
           {
-            model: Fakultas,
+            model: FAKULTAS,
             as: "fakultas",
             attributes: {
               exclude: ["jenjang", "kode_fakultas", "createdAt", "updatedAt"],
@@ -53,7 +52,7 @@ const getUser = async (req, res) => {
         order: [["id", "ASC"]],
       });
     } else {
-      user = await Users.findOne({
+      user = await USERS.findOne({
         where: { id: user_id },
         attributes: {
           exclude: [
@@ -67,20 +66,20 @@ const getUser = async (req, res) => {
         },
         include: [
           {
-            model: Prodi,
+            model: PRODI,
             as: "prodi",
             attributes: {
               exclude: ["kode_prodi", "fakultas_id", "createdAt", "updatedAt"],
             },
           },
           {
-            model: Jabatan,
+            model: JABATAN,
             as: "jabatan",
             attributes: {
               exclude: ["jabatan_atas_id", "createdAt", "updatedAt"],
             },
             include: {
-              model: Jabatan,
+              model: JABATAN,
               as: "jabatan_atas",
               attributes: {
                 exclude: ["jabatan_atas_id", "createdAt", "updatedAt"],
@@ -88,7 +87,7 @@ const getUser = async (req, res) => {
             },
           },
           {
-            model: Fakultas,
+            model: FAKULTAS,
             as: "fakultas",
             attributes: {
               exclude: ["jenjang", "kode_fakultas", "createdAt", "updatedAt"],

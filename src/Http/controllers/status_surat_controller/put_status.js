@@ -1,11 +1,12 @@
 const express = require("express");
 const app = express.Router();
 const {
-  Status,
-  Daftar_surat,
-  Users,
-  Jabatan,
-  Permision,
+  STATUS,
+  DAFTAR_SURAT,
+  USERS,
+  JABATAN,
+  PERMISION,
+  REVISI,
 } = require("../../../models");
 const catchStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
@@ -19,6 +20,9 @@ const { postNotif } = require("../notifikasi_controller/post_notifikasi");
 const {
   postAksesSurat,
 } = require("../akses_surat_controller/post_akses_surat");
+const {
+  postNomorSuratRevisi,
+} = require("../nomor_surat_controller/post_nomor_surat_revisi");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,21 +33,22 @@ const putStatus = async (req, res) => {
     const { persetujuan, status } = req.body;
     const { surat_id } = req.query;
 
-    const user = await Users.findOne({
+    const user = await USERS.findOne({
       where: { id: req.token.id },
     });
-    const jabatan = await Jabatan.findOne({
+    const jabatan = await JABATAN.findOne({
       where: { id: user.jabatan_id },
     });
 
-    const surat = await Daftar_surat.findOne({
+    const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
-    console.log("krvpom", surat.id);
-    const status_surat = await Status.findOne({
+    const user_surat = await USERS.findOne({
+      where: { id: surat.user_id },
+    });
+    const status_surat = await STATUS.findOne({
       where: { surat_id: surat.id },
     });
-    console.log("[pp[lp]]");
     if (!status_surat) {
       return res.status(StatusCodes.NOT_FOUND).json({
         error: "Status not found",
@@ -74,18 +79,14 @@ const putStatus = async (req, res) => {
           isRead: req.body.dibaca,
           latestStatus: status_surat.status,
           persetujuan: persetujuan,
-          // isSigned
         },
       };
     }
-    console.log("  vmldv");
     const saveStatus = await catchStatus(reqStatus);
-    console.log(" epmpovmmmm", saveStatus);
 
     if (!persetujuan) {
-      updateStatus = await Status.update(
+      updateStatus = await STATUS.update(
         {
-          // persetujuan: persetujuan || status_surat.persetujuan || "",
           status: saveStatus || status || status_surat.status,
         },
         {
@@ -93,9 +94,8 @@ const putStatus = async (req, res) => {
           returning: true,
         }
       );
-      console.log("vnrvmop");
     } else {
-      updateStatus = await Status.update(
+      updateStatus = await STATUS.update(
         {
           persetujuan: persetujuan || status_surat.persetujuan || "",
           status: saveStatus || status || status_surat.status,
@@ -105,13 +105,22 @@ const putStatus = async (req, res) => {
           returning: true,
         }
       );
-      console.log("vn[ dwc");
     }
-    console.log("sdawdawd", persetujuan);
+
+    const reqNotif = {
+      body: {
+        surat_id: surat_id,
+        jabatan_id_dari: jabatan.id,
+        jabatan_id_ke: user_surat.jabatan_id,
+        isSign: false,
+        persetujuan: persetujuan,
+        from: `status_surat_controller/put_status`,
+      },
+    };
+    await postNotif(reqNotif);
 
     if (persetujuan && persetujuan.toLowerCase().includes("disetujui")) {
       if (jabatan.jabatan_atas_id) {
-        console.log("dawdawd", persetujuan);
         reqTampilan = {
           body: {
             jabatan_id: jabatan.jabatan_atas_id,
@@ -129,47 +138,32 @@ const putStatus = async (req, res) => {
           },
         };
         await postAksesSurat(reqAkses);
-        const reqNotif = {
+        const reqNotif2 = {
           body: {
             surat_id: surat_id,
             jabatan_id_dari: jabatan.id,
             jabatan_id_ke: jabatan.jabatan_atas_id,
+            isSign: false,
+            persetujuan: false,
             from: `status_surat_controller/put_status`,
           },
         };
-        await postNotif(reqNotif);
-      } //
+        await postNotif(reqNotif2);
+      }
 
-      const permision = await Permision.findOne({
+      const permision = await PERMISION.findOne({
         where: { jabatan_id: jabatan.id },
       });
       if (permision.generate_nomor_surat) {
-        // const save_surat = await Daftar_surat.create({
-        //   judul: surat.judul,
-        //   thumbnail: surat.thumbnail || "",
-        //   jenis_id: surat.jenis_id || "",
-        //   user_id: surat.user_id,
-        //   deskripsi: surat.deskripsi || "",
-        //   tanggal: surat.tanggal,
-        //   url: surat.url,
-        // });
-        await postNomorSurat(reqTampilan);
+        const surat_revisi = await REVISI.findOne({
+          where: { surat_id_baru: surat_id },
+        });
+        if (!surat_revisi) {
+          await postNomorSurat(reqTampilan);
+        } else if (surat_revisi) {
+          await postNomorSuratRevisi(reqTampilan);
+        }
       } //surat_id
-    }
-    if (persetujuan && persetujuan.toLowerCase().includes("ditolak")) {
-      const user_surat = await Users.findOne({
-        where: { id: surat.user_id },
-      });
-      const reqNotif = {
-        // tak coba run sek
-        body: {
-          surat_id: surat_id,
-          jabatan_id_dari: jabatan.id,
-          jabatan_id_ke: user_surat.jabatan_id,
-          from: `status_surat_controller/put_status`,
-        },
-      };
-      await postNotif(reqNotif);
     }
 
     if (req.body.from) {

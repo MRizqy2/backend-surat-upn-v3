@@ -1,7 +1,7 @@
 const express = require("express");
-const { Akses_surat } = require("../../../models");
-const jabatan = require("../../../models/jabatan");
+const { AKSES_SURAT } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deleteAksesSurat = async (req, res) => {
   try {
@@ -19,22 +19,30 @@ const deleteAksesSurat = async (req, res) => {
       whereClause.jabatan_id = jabatan_id;
     }
 
-    const deletedAksesSurat = await Akses_surat.destroy({
+    const deletedAksesSurat = await AKSES_SURAT.destroy({
       where: whereClause,
     });
 
     if (deletedAksesSurat) {
       if (!req.query.from) {
-        res.status(200).json({ message: "Akses Surat deleted successfully" });
+        res
+          .status(StatusCodes.OK)
+          .json({ message: "Akses Surat deleted successfully" });
       } else {
         return deletedAksesSurat;
       }
     } else {
-      res.status(404).json({ error: "Akses Surat not found" });
+      if (res) {
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ error: "Akses Surat not found" });
+      }
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

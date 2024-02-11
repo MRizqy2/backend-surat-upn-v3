@@ -1,5 +1,5 @@
 const express = require("express");
-const { Template_surat, Jenis_surat } = require("../../../models/index.js");
+const { TEMPLATE_SURAT, JENIS_SURAT } = require("../../../models/index.js");
 const router = express.Router();
 const { StatusCodes } = require("http-status-codes");
 
@@ -9,10 +9,10 @@ const getTemplate = async (req, res) => {
     let template;
 
     if (!template_id) {
-      template = await Template_surat.findAll({
+      template = await TEMPLATE_SURAT.findAll({
         include: [
           {
-            model: Jenis_surat,
+            model: JENIS_SURAT,
             as: "jenis",
             attributes: ["id", "jenis"],
           },
@@ -20,11 +20,11 @@ const getTemplate = async (req, res) => {
         order: [["id", "ASC"]],
       });
     } else {
-      template = await Template_surat.findOne({
+      template = await TEMPLATE_SURAT.findOne({
         where: { id: template_id },
         include: [
           {
-            model: Jenis_surat,
+            model: JENIS_SURAT,
             as: "jenis",
             attributes: ["id", "jenis"],
           },

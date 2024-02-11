@@ -1,10 +1,11 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
-// Endpoint untuk mengunduh file
-const getDownload = (req, res) => {
+// Endpoint untuk mengunduh blob
+const getDownloadBlob = (req, res) => {
   try {
     const filename = req.params.filename;
     const filePath = path.resolve(
@@ -13,15 +14,11 @@ const getDownload = (req, res) => {
       filename
     );
 
-    // Gunakan metode res.download untuk mengirimkan file ke pengguna
-    res.download(filePath, (err) => {
-      if (err) {
-        console.error("Error:", err);
-        res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ error: "Internal Server Error" });
-      }
-    });
+    // Baca file sebagai buffer
+    const buffer = fs.readFileSync(filePath);
+
+    // Kirim buffer sebagai respons
+    res.end(buffer);
   } catch (error) {
     console.error("Error:", error);
     res
@@ -30,6 +27,6 @@ const getDownload = (req, res) => {
   }
 };
 
-router.get("/:filename", getDownload);
+router.get("/:filename", getDownloadBlob);
 
 module.exports = router;

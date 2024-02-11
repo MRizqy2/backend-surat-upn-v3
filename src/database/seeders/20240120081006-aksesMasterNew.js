@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert(
-      "Akses_masters",
+      "AKSES_MASTERS",
       [
         {
           id: 2,
@@ -14,6 +14,7 @@ module.exports = {
           fakultas: false,
           jabatan: false,
           jenis_surat: false,
+          sikoja: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -26,6 +27,7 @@ module.exports = {
           fakultas: false,
           jabatan: false,
           jenis_surat: false,
+          sikoja: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -38,6 +40,7 @@ module.exports = {
           fakultas: false,
           jabatan: false,
           jenis_surat: false,
+          sikoja: true,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -50,6 +53,7 @@ module.exports = {
           fakultas: false,
           jabatan: false,
           jenis_surat: false,
+          sikoja: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -59,6 +63,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("Akses_masters", null, {});
+    return queryInterface.bulkDelete("AKSES_MASTERS", null, {});
   },
 };
