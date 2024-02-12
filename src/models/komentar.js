@@ -1,29 +1,29 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Komentar extends Model {
+  class KOMENTAR extends Model {
     static associate(models) {
-      Komentar.belongsTo(models.Jabatan, {
+      KOMENTAR.belongsTo(models.JABATAN, {
         foreignKey: "jabatan_id_ke",
         as: "jabatan_ke",
       });
-      Komentar.belongsTo(models.Jabatan, {
+      KOMENTAR.belongsTo(models.JABATAN, {
         foreignKey: "jabatan_id_dari",
         as: "jabatan_dari",
       });
-      Komentar.belongsTo(models.Daftar_surat, {
+      KOMENTAR.belongsTo(models.DAFTAR_SURAT, {
         foreignKey: "surat_id",
         as: "daftar_surat",
       });
     }
   }
-  Komentar.init(
+  KOMENTAR.init(
     {
       surat_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Daftar_surat",
+          model: "DAFTAR_SURAT",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Jabatan",
+          model: "JABATAN",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -43,19 +43,20 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Jabatan",
+          model: "JABATAN",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
+      visible: DataTypes.BOOLEAN,
       komentar: DataTypes.TEXT,
     },
     {
       sequelize,
-      modelName: "Komentar",
-      tableName: "Komentars",
+      modelName: "KOMENTAR",
+      tableName: "KOMENTARS",
     }
   );
-  return Komentar;
+  return KOMENTAR;
 };

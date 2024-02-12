@@ -1,13 +1,13 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Tampilan extends Model {
+  class TAMPILAN extends Model {
     static associate(models) {
-      Tampilan.belongsTo(models.Jabatan, { foreignKey: "jabatan_id" });
-      Tampilan.belongsTo(models.Daftar_surat, { foreignKey: "surat_id" });
+      TAMPILAN.belongsTo(models.JABATAN, { foreignKey: "jabatan_id" });
+      TAMPILAN.belongsTo(models.DAFTAR_SURAT, { foreignKey: "surat_id" });
     }
   }
-  Tampilan.init(
+  TAMPILAN.init(
     {
       pin: DataTypes.BOOLEAN,
       dibaca: DataTypes.BOOLEAN,
@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Jabatan",
+          model: "JABATAN",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Daftar_surat",
+          model: "DAFTAR_SURAT",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -34,8 +34,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Tampilan",
+      modelName: "TAMPILAN",
+      tableName: "TAMPILANS",
     }
   );
-  return Tampilan;
+  return TAMPILAN;
 };

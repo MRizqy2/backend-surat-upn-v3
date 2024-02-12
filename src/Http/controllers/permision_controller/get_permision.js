@@ -1,5 +1,5 @@
 const express = require("express");
-const { Akses_master, Permision, Jabatan, Users } = require("../../../models");
+const { PERMISION } = require("../../../models");
 const router = express.Router();
 
 const getPermision = async (req, res) => {
@@ -8,13 +8,13 @@ const getPermision = async (req, res) => {
 
     if (!permision_id) {
       // Mendapatkan semua data
-      const allData = await Permision.findAll({
+      const allData = await PERMISION.findAll({
         order: [["id", "ASC"]],
       });
       res.send(allData);
     } else if (permision_id) {
       // Mendapatkan data berdasarkan ID
-      const findOneData = await Permision.findOne({
+      const findOneData = await PERMISION.findOne({
         where: { id: permision_id },
       });
 

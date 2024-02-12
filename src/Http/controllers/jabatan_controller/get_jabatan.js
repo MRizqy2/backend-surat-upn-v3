@@ -1,8 +1,7 @@
 const express = require("express");
-const { Akses_master, Permision, Jabatan, Users } = require("../../../models");
-const { where } = require("sequelize");
-const jabatan = require("../../../models/jabatan");
+const { AKSES_MASTER, PERMISION, JABATAN } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const getJabatan = async (req, res) => {
   try {
@@ -10,18 +9,18 @@ const getJabatan = async (req, res) => {
 
     if (!jabatan_id) {
       // Mendapatkan semua data
-      const allData = await Jabatan.findAll({
+      const allData = await JABATAN.findAll({
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
         include: [
           {
-            model: Permision,
+            model: PERMISION,
             as: "permision",
             attributes: { exclude: ["jabatan_id", "createdAt", "updatedAt"] },
             include: [
               {
-                model: Akses_master,
+                model: AKSES_MASTER,
                 as: "akses_master",
                 attributes: {
                   exclude: ["permision_id", "createdAt", "updatedAt"],
@@ -30,7 +29,7 @@ const getJabatan = async (req, res) => {
             ],
           },
           {
-            model: Jabatan,
+            model: JABATAN,
             as: "jabatan_atas",
             attributes: {
               exclude: ["jabatan_id", "createdAt", "updatedAt"],
@@ -42,29 +41,21 @@ const getJabatan = async (req, res) => {
       res.send(allData);
     } else if (jabatan_id) {
       // Mendapatkan data berdasarkan ID
-      const findOneData = await Jabatan.findOne({
+      const findOneData = await JABATAN.findOne({
         attributes: {
           exclude: ["createdAt", "updatedAt"],
         },
         include: [
-          // {
-          //   exclude: ["createdAt", "updatedAt"],
-          // },
           {
-            model: Permision,
+            model: PERMISION,
             as: "permision",
             attributes: {
-              exclude: [
-                "jabatan_id",
-                // "jabatan_atas_id",
-                "createdAt",
-                "updatedAt",
-              ],
+              exclude: ["jabatan_id", "createdAt", "updatedAt"],
             },
 
             include: [
               {
-                model: Akses_master,
+                model: AKSES_MASTER,
                 as: "akses_master",
                 attributes: {
                   exclude: ["permision_id", "createdAt", "updatedAt"],
@@ -73,7 +64,7 @@ const getJabatan = async (req, res) => {
             ],
           },
           {
-            model: Jabatan,
+            model: JABATAN,
             as: "jabatan_atas",
             attributes: {
               exclude: ["jabatan_id", "createdAt", "updatedAt"],
@@ -89,15 +80,17 @@ const getJabatan = async (req, res) => {
         if (findOneData) {
           res.send(findOneData);
         } else {
-          res.status(404).json({ error: "Data not found" });
+          res.status(StatusCodes.NOT_FOUND).json({ error: "Data not found" });
         }
       }
     } else {
-      res.status(400).json({ error: "Invalid parameters" });
+      res.status(StatusCodes.BAD_REQUEST).json({ error: "Invalid parameters" });
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

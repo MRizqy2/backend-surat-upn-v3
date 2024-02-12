@@ -1,9 +1,9 @@
 const express = require("express");
-const { Periode } = require("../../../models");
+const { PERIODE } = require("../../../models");
 const router = express.Router();
 
 const getPeriode = async (req, res) => {
-  res.send(await Periode.findAll({ order: [["id", "ASC"]] }));
+  res.send(await PERIODE.findAll({ order: [["id", "ASC"]] }));
 };
 
 router.get("/", getPeriode);

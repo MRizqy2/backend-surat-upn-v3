@@ -1,16 +1,11 @@
 const express = require("express");
-const { Tampilan } = require("../../../models");
+const { TAMPILAN } = require("../../../models");
 const router = express.Router();
+const { StatusCodes } = require("http-status-codes");
 
 const deleteTampilan = async (req, res) => {
   try {
     const { tampilan_id, surat_id, jabatan_id } = req.query;
-
-    // if (!tampilan_id) {
-    //   return res
-    //     .status(400)
-    //     .json({ error: "Parameter 'tampilan_id' is required" });
-    // }
 
     const whereClause = {};
     if (req.query && tampilan_id !== undefined) {
@@ -23,22 +18,30 @@ const deleteTampilan = async (req, res) => {
       whereClause.jabatan_id = jabatan_id;
     }
 
-    const deletedTampilan = await Tampilan.destroy({
+    const deletedTampilan = await TAMPILAN.destroy({
       where: whereClause,
     });
 
     if (deletedTampilan) {
       if (!req.query.from) {
-        res.status(200).json({ message: "Tampilan deleted successfully" });
+        res
+          .status(StatusCodes.OK)
+          .json({ message: "Tampilan deleted successfully" });
       } else {
         return deletedTampilan;
       }
     } else {
-      res.status(404).json({ error: "Tampilan not found" });
+      if (res) {
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ error: "Akses Surat not found" });
+      }
     }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const authMiddleware = require("../Http/middleware/authMiddleware");
 const authController = require("../Http/controllers/auth_controller/authentication_controller");
 const daftarSuratController = require("../Http/controllers/daftar_surat_controller/daftar_surat_controller");
@@ -13,23 +12,20 @@ const jenisController = require("../Http/controllers/jenis_controller/jenis_cont
 const tampilanController = require("../Http/controllers/tampilan_surat_controller/tampilan_surat_controller");
 const statusController = require("../Http/controllers/status_surat_controller/status_surat_controller");
 const komentarController = require("../Http/controllers/komentar_controller/komentar_controller");
-const repoController = require("../Http/controllers/repo_controller/repo_controller");
 const aksesMasterController = require("../Http/controllers/akses_master_controller/akses_master_controller");
 const permisionController = require("../Http/controllers/permision_controller/permision_controller");
 const aksesSuratController = require("../Http/controllers/akses_surat_controller/akses_surat_controller");
-// const nomorController = require("../Http/controllers/nomor_surat_controller");
 const notifikasiController = require("../Http/controllers/notifikasi_controller/notifikasi_controller");
+const ocrController = require("../Http/controllers/ocr_controller/ocr_controller").router;
+const downloadController = require("../Http/controllers/download_controller/download_controller");
+const sikojaController = require("../Http/controllers/sikoja_controller/sikoja_controller");
+const getProgressBar = require("../Http/controllers/progress_bar_controller/get_progress_bar").router;
 
-// const {
-//   app: tampilanController,
-// } = require("../Http/controllers/tampilan_surat_controller");
-//masalah e export e objek
 const router = express.Router();
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-// router.use(cors());
 router.use("/akses-master", authMiddleware, aksesMasterController);
 router.use("/permision", authMiddleware, permisionController);
 router.use("/jabatan", authMiddleware, jabatanController);
@@ -42,6 +38,7 @@ router.use("/periode", authMiddleware, periodeController);
 router.use("/jenis", authMiddleware, jenisController);
 router.use("/fakultas", authMiddleware, fakultasController);
 router.use("/prodi", authMiddleware, prodiController);
+router.use("/ocr", authMiddleware, ocrController);
 
 router.use("/daftar-surat", authMiddleware, daftarSuratController);
 router.use("/template-surat", authMiddleware, templateController);
@@ -49,11 +46,9 @@ router.use("/tampilan", authMiddleware, tampilanController);
 router.use("/status", authMiddleware, statusController);
 router.use("/komentar", authMiddleware, komentarController);
 router.use("/notifikasi", authMiddleware, notifikasiController);
+router.use("/download", authMiddleware, downloadController);
+router.use("/progress-bar", authMiddleware, getProgressBar);
 
-router.use("/repo", authMiddleware, repoController);
-
-// router.use("/notifikasi", authMiddleware, notifikasiController);
-
-// router.use("/nomor-surat", authMiddleware, nomorController);
+router.use("/sikoja", authMiddleware, sikojaController);
 
 module.exports = router;

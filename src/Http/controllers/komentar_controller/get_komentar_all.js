@@ -1,18 +1,18 @@
 const express = require("express");
-const { Komentar, Users, Jabatan, Daftar_surat } = require("../../../models");
+const { KOMENTAR, JABATAN } = require("../../../models");
 const router = express.Router();
 
 const getAll = async function (req, res) {
   res.send(
-    await Komentar.findAll({
+    await KOMENTAR.findAll({
       include: [
         {
-          model: Jabatan,
+          model: JABATAN,
           as: "jabatan_ke",
           attributes: ["name"],
         },
         {
-          model: Jabatan,
+          model: JABATAN,
           as: "jabatan_dari",
           attributes: ["name"],
         },

@@ -1,22 +1,22 @@
 const { StatusCodes } = require("http-status-codes");
 const express = require("express");
 const app = express.Router();
-const { Users } = require("../../../models");
+const { USERS } = require("../../../models");
 
 const putUser = async (req, res) => {
   try {
     const { name, email, jabatan_id, prodi_id, fakultas_id, aktif } = req.body;
     const { user_id } = req.query;
 
-    const user = await Users.findOne({
+    const user = await USERS.findOne({
       where: { id: user_id },
     });
 
-    const updatedUser = await Users.update(
+    const updatedUser = await USERS.update(
       {
         name: name || user.name,
         email: email || user.email,
-        // password: password || ,
+        // password: password || ,jangan dihapus
         jabatan_id: jabatan_id || user.jabatan_id,
         prodi_id: prodi_id || user.prodi_id,
         fakultas_id: fakultas_id || user.fakultas_id,
@@ -31,7 +31,7 @@ const putUser = async (req, res) => {
     );
 
     // Ambil data user yang telah diperbarui
-    const resultUser = await Users.findOne({
+    const resultUser = await USERS.findOne({
       where: { id: user_id },
       attributes: { exclude: ["password"] }, // Perbaikan pada properti attributes
     });

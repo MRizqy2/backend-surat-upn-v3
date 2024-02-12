@@ -1,5 +1,5 @@
 const express = require("express");
-const { Fakultas } = require("../../../models");
+const { FAKULTAS } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
@@ -7,14 +7,16 @@ const postFakultas = async (req, res) => {
   const { name, jenjang, kode_fakultas } = req.body;
 
   try {
-    const latestFakultas = await Fakultas.findAll({
+    const latestFakultas = await FAKULTAS.findAll({
       limit: 1,
       order: [["id", "DESC"]],
     });
 
-    const latestFakultasId = parseInt(latestFakultas[0].id, 10);
+    const latestFakultasId = latestFakultas[0]
+      ? parseInt(latestFakultas[0].id, 10)
+      : 0;
 
-    const fakultas = await Fakultas.create({
+    const fakultas = await FAKULTAS.create({
       id: latestFakultasId + 1,
       name,
       jenjang,

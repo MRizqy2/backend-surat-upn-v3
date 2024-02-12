@@ -2,51 +2,61 @@
 const { Model } = require("sequelize");
 const komentar = require("./komentar");
 module.exports = (sequelize, DataTypes) => {
-  class Daftar_surat extends Model {
+  class DAFTAR_SURAT extends Model {
     static associate(models) {
-      Daftar_surat.belongsTo(models.Users, {
+      DAFTAR_SURAT.belongsTo(models.USERS, {
         foreignKey: "user_id",
         as: "user",
       });
-      Daftar_surat.belongsTo(models.Jenis_surat, {
+      DAFTAR_SURAT.belongsTo(models.JENIS_SURAT, {
         foreignKey: "jenis_id",
         as: "jenis",
       });
-      Daftar_surat.hasMany(models.Komentar, {
+      DAFTAR_SURAT.hasMany(models.KOMENTAR, {
         foreignKey: "surat_id",
         as: "komentar",
       });
-      Daftar_surat.hasMany(models.Notifikasi, {
+      DAFTAR_SURAT.hasMany(models.NOTIFIKASI, {
         foreignKey: "surat_id",
         as: "notifikasi",
       });
-      Daftar_surat.hasMany(models.Nomor_surat, {
+      DAFTAR_SURAT.hasMany(models.NOMOR_SURAT, {
         foreignKey: "surat_id",
         as: "nomor_surat",
       });
-      Daftar_surat.hasMany(models.Tampilan, {
+      DAFTAR_SURAT.hasMany(models.TAMPILAN, {
         as: "tampilan",
         foreignKey: "surat_id",
       });
-      Daftar_surat.hasOne(models.Status, {
+      DAFTAR_SURAT.hasOne(models.STATUS, {
         as: "status",
         foreignKey: "surat_id",
       });
-      Daftar_surat.hasMany(models.Akses_surat, {
+      DAFTAR_SURAT.hasMany(models.AKSES_SURAT, {
         foreignKey: "surat_id",
         as: "akses_surat",
       });
+      DAFTAR_SURAT.hasMany(models.REVISI, {
+        foreignKey: "surat_id_lama",
+        as: "surat_id_old",
+      });
+      DAFTAR_SURAT.hasMany(models.REVISI, {
+        foreignKey: "surat_id_baru",
+        as: "surat_id_new",
+      });
+      DAFTAR_SURAT.hasMany(models.PERBAIKAN, {
+        foreignKey: "surat_id",
+        as: "perbaikan",
+      });
     }
   }
-  Daftar_surat.init(
+  DAFTAR_SURAT.init(
     {
       judul: DataTypes.STRING,
-      thumbnail: DataTypes.STRING,
       jenis_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
         references: {
-          model: "Jenis_surat",
+          model: "JENIS_SURAT",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -54,9 +64,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       user_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
         references: {
-          model: "Users",
+          model: "USERS",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -64,12 +73,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       deskripsi: DataTypes.STRING,
       tanggal: DataTypes.DATE,
-      url: DataTypes.STRING,
+      path: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: "Daftar_surat",
+      modelName: "DAFTAR_SURAT",
+      tableName: "DAFTAR_SURATS",
     }
   );
-  return Daftar_surat;
+  return DAFTAR_SURAT;
 };

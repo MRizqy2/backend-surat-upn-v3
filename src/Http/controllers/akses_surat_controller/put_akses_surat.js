@@ -1,5 +1,5 @@
 const express = require("express");
-const { Akses_surat } = require("../../../models");
+const { AKSES_SURAT } = require("../../../models");
 const router = express.Router();
 const { StatusCodes } = require("http-status-codes");
 
@@ -8,10 +8,7 @@ const putAksesSurat = async (req, res) => {
     const { surat_id, jabatan_id } = req.body;
     const { akses_surat_id } = req.query;
 
-    const akses_surat = await Akses_surat.findOne({
-      where: { id: akses_surat_id },
-    });
-    const updateAksesSurat = await Akses_surat.update(
+    const updateAksesSurat = await AKSES_SURAT.update(
       {
         surat_id,
         jabatan_id: jabatan_id,

@@ -1,39 +1,31 @@
 const bcrypt = require("bcryptjs");
 const { StatusCodes } = require("http-status-codes");
-const {
-  Users,
-  Jabatan,
-  Prodi,
-  Fakultas,
-  Permision,
-  Akses_master,
-} = require("../../../models/index.js");
+const { USERS, JABATAN, PRODI, FAKULTAS } = require("../../../models/index.js");
 const config = require("../../../../config/config.js");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
-const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");
 const { getJabatan } = require("../jabatan_controller/get_jabatan.js");
-// const { router } = require("../daftar_surat_controller/cloudinary_controller.js");
-const app = express.Router();
 const router = express.Router();
 const sequelize = require("sequelize");
+
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
 
 const environment = "development";
 const secretKey = config[environment].secret_key;
 
 const postLogin = async (req, res) => {
   try {
-    const user = await Users.findOne({
+    const { email } = req.body;
+    console.log("email: ", email);
+    const user = await USERS.findOne({
       where: {
         email: sequelize.where(
           sequelize.fn("LOWER", sequelize.col("email")),
-          req.body.email.toLowerCase()
+          email.toLowerCase()
         ),
       },
     });
-    console.log("kvmmd", user.email);
-    console.log("vpv,ped", user.password);
 
     if (user && !user.aktif) {
       return res
@@ -44,48 +36,27 @@ const postLogin = async (req, res) => {
       const token = jwt.sign({ id: user.id, aktif: user.aktif }, secretKey, {
         expiresIn: "7d",
       });
-      const searchUser = await Users.findOne({
+      const searchUser = await USERS.findOne({
         where: { id: user.id },
       });
 
-      const user_response = await Users.findOne({
+      const user_response = await USERS.findOne({
         include: [
           {
-            //
-            model: Prodi,
+            model: PRODI,
             as: "prodi",
             attributes: ["id", "name"],
           },
           {
-            model: Jabatan,
+            model: JABATAN,
             as: "jabatan",
             attributes: {
               exclude: ["jabatan_atas_id", "createdAt", "UpdatedAt"],
             },
             where: { id: searchUser.jabatan_id },
           },
-          //   include: [
-          //     {
-          //       model: Permision,
-          //       as: "permision",
-          //       attributes: {
-          //         exclude: ["jabatan_id", "createdAt", "UpdatedAt"],
-          //       },
-          //       include: [
-          //         {
-          //           model: Akses_master,
-          //           as: "akses_master",
-          //           attributes: {
-          //             exclude: ["permision_id", "createdAt", "UpdatedAt"],
-          //           },
-          //         },
-          //       ],
-          //     },
-          //   ],
-          //   order: [["id", "ASC"]],
-          // },
           {
-            model: Fakultas,
+            model: FAKULTAS,
             as: "fakultas",
             attributes: ["id", "name"],
           },

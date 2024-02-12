@@ -1,124 +1,193 @@
 const express = require("express");
-const app = express.Router();
 const router = express.Router();
 const {
-  Daftar_surat,
-  Users,
-  Jabatan,
-  Prodi,
-  Fakultas,
-  Status,
-  Tampilan,
-  Akses_surat,
-  Jenis_surat,
-  Komentar,
-  Nomor_surat,
-  Periode,
+  DAFTAR_SURAT,
+  USERS,
+  JABATAN,
+  PRODI,
+  FAKULTAS,
+  STATUS,
+  TAMPILAN,
+  AKSES_SURAT,
+  JENIS_SURAT,
+  KOMENTAR,
+  NOMOR_SURAT,
+  PERIODE,
 } = require("../../../models");
-const auth = require("../../middleware/authMiddleware");
-const cloudinaryController = require("./cloudinary_controller/cloudinary_controller");
-const { StatusCodes } = require("http-status-codes");
-const getStatus = require("../status_surat_controller/catch_status");
-const { Op, Sequelize } = require("sequelize");
+const { Op } = require("sequelize"); //
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
 
 const getDaftarSurat = async (req, res) => {
   let surat;
+  const { startDate, endDate } = req.query;
+  const { repo } = req.query;
+  const { prodi_id } = req.query;
 
-  const month = parseInt(req.query.month);
-  const year = parseInt(req.query.year);
-  let dataFilter = {};
-
-  if (month && year) {
-    if (month < 1 || month > 12) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: "The 'month' parameter must be between 1 and 12" });
-    }
-
-    dataFilter[Op.and] = [
-      Sequelize.literal(`"Daftar_surat"."createdAt" >= DATE_TRUNC('month', TIMESTAMP '${year}-${month}-01') - INTERVAL '1 month'`),
-      Sequelize.literal(`"Daftar_surat"."createdAt" < DATE_TRUNC('month', TIMESTAMP '${year}-${month}-01') + INTERVAL '2 months'`)
-    ];
-  } else {
-    return res.status(StatusCodes.BAD_REQUEST).json({ error: "Both 'month' and 'year' parameters are required" });
+  let dateFilter = {};
+  if (startDate) {
+    const start = new Date(startDate);
+    dateFilter[Op.gte] = start;
   }
-  const user = await Users.findOne({
+
+  let end;
+  if (endDate) {
+    end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+    dateFilter[Op.lte] = end;
+  }
+  const user = await USERS.findOne({
     where: { id: req.token.id },
   });
-  const jabatan = await Jabatan.findOne({
+  const jabatan = await JABATAN.findOne({
     where: { id: user.jabatan_id },
   });
-  const prodi = await Prodi.findOne({
+  const prodi = await PRODI.findOne({
     where: { id: user.prodi_id },
   });
-  const fakultas = await Fakultas.findOne({
+  const fakultas = await FAKULTAS.findOne({
     where: { id: user.fakultas_id },
   });
 
-  if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
-    console.log("ovorvpw");
-    surat = await Daftar_surat.findAll({
-      where: dataFilter,
-      attributes: { exclude: ["createdAt", "updatedAt"] },
+  const whereClause =
+    startDate && endDate
+      ? {
+          tanggal: {
+            [Op.between]: [new Date(startDate), end],
+          },
+        }
+      : {};
+
+  if (req.query && startDate !== undefined) {
+    const start = new Date(startDate);
+    let end;
+    if (endDate) {
+      end = new Date(endDate);
+      end.setDate(end.getDate() + 1);
+      end.setMilliseconds(end.getMilliseconds() - 1);
+    }
+  }
+
+  if (repo || (repo && prodi_id)) {
+    const status = "Surat Telah Ditandatangani";
+    if (prodi_id) {
+      whereClause["$user.prodi.id$"] = prodi_id || "";
+    }
+
+    const repo = await DAFTAR_SURAT.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+      where: {
+        ...whereClause,
+      },
       include: [
         {
-          model: Status,
+          model: STATUS,
           as: "status",
           attributes: ["status", "persetujuan"],
+          where: { status: status },
         },
-        // {
-        //   model: Tampilan,
-        //   as: "tampilan",
-        //   attributes: ["pin", "dibaca"],
-        //   // where: { jabatan_id: jabatan.id },
-        // },
         {
-          model: Jenis_surat,
+          model: JENIS_SURAT,
           as: "jenis",
           attributes: { exclude: ["createdAt", "updatedAt"] },
         },
-        // {
-        //   model: Akses_surat,
-        //   as: "akses_surat",
-        //   attributes: { exclude: ["createdAt", "updatedAt"] },
-        //   // where: { jabatan_id: user.jabatan_id },
-        // },
         {
-          model: Komentar,
-          as: "komentar",
-          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-          required: false,
-        },
-        {
-          model: Nomor_surat,
+          model: NOMOR_SURAT,
           as: "nomor_surat",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
           required: false,
           include: [
             {
-              model: Periode,
+              model: PERIODE,
               as: "periode",
               attributes: { exclude: ["createdAt", "updatedAt"] },
             },
           ],
         },
         {
-          model: Users,
+          model: USERS,
           as: "user",
           attributes: ["email", "name"],
           include: [
             {
-              model: Jabatan,
-              as: "jabatan",
+              model: PRODI,
+              as: "prodi",
               attributes: ["id", "name"],
-              // where: { id: jabatan.id },
             },
             {
-              model: Fakultas,
+              model: JABATAN,
+              as: "jabatan",
+              attributes: ["id", "name"],
+            },
+            {
+              model: FAKULTAS,
               as: "fakultas",
               attributes: ["id", "name"],
-              // where: { id: fakultas.id },
+            },
+          ],
+        },
+      ],
+      order: [["id", "ASC"]],
+    });
+    res.json(repo);
+  } else if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
+    surat = await DAFTAR_SURAT.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      where: {
+        ...whereClause,
+      },
+      include: [
+        {
+          model: STATUS,
+          as: "status",
+          attributes: ["status", "persetujuan"],
+        },
+        {
+          model: JENIS_SURAT,
+          as: "jenis",
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+        {
+          model: KOMENTAR,
+          as: "komentar",
+          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
+        },
+        {
+          model: NOMOR_SURAT,
+          as: "nomor_surat",
+          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
+          include: [
+            {
+              model: PERIODE,
+              as: "periode",
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
+          ],
+        },
+        {
+          model: USERS,
+          as: "user",
+          attributes: ["email", "name"],
+          include: [
+            {
+              model: PRODI,
+              as: "prodi",
+              attributes: ["id", "name"],
+            },
+            {
+              model: JABATAN,
+              as: "jabatan",
+              attributes: ["id", "name"],
+            },
+            {
+              model: FAKULTAS,
+              as: "fakultas",
+              attributes: ["id", "name"],
             },
           ],
         },
@@ -126,65 +195,70 @@ const getDaftarSurat = async (req, res) => {
       order: [["id", "ASC"]],
     });
   } else if (!prodi.id || prodi.name == `-` || prodi.id == 1) {
-    console.log("moomp");
-    surat = await Daftar_surat.findAll({
+    surat = await DAFTAR_SURAT.findAll({
       //by fakultas
-      where: dataFilter,
       attributes: { exclude: ["createdAt", "updatedAt"] },
+      where: {
+        ...whereClause,
+      },
       include: [
         {
-          model: Status,
+          model: STATUS,
           as: "status",
           attributes: ["status", "persetujuan"],
         },
         {
-          model: Tampilan,
+          model: TAMPILAN,
           as: "tampilan",
           attributes: ["pin", "dibaca"],
           where: { jabatan_id: jabatan.id },
         },
         {
-          model: Jenis_surat,
+          model: JENIS_SURAT,
           as: "jenis",
           attributes: { exclude: ["createdAt", "updatedAt"] },
         },
         {
-          model: Akses_surat,
+          model: AKSES_SURAT,
           as: "akses_surat",
           attributes: { exclude: ["createdAt", "updatedAt"] },
           where: { jabatan_id: user.jabatan_id },
         },
         {
-          model: Komentar,
+          model: KOMENTAR,
           as: "komentar",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
           required: false,
         },
         {
-          model: Nomor_surat,
+          model: NOMOR_SURAT,
           as: "nomor_surat",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
           include: [
             {
-              model: Periode,
+              model: PERIODE,
               as: "periode",
               attributes: { exclude: ["createdAt", "updatedAt"] },
             },
           ],
         },
         {
-          model: Users,
+          model: USERS,
           as: "user",
           attributes: ["email", "name"],
           include: [
             {
-              model: Jabatan,
-              as: "jabatan",
+              model: PRODI,
+              as: "prodi",
               attributes: ["id", "name"],
-              // where: { id: jabatan.id },
             },
             {
-              model: Fakultas,
+              model: JABATAN,
+              as: "jabatan",
+              attributes: ["id", "name"],
+            },
+            {
+              model: FAKULTAS,
               as: "fakultas",
               attributes: ["id", "name"],
               where: { id: fakultas.id },
@@ -195,73 +269,72 @@ const getDaftarSurat = async (req, res) => {
       order: [["id", "ASC"]],
     });
   } else {
-    console.log("mrprmv");
-    surat = await Daftar_surat.findAll({
+    surat = await DAFTAR_SURAT.findAll({
       //by prodi
-      attributes: { exclude: ["user_id", "createdAt", "updatedAt"] },
+      attributes: { exclude: [, "createdAt", "updatedAt"] },
       where: {
-        dataFilter,
         "$user.prodi.id$": prodi.id,
+        ...whereClause,
       },
       include: [
         {
-          model: Status,
+          model: STATUS,
           as: "status",
           attributes: ["status", "persetujuan"],
         },
         {
-          model: Tampilan,
+          model: TAMPILAN,
           as: "tampilan",
           attributes: ["pin", "dibaca"],
           where: { jabatan_id: jabatan.id },
         },
         {
-          model: Jenis_surat,
+          model: JENIS_SURAT,
           as: "jenis",
           attributes: { exclude: ["createdAt", "updatedAt"] },
         },
         {
-          model: Akses_surat,
+          model: AKSES_SURAT,
           as: "akses_surat",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
           where: { jabatan_id: user.jabatan_id },
         },
         {
-          model: Komentar,
+          model: KOMENTAR,
           as: "komentar",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
         },
         {
-          model: Nomor_surat,
+          model: NOMOR_SURAT,
           as: "nomor_surat",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
           include: [
             {
-              model: Periode,
+              model: PERIODE,
               as: "periode",
               attributes: { exclude: ["createdAt", "updatedAt"] },
             },
           ],
         },
         {
-          model: Users,
+          model: USERS,
           as: "user",
           attributes: ["email", "name"],
           include: [
             {
-              model: Prodi,
+              model: PRODI,
               as: "prodi",
               attributes: ["id", "name"],
               where: { id: prodi.id },
             },
             {
-              model: Jabatan,
+              model: JABATAN,
               as: "jabatan",
               attributes: ["id", "name"],
               where: { id: jabatan.id },
             },
             {
-              model: Fakultas,
+              model: FAKULTAS,
               as: "fakultas",
               attributes: ["id", "name"],
               where: { id: fakultas.id },
@@ -273,7 +346,7 @@ const getDaftarSurat = async (req, res) => {
     });
   }
   res.json(surat);
-}; //
+};
 
 router.get("/", getDaftarSurat);
 
