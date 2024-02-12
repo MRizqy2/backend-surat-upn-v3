@@ -19,6 +19,7 @@ const notifikasiController = require("../Http/controllers/notifikasi_controller/
 const ocrController = require("../Http/controllers/ocr_controller/ocr_controller").router;
 const downloadController = require("../Http/controllers/download_controller/download_controller");
 const sikojaController = require("../Http/controllers/sikoja_controller/sikoja_controller");
+const getProgressBar = require("../Http/controllers/progress_bar_controller/get_progress_bar").router;
 
 const router = express.Router();
 
@@ -46,6 +47,7 @@ router.use("/status", authMiddleware, statusController);
 router.use("/komentar", authMiddleware, komentarController);
 router.use("/notifikasi", authMiddleware, notifikasiController);
 router.use("/download", authMiddleware, downloadController);
+router.use("/progress-bar", authMiddleware, getProgressBar);
 
 router.use("/sikoja", authMiddleware, sikojaController);
 
