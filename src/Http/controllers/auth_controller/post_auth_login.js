@@ -8,12 +8,16 @@ const { getJabatan } = require("../jabatan_controller/get_jabatan.js");
 const router = express.Router();
 const sequelize = require("sequelize");
 
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
+
 const environment = "development";
 const secretKey = config[environment].secret_key;
 
 const postLogin = async (req, res) => {
   try {
     const { email } = req.body;
+    console.log("email: ", email);
     const user = await USERS.findOne({
       where: {
         email: sequelize.where(

@@ -20,6 +20,8 @@ npx sequelize-cli db:seed:undo --seed nama-file-migrasi.js
 
 for install secret_key:
 
+<!-- secret key -->
+
 > node
 > require('crypto').randomBytes(64).toString('hex')
 

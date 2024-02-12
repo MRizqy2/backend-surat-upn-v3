@@ -16,7 +16,7 @@ const {
 } = require("../../../models");
 const { Op } = require("sequelize"); //
 
-router.use(express.json()); // nambahi get tampilan nek detail ?
+router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 const getDaftarSuratByStatus = async (req, res) => {
@@ -198,22 +198,12 @@ const getDaftarSurat = async (req, res) => {
           attributes: ["email", "name"],
           include: [
             {
-<<<<<<< HEAD
-              model: Prodi,
-              as: "prodi",
-              attributes: ["id", "name"],
-              // where: { id: jabatan.id },
-            },
-            {
-              model: Jabatan,
-=======
               model: PRODI,
               as: "prodi",
               attributes: ["id", "name"],
             },
             {
               model: JABATAN,
->>>>>>> dev
               as: "jabatan",
               attributes: ["id", "name"],
             },
@@ -281,22 +271,12 @@ const getDaftarSurat = async (req, res) => {
           attributes: ["email", "name"],
           include: [
             {
-<<<<<<< HEAD
-              model: Prodi,
-              as: "prodi",
-              attributes: ["id", "name"],
-              // where: { id: prodi.id },
-            },
-            {
-              model: Jabatan,
-=======
               model: PRODI,
               as: "prodi",
               attributes: ["id", "name"],
             },
             {
               model: JABATAN,
->>>>>>> dev
               as: "jabatan",
               attributes: ["id", "name"],
             },
