@@ -21,7 +21,7 @@ module.exports = {
       },
       jabatan_id_ke: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "JABATANS",
           key: "id",
@@ -31,17 +31,13 @@ module.exports = {
       },
       jabatan_id_dari: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "JABATANS",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
-      },
-      visible: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
       },
       komentar: {
         type: Sequelize.TEXT,

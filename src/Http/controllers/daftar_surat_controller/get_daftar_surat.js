@@ -134,6 +134,7 @@ const getDaftarSurat = async (req, res) => {
     });
     res.json(repo);
   } else if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
+    //super admin
     surat = await DAFTAR_SURAT.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
       where: {
@@ -196,10 +197,11 @@ const getDaftarSurat = async (req, res) => {
     });
   } else if (!prodi.id || prodi.name == `-` || prodi.id == 1) {
     surat = await DAFTAR_SURAT.findAll({
-      //by fakultas
+      //by fakultas / bukan oleh prodi
       attributes: { exclude: ["createdAt", "updatedAt"] },
       where: {
         ...whereClause,
+        visible: true,
       },
       include: [
         {
@@ -275,6 +277,7 @@ const getDaftarSurat = async (req, res) => {
       where: {
         "$user.prodi.id$": prodi.id,
         ...whereClause,
+        visible: true,
       },
       include: [
         {

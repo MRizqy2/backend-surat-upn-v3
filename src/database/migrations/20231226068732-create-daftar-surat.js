@@ -41,6 +41,9 @@ module.exports = {
       path: {
         type: Sequelize.STRING,
       },
+      visible: {
+        type: Sequelize.BOOLEAN,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
