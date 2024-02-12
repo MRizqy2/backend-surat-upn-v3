@@ -99,20 +99,20 @@ const postMulter = async function (req, res) {
     reqSend = {
       body: {
         surat_id: daftar_surat.id,
-        jabatan_id: jabatan.jabatan_atas_id,
-        from: `daftar_surat_controller/multer_controller/post_multer_upload`,
-      },
-    };
-    await send(reqSend); //akses
-
-    reqSend = {
-      body: {
-        surat_id: daftar_surat.id,
         jabatan_id: jabatan.id,
         from: `daftar_surat_controller/multer_controller/post_multer_upload`,
       },
     };
     await send(reqSend);
+
+    reqSend = {
+      body: {
+        surat_id: daftar_surat.id,
+        jabatan_id: jabatan.jabatan_atas_id,
+        from: `daftar_surat_controller/multer_controller/post_multer_upload`,
+      },
+    };
+    await send(reqSend); //akses
 
     const reqNotif = {
       body: {
