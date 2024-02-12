@@ -18,7 +18,7 @@ const postJabatanPermisionAksesMaster = async (req, res) => {
     generate_nomor_surat,
     upload_tandatangan,
     persetujuan,
-    view_all_repo,
+    tagging,
     // req akses master
     prodi,
     template,
@@ -53,7 +53,7 @@ const postJabatanPermisionAksesMaster = async (req, res) => {
         generate_nomor_surat,
         upload_tandatangan,
         persetujuan,
-        view_all_repo,
+        tagging,
       },
     };
     const savePermision = await postPermision(reqPermision);

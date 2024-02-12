@@ -11,7 +11,7 @@ const putPermision = async (req, res) => {
       generate_nomor_surat,
       upload_tandatangan,
       persetujuan,
-      view_all_repo,
+      tagging,
     } = req.body;
     const { jabatan_id } = req.query;
     if (!jabatan_id) {
@@ -34,7 +34,7 @@ const putPermision = async (req, res) => {
         generate_nomor_surat,
         upload_tandatangan,
         persetujuan,
-        view_all_repo,
+        tagging,
       },
       {
         where: { jabatan_id: permision.jabatan_id },
