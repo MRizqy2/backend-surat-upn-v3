@@ -1,11 +1,6 @@
-# node_modules/
-# config/
-
 .env
-.gitignore
-sikoja/
-daftar_surat/
+daftar_surat/*
+node_modules/
+template_surat/*
 node_modules/
 
-template_surat/*
-# daftar_surat/

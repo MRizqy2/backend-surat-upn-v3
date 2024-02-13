@@ -16,7 +16,7 @@ const {
 } = require("../../../models");
 const { Op } = require("sequelize"); //
 
-router.use(express.json()); // nambahi get tampilan nek detail ?
+router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 const getDaftarSuratByStatus = async (req, res) => {
