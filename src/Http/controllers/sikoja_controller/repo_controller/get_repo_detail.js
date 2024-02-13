@@ -8,7 +8,7 @@ const getRepoDetail = async (req, res) => {
     const { repo_id } = req.query;
 
     const whereClause = {};
-    if (req.query && repo_id !== undefined) {
+    if (req.query && repo_id) {
       whereClause.id = repo_id;
     }
     const repo = await REPO.findOne({

@@ -8,13 +8,13 @@ const deleteTampilan = async (req, res) => {
     const { tampilan_id, surat_id, jabatan_id } = req.query;
 
     const whereClause = {};
-    if (req.query && tampilan_id !== undefined) {
+    if (req.query && tampilan_id) {
       whereClause.id = tampilan_id;
     }
-    if (req.query && surat_id !== undefined) {
+    if (req.query && surat_id) {
       whereClause.surat_id = surat_id;
     }
-    if (req.query && jabatan_id !== undefined) {
+    if (req.query && jabatan_id) {
       whereClause.jabatan_id = jabatan_id;
     }
 

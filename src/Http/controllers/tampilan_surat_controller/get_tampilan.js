@@ -10,15 +10,15 @@ const getTampilan = async (req, res) => {
 
     const whereClause = {};
 
-    if (tampilan_id) {
+    if (req.query && tampilan_id) {
       whereClause.id = tampilan_id;
     }
 
-    if (jabatan_id) {
+    if (req.query && jabatan_id) {
       whereClause.jabatan_id = jabatan_id;
     }
 
-    if (surat_id) {
+    if (req.query && surat_id) {
       whereClause.surat_id = surat_id;
     }
 

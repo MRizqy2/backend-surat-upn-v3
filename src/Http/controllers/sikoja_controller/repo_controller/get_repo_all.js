@@ -30,7 +30,7 @@ const getRepo = async (req, res) => {
     });
 
     const whereClause = {};
-    if (req.query && surat_id !== undefined) {
+    if (req.query && surat_id) {
       whereClause.surat_id = surat_id;
     }
 

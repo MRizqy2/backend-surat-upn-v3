@@ -7,10 +7,10 @@ const deleteNotifikasi = async (req, res) => {
   try {
     const { notifikasi_id, surat_id } = req.query;
     const whereClause = {};
-    if (req.query && notifikasi_id !== undefined) {
+    if (req.query && notifikasi_id) {
       whereClause.id = notifikasi_id;
     }
-    if (req.query && surat_id !== undefined) {
+    if (req.query && surat_id) {
       whereClause.surat_id = surat_id;
     }
     const notifikasi = await NOTIFIKASI.findOne({

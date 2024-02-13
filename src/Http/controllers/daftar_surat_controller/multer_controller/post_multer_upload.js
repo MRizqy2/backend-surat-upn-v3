@@ -38,7 +38,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const postMulter = async function (req, res, next) {
+const postMulter = async function (req, res) {
   try {
     const { judul, jenis_id, deskripsi } = req.body;
     const suratFile = req.files["surat"][0];
@@ -126,9 +126,6 @@ const postMulter = async function (req, res, next) {
       },
     };
     await postNotif(reqNotif);
-
-    req.body.surat_id_baru = daftar_surat.id;
-    next();
 
     res
       .status(StatusCodes.CREATED)

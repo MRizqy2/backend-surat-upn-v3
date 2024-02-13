@@ -8,10 +8,10 @@ const deleteKomentar = async (req, res) => {
     const { komentar_id, surat_id } = req.query;
 
     const whereClause = {};
-    if (req.query && komentar_id !== undefined) {
+    if (req.query && komentar_id) {
       whereClause.id = komentar_id;
     }
-    if (req.query && surat_id !== undefined) {
+    if (req.query && surat_id) {
       whereClause.surat_id = surat_id;
     }
 
