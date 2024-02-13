@@ -48,5 +48,6 @@ router.use("/notifikasi", authMiddleware, notifikasiController);
 router.use("/download", authMiddleware, downloadController);
 
 router.use("/sikoja", authMiddleware, sikojaController);
+router.use("/excel", require("../Http/controllers/download_controller/download_excel_controller"));
 
 module.exports = router;
