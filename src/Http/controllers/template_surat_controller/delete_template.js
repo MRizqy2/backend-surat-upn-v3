@@ -22,15 +22,15 @@ const deleteTemplate = async (req, res) => {
     });
 
     if (deletedTemplate) {
-      const urlFile = template.url;
-      console.log("url", urlFile);
+      const templatePath = template.path;
+      // console.log("url", urlFile);
 
-      const fileName = urlFile.split("\\").pop();
+      // const fileName = urlFile.split("\\").pop();
 
       const filePath = path.join(
         __dirname,
-        "../../../../template_surat",
-        fileName
+        "../../../../",
+        decodeURIComponent(templatePath)
       );
       fs.unlink(filePath, (err) => {
         if (err) {
