@@ -15,6 +15,9 @@ const {
   PERIODE,
 } = require("../../../models");
 const { Op } = require("sequelize"); //
+const {
+  getProgressBar,
+} = require("../progress_bar_controller/get_progress_bar");
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -277,7 +280,7 @@ const getDaftarSurat = async (req, res) => {
       where: {
         "$user.prodi.id$": prodi.id,
         ...whereClause,
-        visible: true,
+        // visible: true,
       },
       include: [
         {
@@ -348,6 +351,32 @@ const getDaftarSurat = async (req, res) => {
       order: [["id", "ASC"]],
     });
   }
+  // for (let suratItem of surat) {
+  //   const progressBarRes = await getProgressBar({ query: { surat_id: suratItem.id, from: `daftar_surat_controller/get_daftar-surat` } }, {});
+  //   if (progressBarRes.status === StatusCodes.OK) {
+  //     suratItem.dataValues.progressBar = progressBarRes.progressBar;
+  //   }
+  // }
+  const reqProgress = {
+    query: {
+      surat_id: surat.id,
+      from: `daftar_surat_controller/get_daftar-surat`,
+    },
+  };
+
+  // for (let i = 0; i < surat.length; i++) {
+  //   req.query.surat_id = surat[i].id;
+  //   const progressBarResponse = await getProgressBar(req, res);
+  //   // if (progressBarResponse.status === StatusCodes.OK) {
+  //   surat[i].progressBar = progressBarResponse.progressBar;
+  //   // }
+  // }
+  for (let i = 0; i < surat.length; i++) {
+    const surat_id = surat[i].id;
+    const progressBarRes = await getProgressBar({ query: { surat_id } }, {});
+    surat[i].dataValues.progressBar = progressBarRes.progressBar;
+  }
+
   res.json(surat);
 };
 

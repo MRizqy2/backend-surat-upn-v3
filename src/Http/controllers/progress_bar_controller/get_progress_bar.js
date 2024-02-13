@@ -5,15 +5,15 @@ const {
   JABATAN,
   AKSES_SURAT,
   USERS,
+  STATUS,
 } = require("../../../models");
-// const { use } = require("../auth_controller/authentication_controller");
 const router = express.Router();
 
 const getProgressBar = async (req, res) => {
   try {
-    let i, jabatan_atas, jabatan;
+    let i, jabatan;
     const { surat_id } = req.query;
-    console.log("rggge", surat_id);
+
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
@@ -23,75 +23,71 @@ const getProgressBar = async (req, res) => {
         error: "Daftar surat not found",
       });
     }
-
-    const surat_user = await USERS.findOne({
-      where: { id: surat.user_id },
+    const statusSurat = await STATUS.findOne({
+      where: { id: surat.id },
     });
 
-    const lastestAkses = await AKSES_SURAT.findAll({
-      limit: 1,
-      order: [["id", "DESC"]],
-      where: { surat_id: surat.id },
-    });
-    console.log("dawdaw", lastestAkses[0].jabatan_id);
-    jabatan = await JABATAN.findOne({
-      where: { id: surat_user.jabatan_id },
-    });
-    console.log("pkfwpo");
-    // jabatan_atas = jabatan;
-    console.log("MVPEWC", jabatan.id); //2
-    i = 0;
-    if (jabatan.jabatan_atas_id != lastestAkses[0].jabatan_id) {
+    let progressBarPercentage;
+    if (statusSurat.status === "Surat Telah Ditandatangani") {
+      progressBarPercentage = 100;
+    } else {
+      const surat_user = await USERS.findOne({
+        where: { id: surat.user_id },
+      });
+
+      const lastestAkses = await AKSES_SURAT.findAll({
+        limit: 1,
+        order: [["id", "DESC"]],
+        where: { surat_id: surat.id },
+      });
+
+      jabatan = await JABATAN.findOne({
+        where: { id: surat_user.jabatan_id },
+      });
+
+      i = 0;
+      if (jabatan.jabatan_atas_id != lastestAkses[0].jabatan_id) {
+        do {
+          jabatan = await JABATAN.findOne({
+            where: { id: jabatan.jabatan_atas_id },
+          });
+          i++;
+        } while (jabatan.jabatan_atas_id != lastestAkses[0].jabatan_id);
+      }
+      const currentJabatan = i + 1;
+
+      jabatan = await JABATAN.findOne({
+        where: { id: surat_user.jabatan_id },
+      });
+      i = 0;
       do {
         jabatan = await JABATAN.findOne({
           where: { id: jabatan.jabatan_atas_id },
         });
         i++;
-        console.log("mdopwa");
-      } while (jabatan.jabatan_atas_id != lastestAkses[0].jabatan_id);
+      } while (jabatan.jabatan_atas_id);
+      const totalJabatan = i + 1;
+
+      progressBarPercentage = (currentJabatan / totalJabatan) * 100;
     }
-    const currentJabatan = i + 1;
-    console.log("opew", currentJabatan);
 
-    // let currentJabatan = await JABATAN.findOne({
-    //   where: { id: surat_user.jabatan_id },
-    // });
-    jabatan_atas = surat_user;
-    console.log("asdws", jabatan_atas);
-    i = 0;
-    do {
-      jabatan = await JABATAN.findOne({
-        where: { id: jabatan.jabatan_atas_id },
-      });
-      i++;
-      console.log(",muy5h");
-    } while (jabatan.jabatan_atas_id);
-    const totalJabatan = i + 1;
-    console.log("kalsk", totalJabatan);
-
-    // Only get the next level jabatan
-    // if (currentJabatan && currentJabatan.jabatan_atas_id) {
-    //   // currentJabatan = await JABATAN.findOne({
-    //   //   where: { id: currentJabatan.jabatan_atas_id },
-    //   // });
-
-    //   console.log("dawdad", currentJabatan);
-    //   if (currentJabatan && currentJabatan.id !== surat_user.jabatan_id) {
-    //     currentJabatanLevel++;
-    //   }
-    // console.log("adwdad", currentJabatanLevel);
+    // if (req.query.from) {
+    //   return progressBarPercentage;
+    // } else {
+    //   res.status(StatusCodes.OK).json({
+    //     progressBar: progressBarPercentage,
+    //   });
     // }
-
-    const progressBarPercentage = (currentJabatan / totalJabatan) * 100;
-
-    res.status(StatusCodes.OK).json({
+    return {
+      status: StatusCodes.OK,
       progressBar: progressBarPercentage,
-    });
+    };
   } catch (error) {
     console.error("Error:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    return {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
       error: "Internal Server Error",
-    });
+    };
   }
 };
 
