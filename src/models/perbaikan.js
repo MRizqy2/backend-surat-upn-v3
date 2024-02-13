@@ -11,7 +11,16 @@ module.exports = (sequelize, DataTypes) => {
   }
   PERBAIKAN.init(
     {
-      surat_id: DataTypes.INTEGER,
+      surat_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "DAFTAR_SURAT",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
+      },
       perbaikan: DataTypes.STRING,
     },
     {

@@ -71,13 +71,6 @@ const getProgressBar = async (req, res) => {
       progressBarPercentage = (currentJabatan / totalJabatan) * 100;
     }
 
-    // if (req.query.from) {
-    //   return progressBarPercentage;
-    // } else {
-    //   res.status(StatusCodes.OK).json({
-    //     progressBar: progressBarPercentage,
-    //   });
-    // }
     return {
       status: StatusCodes.OK,
       progressBar: progressBarPercentage,

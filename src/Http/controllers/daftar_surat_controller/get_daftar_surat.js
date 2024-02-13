@@ -13,6 +13,7 @@ const {
   KOMENTAR,
   NOMOR_SURAT,
   PERIODE,
+  PERBAIKAN,
 } = require("../../../models");
 const { Op } = require("sequelize"); //
 const {
@@ -72,71 +73,72 @@ const getDaftarSurat = async (req, res) => {
     }
   }
 
-  if (repo || (repo && prodi_id)) {
-    const status = "Surat Telah Ditandatangani";
-    if (prodi_id) {
-      whereClause["$user.prodi.id$"] = prodi_id || "";
-    }
+  // if (repo || (repo && prodi_id)) {
+  //   const status = "Surat Telah Ditandatangani";
+  //   if (prodi_id) {
+  //     whereClause["$user.prodi.id$"] = prodi_id || "";
+  //   }
 
-    const repo = await DAFTAR_SURAT.findAll({
-      attributes: {
-        exclude: ["createdAt", "updatedAt"],
-      },
-      where: {
-        ...whereClause,
-      },
-      include: [
-        {
-          model: STATUS,
-          as: "status",
-          attributes: ["status", "persetujuan"],
-          where: { status: status },
-        },
-        {
-          model: JENIS_SURAT,
-          as: "jenis",
-          attributes: { exclude: ["createdAt", "updatedAt"] },
-        },
-        {
-          model: NOMOR_SURAT,
-          as: "nomor_surat",
-          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-          required: false,
-          include: [
-            {
-              model: PERIODE,
-              as: "periode",
-              attributes: { exclude: ["createdAt", "updatedAt"] },
-            },
-          ],
-        },
-        {
-          model: USERS,
-          as: "user",
-          attributes: ["email", "name"],
-          include: [
-            {
-              model: PRODI,
-              as: "prodi",
-              attributes: ["id", "name"],
-            },
-            {
-              model: JABATAN,
-              as: "jabatan",
-              attributes: ["id", "name"],
-            },
-            {
-              model: FAKULTAS,
-              as: "fakultas",
-              attributes: ["id", "name"],
-            },
-          ],
-        },
-      ],
-      order: [["id", "ASC"]],
-    });
-    res.json(repo);
-  } else if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
+  //   const repo = await DAFTAR_SURAT.findAll({
+  //     attributes: {
+  //       exclude: ["createdAt", "updatedAt"],
+  //     },
+  //     where: {
+  //       ...whereClause,
+  //     },
+  //     include: [
+  //       {
+  //         model: STATUS,
+  //         as: "status",
+  //         attributes: ["status", "persetujuan"],
+  //         where: { status: status },
+  //       },
+  //       {
+  //         model: JENIS_SURAT,
+  //         as: "jenis",
+  //         attributes: { exclude: ["createdAt", "updatedAt"] },
+  //       },
+  //       {
+  //         model: NOMOR_SURAT,
+  //         as: "nomor_surat",
+  //         attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+  //         required: false,
+  //         include: [
+  //           {
+  //             model: PERIODE,
+  //             as: "periode",
+  //             attributes: { exclude: ["createdAt", "updatedAt"] },
+  //           },
+  //         ],
+  //       },
+  //       {
+  //         model: USERS,
+  //         as: "user",
+  //         attributes: ["email", "name"],
+  //         include: [
+  //           {
+  //             model: PRODI,
+  //             as: "prodi",
+  //             attributes: ["id", "name"],
+  //           },
+  //           {
+  //             model: JABATAN,
+  //             as: "jabatan",
+  //             attributes: ["id", "name"],
+  //           },
+  //           {
+  //             model: FAKULTAS,
+  //             as: "fakultas",
+  //             attributes: ["id", "name"],
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //     order: [["id", "ASC"]],
+  //   });
+  //   res.json(repo);
+  // } else
+  if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
     //super admin
     surat = await DAFTAR_SURAT.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -198,6 +200,16 @@ const getDaftarSurat = async (req, res) => {
       ],
       order: [["id", "ASC"]],
     });
+    for (let i = 0; i < surat.length; i++) {
+      const surat_id = surat[i].id;
+      const progressBarRes = await getProgressBar(
+        {
+          query: { surat_id, from: `daftar_surat_controller/get_daftar-surat` },
+        },
+        {}
+      );
+      surat[i].dataValues.progressBar = progressBarRes.progressBar;
+    }
   } else if (!prodi.id || prodi.name == `-` || prodi.id == 1) {
     surat = await DAFTAR_SURAT.findAll({
       //by fakultas / bukan oleh prodi
@@ -232,6 +244,12 @@ const getDaftarSurat = async (req, res) => {
         {
           model: KOMENTAR,
           as: "komentar",
+          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
+        },
+        {
+          model: PERBAIKAN,
+          as: "perbaikan",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
           required: false,
         },
@@ -280,7 +298,7 @@ const getDaftarSurat = async (req, res) => {
       where: {
         "$user.prodi.id$": prodi.id,
         ...whereClause,
-        // visible: true,
+        visible: true,
       },
       include: [
         {
@@ -309,6 +327,13 @@ const getDaftarSurat = async (req, res) => {
           model: KOMENTAR,
           as: "komentar",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
+        },
+        {
+          model: PERBAIKAN,
+          as: "perbaikan",
+          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
         },
         {
           model: NOMOR_SURAT,
@@ -351,29 +376,13 @@ const getDaftarSurat = async (req, res) => {
       order: [["id", "ASC"]],
     });
   }
-  // for (let suratItem of surat) {
-  //   const progressBarRes = await getProgressBar({ query: { surat_id: suratItem.id, from: `daftar_surat_controller/get_daftar-surat` } }, {});
-  //   if (progressBarRes.status === StatusCodes.OK) {
-  //     suratItem.dataValues.progressBar = progressBarRes.progressBar;
-  //   }
-  // }
-  const reqProgress = {
-    query: {
-      surat_id: surat.id,
-      from: `daftar_surat_controller/get_daftar-surat`,
-    },
-  };
 
-  // for (let i = 0; i < surat.length; i++) {
-  //   req.query.surat_id = surat[i].id;
-  //   const progressBarResponse = await getProgressBar(req, res);
-  //   // if (progressBarResponse.status === StatusCodes.OK) {
-  //   surat[i].progressBar = progressBarResponse.progressBar;
-  //   // }
-  // }
   for (let i = 0; i < surat.length; i++) {
     const surat_id = surat[i].id;
-    const progressBarRes = await getProgressBar({ query: { surat_id } }, {});
+    const progressBarRes = await getProgressBar(
+      { query: { surat_id, from: `daftar_surat_controller/get_daftar-surat` } },
+      {}
+    );
     surat[i].dataValues.progressBar = progressBarRes.progressBar;
   }
 

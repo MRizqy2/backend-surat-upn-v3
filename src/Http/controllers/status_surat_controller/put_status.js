@@ -7,6 +7,7 @@ const {
   JABATAN,
   PERMISION,
   REVISI,
+  NOMOR_SURAT,
 } = require("../../../models");
 const catchStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
@@ -158,12 +159,30 @@ const putStatus = async (req, res) => {
         const surat_revisi = await REVISI.findOne({
           where: { surat_id_baru: surat_id },
         });
-        if (!surat_revisi) {
+        // if (surat_revisi) {
+        //   const nomor_surat = await NOMOR_SURAT.findOne({
+        //     where: { surat_id: surat_revisi.surat_id_lama },
+        //   });
+        //   if (nomor_surat) {
+        //     await postNomorSuratRevisi(reqTampilan);
+        //   }
+        // } else {
+        //   await postNomorSurat(reqTampilan);
+        // }
+
+        let nomor_surat = null;
+        if (surat_revisi) {
+          nomor_surat = await NOMOR_SURAT.findOne({
+            where: { surat_id: surat_revisi.surat_id_lama },
+          });
+        }
+
+        if (!surat_revisi || !nomor_surat) {
           await postNomorSurat(reqTampilan);
-        } else if (surat_revisi) {
+        } else {
           await postNomorSuratRevisi(reqTampilan);
         }
-      } //surat_id
+      }
     }
 
     if (req.body.from) {
