@@ -47,12 +47,11 @@ const deleteSurat = async (req, res) => {
     });
 
     if (deletedSurat) {
-      const urlFile = surat.url;
-      const fileName = urlFile.split("/").pop();
+      const suratPath = surat.path;
       const filePath = path.join(
         __dirname,
-        "../../../../daftar_surat",
-        fileName
+        "../../../../",
+        decodeURIComponent(suratPath)
       );
       fs.unlink(filePath, (err) => {
         if (err) {

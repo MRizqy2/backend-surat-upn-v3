@@ -8,7 +8,7 @@ const app = express.Router();
 
 app.get("/", getDaftarSurat);
 app.use("/multer", multerController);
-app.use("/perbaikan", perbaikanController);
+app.use("/multer", perbaikanController);
 app.delete("/delete", deleteSurat);
 
 module.exports = app;

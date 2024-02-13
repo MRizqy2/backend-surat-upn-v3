@@ -5,7 +5,7 @@ const router = express.Router();
 
 const putJenis = async function (req, res) {
   try {
-    const { jenis } = req.body;
+    const { jenis, kode_jenis } = req.body;
     const { jenis_id } = req.query;
 
     const searchJenis = await JENIS_SURAT.findOne({ where: { id: jenis_id } });
@@ -17,7 +17,8 @@ const putJenis = async function (req, res) {
     }
     const jenis_surat = await JENIS_SURAT.update(
       {
-        jenis,
+        jenis: jenis || searchJenis.jenis,
+        kode_jenis: kode_jenis || searchJenis.kode_jenis,
       },
       {
         where: { id: jenis_id },

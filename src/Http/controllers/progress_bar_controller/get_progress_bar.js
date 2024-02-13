@@ -17,6 +17,7 @@ const getProgressBar = async (req, res) => {
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
+    console.log("ntebr", surat.id);
 
     if (!surat) {
       return res.status(StatusCodes.NOT_FOUND).json({
@@ -24,8 +25,10 @@ const getProgressBar = async (req, res) => {
       });
     }
     const statusSurat = await STATUS.findOne({
-      where: { id: surat.id },
+      where: { surat_id: surat.id },
     });
+
+    console.log("pcqpo", statusSurat.status);
 
     let progressBarPercentage;
     if (statusSurat.status === "Surat Telah Ditandatangani") {
@@ -68,7 +71,7 @@ const getProgressBar = async (req, res) => {
       } while (jabatan.jabatan_atas_id);
       const totalJabatan = i + 1;
 
-      progressBarPercentage = (currentJabatan / totalJabatan) * 100;
+      progressBarPercentage = Math.ceil((currentJabatan / totalJabatan) * 100);
     }
 
     return {

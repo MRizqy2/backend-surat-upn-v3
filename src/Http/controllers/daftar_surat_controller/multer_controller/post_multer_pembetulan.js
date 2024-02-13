@@ -34,7 +34,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const postMulterRevisi = async function (req, res) {
+const postPembetulan = async function (req, res) {
   try {
     const { surat_id, judul, deskripsi } = req.body;
     const suratFile = req.files["surat"][0];
@@ -61,6 +61,7 @@ const postMulterRevisi = async function (req, res) {
       deskripsi: deskripsi || "",
       tanggal: Date(),
       path: suratPath,
+      visible: true,
     });
 
     const reqRevisi = {
@@ -143,7 +144,7 @@ const postMulterRevisi = async function (req, res) {
 router.post(
   "/",
   upload.fields([{ name: "surat", maxCount: 1 }]),
-  postMulterRevisi
+  postPembetulan
 );
 
 module.exports = router;

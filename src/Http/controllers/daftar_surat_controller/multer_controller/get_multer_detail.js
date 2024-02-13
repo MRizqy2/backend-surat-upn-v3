@@ -14,6 +14,7 @@ const {
   PERIODE,
   REVISI,
   TAMPILAN,
+  PERBAIKAN,
 } = require("../../../../models");
 
 app.use(express.json());
@@ -54,6 +55,12 @@ const getDaftarSurat = async (req, res) => {
         {
           model: KOMENTAR,
           as: "komentar",
+          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
+        },
+        {
+          model: PERBAIKAN,
+          as: "perbaikan",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
           required: false,
         },
@@ -119,6 +126,12 @@ const getDaftarSurat = async (req, res) => {
         {
           model: KOMENTAR,
           as: "komentar",
+          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
+        },
+        {
+          model: PERBAIKAN,
+          as: "perbaikan",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
           required: false,
         },
