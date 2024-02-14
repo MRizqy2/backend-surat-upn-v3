@@ -17,24 +17,8 @@ module.exports = {
           key: "id",
         },
       },
-      kode_url: {
+      unix_code: {
         type: Sequelize.STRING,
-      },
-      strategi_id: {
-        type: Sequelize.INTEGER,
-        // allowNull: false,
-        references: {
-          model: "STRATEGIS",
-          key: "id",
-        },
-      },
-      iku_id: {
-        type: Sequelize.INTEGER,
-        // allowNull: false,
-        references: {
-          model: "IKUS",
-          key: "id",
-        },
       },
       indikator_id: {
         type: Sequelize.INTEGER,

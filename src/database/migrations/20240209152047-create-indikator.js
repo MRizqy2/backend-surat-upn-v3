@@ -12,8 +12,19 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
-      nomor: {
-        type: Sequelize.STRING,
+      strategi_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "STRATEGIS",
+          key: "id",
+        },
+      },
+      iku_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "IKUS",
+          key: "id",
+        },
       },
       createdAt: {
         allowNull: false,
