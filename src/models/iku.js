@@ -3,8 +3,9 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class IKU extends Model {
     static associate(models) {
-      IKU.hasMany(models.REPO, {
+      IKU.hasMany(models.INDIKATOR, {
         foreignKey: "iku_id",
+        as: "indikator",
       });
     }
   }

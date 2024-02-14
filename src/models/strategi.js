@@ -3,9 +3,9 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class STRATEGI extends Model {
     static associate(models) {
-      STRATEGI.hasMany(models.REPO, {
+      STRATEGI.hasMany(models.INDIKATOR, {
         foreignKey: "strategi_id",
-        as: "strategi",
+        as: "indikator",
       });
     }
   }

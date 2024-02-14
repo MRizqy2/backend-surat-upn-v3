@@ -7,12 +7,35 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "indikator_id",
         as: "indikator",
       });
+      INDIKATOR.belongsTo(models.STRATEGI, {
+        foreignKey: "strategi_id",
+        as: "strategi",
+      });
+      INDIKATOR.belongsTo(models.IKU, {
+        foreignKey: "iku_id",
+        as: "iku",
+      });
     }
   }
   INDIKATOR.init(
     {
       name: DataTypes.STRING,
-      nomor: DataTypes.STRING,
+      strategi_id: {
+        type: DataTypes.INTEGER,
+        // allowNull: false,
+        references: {
+          model: "STRATEGI",
+          key: "id",
+        },
+      },
+      iku_id: {
+        type: DataTypes.INTEGER,
+        // allowNull: false,
+        references: {
+          model: "IKU",
+          key: "id",
+        },
+      },
     },
     {
       sequelize,
