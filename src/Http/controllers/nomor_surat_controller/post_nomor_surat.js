@@ -1,14 +1,5 @@
 const express = require("express");
-const {
-  NOMOR_SURAT,
-  DAFTAR_SURAT,
-  USERS,
-  PRODI,
-  FAKULTAS,
-  JABATAN,
-  PERIODE,
-  JENIS_SURAT,
-} = require("../../../models");
+const { NOMOR_SURAT, DAFTAR_SURAT, USERS, PRODI, FAKULTAS, JABATAN, PERIODE, JENIS_SURAT } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const { OCR } = require("./../ocr_controller/ocr_controller");
 // const { repo } = require("./../repo_controller/repo_controller");
@@ -16,7 +7,7 @@ const router = express.Router();
 
 const postNomorSurat = async (req, res) => {
   try {
-    const { surat_id } = req.body;
+    const { surat_id, indikator_id } = req.body;
 
     let nomor;
     let nomor_surat;
@@ -38,13 +29,9 @@ const postNomorSurat = async (req, res) => {
     });
 
     if (active_periodes.length !== 1) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "Active period should be exactly 1" });
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: "Active period should be exactly 1" });
     } else if (!active_periodes) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "No Periode active" });
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: "No Periode active" });
     }
 
     const nomor_surat_per_periode_dan_jenis = await NOMOR_SURAT.count({
@@ -90,9 +77,7 @@ const postNomorSurat = async (req, res) => {
     });
 
     if (!user_surat || !user_login) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: "User not found" });
+      return res.status(StatusCodes.NOT_FOUND).json({ error: "User not found" });
     }
 
     const jabatan_user_surat = await JABATAN.findOne({
@@ -103,9 +88,7 @@ const postNomorSurat = async (req, res) => {
       where: { id: user_surat.prodi_id },
     });
     if (!prodi_user_surat) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: "Prodi not found" });
+      return res.status(StatusCodes.NOT_FOUND).json({ error: "Prodi not found" });
     }
     const fakultas_id = user_login.fakultas_id;
 
@@ -114,9 +97,7 @@ const postNomorSurat = async (req, res) => {
     });
 
     if (!fakultas) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: "Fakultas not found" });
+      return res.status(StatusCodes.NOT_FOUND).json({ error: "Fakultas not found" });
     }
 
     const nama_jabatan = jabatan_user_surat.name;
@@ -126,11 +107,7 @@ const postNomorSurat = async (req, res) => {
     const temp_tahun_periode = String(active_periodes[0].tahun);
     const tahun_periode = temp_tahun_periode.split(" ")[3];
 
-    if (
-      prodi_user_surat.name === "-" ||
-      !prodi_user_surat ||
-      prodi_user_surat.id === 1
-    ) {
+    if (prodi_user_surat.name === "-" || !prodi_user_surat || prodi_user_surat.id === 1) {
       nomor_surat = `${nomor_surat}/${kode_fakultas}/${kode_jenis_surat}/TU/${tahun_periode}`;
     } else {
       nomor_surat = `${nomor_surat}/${kode_fakultas}/${kode_jenis_surat}/TU-${kode_prodi}/${tahun_periode}`;
@@ -153,9 +130,7 @@ const postNomorSurat = async (req, res) => {
 
     const saveOcr = await OCR(reqOcr);
     if (!saveOcr) {
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: "Failed to save OCR" });
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Failed to save OCR" });
     }
     // const reqRepo = {
     //   save: {
@@ -174,9 +149,7 @@ const postNomorSurat = async (req, res) => {
     }
   } catch (error) {
     console.error("Error:", error);
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Internal Server Error" });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
   }
 };
 

@@ -25,7 +25,7 @@ module.exports = {
           generate_nomor_surat: false,
           upload_tandatangan: false,
           persetujuan: true,
-          tagging: true,
+          tagging: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

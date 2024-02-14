@@ -8,11 +8,11 @@ const postRepo = async (req, res) => {
   try {
     const { surat_id, indikator_id } = req.body;
 
-    const latestRepo = await REPO.findAll({
-      limit: 1,
-      order: [["id", "DESC"]],
-    });
-    const latestRepoId = parseInt(latestRepo[0].id, 10);
+    // const latestRepo = await REPO.findAll({
+    //   limit: 1,
+    //   order: [["id", "DESC"]],
+    // });
+    // const latestRepoId = parseInt(latestRepo[0].id, 10);
 
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(6).toString("hex");
@@ -22,13 +22,15 @@ const postRepo = async (req, res) => {
       .join("");
 
     const repo = await REPO.create({
-      id: latestRepoId + 1,
       surat_id,
       unix_code,
       indikator_id,
     });
 
-    res.status(StatusCodes.OK).json({ message: `repo telah dibuat`, repo });
+    if (req.body.from) {
+      return repo;
+    }
+    return res.status(StatusCodes.OK).json({ message: `repo telah dibuat`, repo });
     // res.json( `repo telah dibuat`);
   } catch (error) {
     console.error("Error:", error);

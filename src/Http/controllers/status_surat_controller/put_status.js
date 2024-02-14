@@ -1,29 +1,14 @@
 const express = require("express");
 const app = express.Router();
-const {
-  STATUS,
-  DAFTAR_SURAT,
-  USERS,
-  JABATAN,
-  PERMISION,
-  REVISI,
-  NOMOR_SURAT,
-} = require("../../../models");
+const { STATUS, DAFTAR_SURAT, USERS, JABATAN, PERMISION, REVISI, NOMOR_SURAT, REPO } = require("../../../models");
 const catchStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
-const {
-  postTampilan,
-} = require("./../tampilan_surat_controller/post_tampilan");
-const {
-  postNomorSurat,
-} = require("./../nomor_surat_controller/post_nomor_surat");
+const { postTampilan } = require("./../tampilan_surat_controller/post_tampilan");
+const { postNomorSurat } = require("./../nomor_surat_controller/post_nomor_surat");
 const { postNotif } = require("../notifikasi_controller/post_notifikasi");
-const {
-  postAksesSurat,
-} = require("../akses_surat_controller/post_akses_surat");
-const {
-  postNomorSuratRevisi,
-} = require("../nomor_surat_controller/post_nomor_surat_revisi");
+const { postAksesSurat } = require("../akses_surat_controller/post_akses_surat");
+const { postNomorSuratRevisi } = require("../nomor_surat_controller/post_nomor_surat_revisi");
+const { postRepo } = require("../sikoja_controller/repo_controller/post_repo");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 const putStatus = async (req, res) => {
   try {
     let reqTampilan, updateStatus, reqStatus;
-    const { persetujuan, status } = req.body;
+    const { persetujuan, status, indikator_id } = req.body;
     const { surat_id } = req.query;
 
     const user = await USERS.findOne({
@@ -182,6 +167,19 @@ const putStatus = async (req, res) => {
         } else {
           await postNomorSuratRevisi(reqTampilan);
         }
+      }
+      if (permision.tagging) {
+        if (!indikator_id) {
+          return res.status(StatusCodes.BAD_REQUEST).json({ error: "Indikator ID is required" });
+        }
+        const reqRepo = {
+          body: {
+            surat_id: surat_id,
+            indikator_id: indikator_id,
+            from: `status_surat_controller/put_status.js`,
+          },
+        };
+        await postRepo(reqRepo);
       }
     }
 
