@@ -2,46 +2,167 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 const { StatusCodes } = require("http-status-codes");
+const {
+  REPO,
+  DAFTAR_SURAT,
+  NOMOR_SURAT,
+  STATUS,
+  JENIS_SURAT,
+  PERIODE,
+  USERS,
+  KOMENTAR,
+  JABATAN,
+  PRODI,
+  FAKULTAS,
+  PERBAIKAN,
+  INDIKATOR,
+  STRATEGI,
+  IKU,
+} = require("../../../models/");
+const { Op } = require("sequelize");
 const router = express.Router();
 const ExcelJS = require("exceljs");
 
 router.get(`/`, async (req, res) => {
   // definisi data yang akan di export
   // ganti data dengan data dari database saat production
-  const data_dumb = [
-    {
-      timestamp: "2021/08/01",
-      nomor_surat_tugas: "020/UN63.7/TU-IF/2024",
-      judul_surat_tugas: "PENGABDIAN MASYARAKAT DI DESA WARU SIDOARJO",
-      program_studi: "Teknik Informatika",
-      nomer_iku: 1,
-      indikator: "Responden lulusan (Kerja / Studi Lanjut / Wirausaha)",
-      catatan: "-",
-      link: "https://www.google.com",
-    },
-    {
-      timestamp: "2021/08/01",
-      nomor_surat_tugas: "030/UN63.7/TU-IF/2024",
-      judul_surat_tugas: "PENGABDIAN MASYARAKAT DI DESA WARU SIDOARJO",
-      program_studi: "Teknik Informatika",
-      nomer_iku: 3,
-      indikator:
-        "Mahasiswa MBKM di luar kampus inbound / outbond dan Mahasiswa Berprestasi",
-      catatan: "-",
-      link: "https://www.google.com",
-    },
-    {
-      timestamp: "2023/08/01",
-      nomor_surat_tugas: "020.1/UN63.7/TU-IF/2024",
-      judul_surat_tugas: "PENGABDIAN MASYARAKAT DI DESA WARU SIDOARJO",
-      program_studi: "Teknik Informatika",
-      nomer_iku: 2,
-      indikator:
-        "Jumlah dosen kegiatan diluar kampus (Penelitian / Pengabdian Masyarakat / Praktisi)",
-      catatan: "-",
-      link: "https://www.google.com",
-    },
-  ];
+  const { repo_id } = req.body;
+  let whereClause = {};
+  let repo;
+  if (repo_id && repo_id.length > 0) {
+    whereClause.id = {
+      [Op.in]: repo_id,
+    };
+    repo = await REPO.findAll({
+      where: whereClause,
+      order: [["id", "ASC"]],
+      attributes: { exclude: ["indikator_id", "surat_id"] },
+      include: [
+        {
+          model: INDIKATOR,
+          as: "indikator",
+          attributes: {
+            exclude: ["iku_id", "strategi_id", "createdAt", "updatedAt"],
+          },
+          include: [
+            {
+              model: STRATEGI,
+              as: "strategi",
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
+            {
+              model: IKU,
+              as: "iku",
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
+          ],
+        },
+        {
+          model: DAFTAR_SURAT,
+          as: "surat",
+          attributes: { exclude: [, "createdAt", "updatedAt"] },
+          order: [["id", "ASC"]],
+          include: [
+            {
+              model: STATUS,
+              as: "status",
+              attributes: ["status", "persetujuan"],
+            },
+            {
+              model: JENIS_SURAT,
+              as: "jenis",
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
+            {
+              model: KOMENTAR,
+              as: "komentar",
+              attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+            },
+            {
+              model: PERBAIKAN,
+              as: "perbaikan",
+              attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+            },
+            {
+              model: NOMOR_SURAT,
+              as: "nomor_surat",
+              attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+              order: [["id", "ASC"]],
+              include: [
+                {
+                  model: PERIODE,
+                  as: "periode",
+                  attributes: { exclude: ["createdAt", "updatedAt"] },
+                },
+              ],
+            },
+            {
+              model: USERS,
+              as: "user",
+              attributes: ["email", "name"],
+              include: [
+                {
+                  model: PRODI,
+                  as: "prodi",
+                  attributes: ["id", "name"],
+                  // where: { id: prodi.id },
+                },
+                {
+                  model: JABATAN,
+                  as: "jabatan",
+                  attributes: ["id", "name"],
+                  // where: { id: jabatan.id },
+                },
+                {
+                  model: FAKULTAS,
+                  as: "fakultas",
+                  attributes: ["id", "name"],
+                  // where: { id: fakultas.id },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    // change repo to json format
+    repo = JSON.parse(JSON.stringify(repo));
+  }
+
+  // const data_dumb = [
+  //   {
+  //     timestamp: "2021/08/01",
+  //     nomor_surat_tugas: "020/UN63.7/TU-IF/2024",
+  //     judul_surat_tugas: "PENGABDIAN MASYARAKAT DI DESA WARU SIDOARJO",
+  //     program_studi: "Teknik Informatika",
+  //     nomer_iku: 1,
+  //     indikator: "Responden lulusan (Kerja / Studi Lanjut / Wirausaha)",
+  //     catatan: "-",
+  //     link: "https://www.google.com",
+  //   },
+  //   {
+  //     timestamp: "2021/08/01",
+  //     nomor_surat_tugas: "030/UN63.7/TU-IF/2024",
+  //     judul_surat_tugas: "PENGABDIAN MASYARAKAT DI DESA WARU SIDOARJO",
+  //     program_studi: "Teknik Informatika",
+  //     nomer_iku: 3,
+  //     indikator:
+  //       "Mahasiswa MBKM di luar kampus inbound / outbond dan Mahasiswa Berprestasi",
+  //     catatan: "-",
+  //     link: "https://www.google.com",
+  //   },
+  //   {
+  //     timestamp: "2023/08/01",
+  //     nomor_surat_tugas: "020.1/UN63.7/TU-IF/2024",
+  //     judul_surat_tugas: "PENGABDIAN MASYARAKAT DI DESA WARU SIDOARJO",
+  //     program_studi: "Teknik Informatika",
+  //     nomer_iku: 2,
+  //     indikator:
+  //       "Jumlah dosen kegiatan diluar kampus (Penelitian / Pengabdian Masyarakat / Praktisi)",
+  //     catatan: "-",
+  //     link: "https://www.google.com",
+  //   },
+  // ];
 
   // persiapan file excel
   let counter = 1;
@@ -66,17 +187,27 @@ router.get(`/`, async (req, res) => {
   ];
 
   // isi data
-  data_dumb.forEach((row, index) => {
+  repo.forEach((row, index) => {
+    let timestamp = new Date(row.createdAt);
+    timestamp = `${timestamp.getDate().toString().padStart(2, "0")}/${(
+      timestamp.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}/${timestamp.getFullYear()}`;
+
     worksheet.addRow({
       no: index + 1,
-      timestamp: row.timestamp,
-      nomor_surat_tugas: row.nomor_surat_tugas,
-      judul_surat_tugas: row.judul_surat_tugas,
-      program_studi: row.program_studi,
-      nomer_iku: row.nomer_iku,
-      indikator: row.indikator,
-      catatan: row.catatan,
-      link: `https://${process.env.LINK}/${row.link}`,
+      timestamp: timestamp,
+      nomor_surat_tugas: row.surat.nomor_surat[0].nomor_surat,
+      judul_surat_tugas: row.surat.judul,
+      program_studi:
+        row.surat.user.prodi.name != "-"
+          ? row.surat.user.prodi.name
+          : row.surat.user.jabatan.name,
+      nomer_iku: row.indikator.id,
+      indikator: row.indikator.name,
+      catatan: row.surat.deskripsi,
+      link: `${process.env.LINK}/${row.unix_code}`,
     });
     counter++;
   });
@@ -147,7 +278,7 @@ router.get(`/`, async (req, res) => {
     });
     // hyperlink
     worksheet.getCell(`I${i}`).value = {
-      text: "Link download file",
+      text: worksheet.getCell(`I${i}`).value,
       hyperlink: worksheet.getCell(`I${i}`).value,
     };
   }
