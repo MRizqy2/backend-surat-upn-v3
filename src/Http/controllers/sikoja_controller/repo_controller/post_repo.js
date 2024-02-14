@@ -6,7 +6,7 @@ const crypto = require("crypto");
 
 const postRepo = async (req, res) => {
   try {
-    const { surat_id, strategi_id, iku_id, indikator_id } = req.body;
+    const { surat_id, indikator_id } = req.body;
 
     const latestRepo = await REPO.findAll({
       limit: 1,
@@ -15,15 +15,16 @@ const postRepo = async (req, res) => {
     const latestRepoId = parseInt(latestRepo[0].id, 10);
 
     const timestamp = Date.now();
-    const randomString = crypto.randomBytes(4).toString("hex");
-    const kode_url = `${randomString}-${timestamp}`;
+    const randomString = crypto.randomBytes(6).toString("hex");
+    const unix_code = `${randomString}${timestamp}`
+      .split("")
+      .sort(() => Math.random() - 0.5)
+      .join("");
 
     const repo = await REPO.create({
       id: latestRepoId + 1,
       surat_id,
-      kode_url,
-      strategi_id,
-      iku_id,
+      unix_code,
       indikator_id,
     });
 
@@ -31,9 +32,7 @@ const postRepo = async (req, res) => {
     // res.json( `repo telah dibuat`);
   } catch (error) {
     console.error("Error:", error);
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Internal Server Error" });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
   }
 };
 

@@ -6,7 +6,7 @@ const { StatusCodes } = require("http-status-codes");
 const putIndikator = async (req, res) => {
   try {
     const { indikator_id } = req.query;
-    const { name, nomor } = req.body;
+    const { name, strategi_id, iku_id } = req.body;
 
     const dataIndikator = await INDIKATOR.findOne({
       where: {
@@ -20,7 +20,8 @@ const putIndikator = async (req, res) => {
     const putIndikator = await INDIKATOR.update(
       {
         name: name || dataIndikator.name,
-        nomor: nomor || dataIndikator.nomor,
+        strategi_id: strategi_id || dataIndikator.strategi_id,
+        iku_id: iku_id || dataIndikator.iku_id,
       },
       {
         where: {
@@ -34,9 +35,7 @@ const putIndikator = async (req, res) => {
       putIndikator,
     });
   } catch (error) {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: error.message });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
   }
 };
 

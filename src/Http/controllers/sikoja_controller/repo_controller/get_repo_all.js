@@ -28,6 +28,9 @@ const getRepo = async (req, res) => {
     const jabatan = await JABATAN.findOne({
       where: { id: user.jabatan_id },
     });
+    const prodi = await PRODI.findOne({
+      where: { id: user.prodi_id },
+    });
 
     const whereClause = {};
     if (req.query && surat_id) {
@@ -127,9 +130,7 @@ const getRepo = async (req, res) => {
     return res.status(StatusCodes.OK).json({ repo });
   } catch (error) {
     console.error("Error:", error);
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Internal Server Error" });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
   }
 };
 router.get("/", getRepo);

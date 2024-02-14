@@ -5,7 +5,7 @@ const { StatusCodes } = require("http-status-codes");
 
 const postIndikator = async (req, res) => {
   try {
-    const { name, nomor } = req.body;
+    const { name, strategi_id, iku_id } = req.body;
     const latestIndikator = await INDIKATOR.findAll({
       limit: 1,
       order: [["id", "DESC"]],
@@ -14,13 +14,12 @@ const postIndikator = async (req, res) => {
     const indikator = await INDIKATOR.create({
       id: latestIndikatorId + 1,
       name,
-      nomor,
+      strategi_id,
+      iku_id,
     });
     res.status(StatusCodes.CREATED).json(indikator);
   } catch (error) {
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: error.message });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
   }
 };
 
