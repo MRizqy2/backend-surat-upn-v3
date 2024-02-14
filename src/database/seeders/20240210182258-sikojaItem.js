@@ -3,19 +3,10 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     try {
-      await queryInterface.bulkInsert("INDIKATORS", [
-        {
-          id: 1,
-          name: "-",
-          nomor: "-",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ]);
       await queryInterface.bulkInsert("STRATEGIS", [
         {
           id: 1,
-          name: "-",
+          name: "Meningkatnya Kualitas Lulusan Pendidikan Tinggi",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -24,6 +15,16 @@ module.exports = {
         {
           id: 1,
           name: "-",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ]);
+      await queryInterface.bulkInsert("INDIKATORS", [
+        {
+          id: 1,
+          name: "(UTAMA) Kesiapan Kerja Lulusan dalam kurun waktu 12 bulan setelah tanggal terbit ijazah, studi lanjut dan wiraswasta",
+          strategi_id: 1,
+          iku_id: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
