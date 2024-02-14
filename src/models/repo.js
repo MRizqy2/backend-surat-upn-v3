@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      kode_url: DataTypes.STRING,
+      unix_code: DataTypes.STRING,
       indikator_id: {
         type: DataTypes.INTEGER,
         // allowNull: false,
@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
           model: "INDIKATOR",
           key: "id",
         },
+      },
+      visible: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {

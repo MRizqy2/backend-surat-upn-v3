@@ -7,7 +7,7 @@ const router = express.Router();
 
 const postNomorSuratRevisi = async (req, res) => {
   try {
-    const { surat_id } = req.body;
+    const { surat_id, indikator_id } = req.body;
 
     let nomor;
     let nomor_surat;
@@ -51,9 +51,7 @@ const postNomorSuratRevisi = async (req, res) => {
 
     const saveOcr = await OCR(reqOcr);
     if (!saveOcr) {
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: "Failed to save OCR" });
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Failed to save OCR" });
     }
     // const reqRepo = {
     //   save: {
@@ -66,15 +64,11 @@ const postNomorSuratRevisi = async (req, res) => {
     if (saveNomorSurat && saveOcr) {
       return (res = { message: "Success", saveNomorSurat, saveOcr });
     } else {
-      return res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: "Failed to save nomor surat" });
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Failed to save nomor surat" });
     }
   } catch (error) {
     console.error("Error:", error);
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Internal Server Error" });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
   }
 };
 
