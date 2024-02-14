@@ -7,6 +7,7 @@ const { putStatus } = require("../../status_surat_controller/put_status");
 const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
 const router = express.Router();
 const path = require("path");
+const { putRepo } = require("../../sikoja_controller/repo_controller/put_repo");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -35,14 +36,10 @@ const putMulterTtd = async function (req, res) {
   try {
     const { surat_id } = req.query;
     if (!req.files["surat"][0]) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "Missing files in request" });
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: "Missing files in request" });
     }
     const suratFile = req.files["surat"][0];
-    const suratPath = path
-      .join(suratFile.destination, suratFile.filename)
-      .replaceAll(" ", "%20");
+    const suratPath = path.join(suratFile.destination, suratFile.filename).replaceAll(" ", "%20");
 
     const data_surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
@@ -91,15 +88,18 @@ const putMulterTtd = async function (req, res) {
       },
     };
     await postNotif(reqNotif);
+    const reqRepo = {
+      query: {
+        surat_id: surat_id,
+        from: "daftar_surat_controller/multer_controller/put_multer_ttd",
+      },
+    };
+    await putRepo(reqRepo);
 
-    return res
-      .status(StatusCodes.CREATED)
-      .json({ message: "File successfully uploaded", updateSurat });
+    return res.status(StatusCodes.CREATED).json({ message: "File successfully uploaded", updateSurat });
   } catch (error) {
     console.error("Error:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Internal Server Error" });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
   }
 };
 
