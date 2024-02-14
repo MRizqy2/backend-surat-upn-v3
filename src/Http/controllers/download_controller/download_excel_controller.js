@@ -25,7 +25,8 @@ router.get(`/`, async (req, res) => {
       judul_surat_tugas: "PENGABDIAN MASYARAKAT DI DESA WARU SIDOARJO",
       program_studi: "Teknik Informatika",
       nomer_iku: 3,
-      indikator: "Mahasiswa MBKM di luar kampus inbound / outbond dan Mahasiswa Berprestasi",
+      indikator:
+        "Mahasiswa MBKM di luar kampus inbound / outbond dan Mahasiswa Berprestasi",
       catatan: "-",
       link: "https://www.google.com",
     },
@@ -35,7 +36,8 @@ router.get(`/`, async (req, res) => {
       judul_surat_tugas: "PENGABDIAN MASYARAKAT DI DESA WARU SIDOARJO",
       program_studi: "Teknik Informatika",
       nomer_iku: 2,
-      indikator: "Jumlah dosen kegiatan diluar kampus (Penelitian / Pengabdian Masyarakat / Praktisi)",
+      indikator:
+        "Jumlah dosen kegiatan diluar kampus (Penelitian / Pengabdian Masyarakat / Praktisi)",
       catatan: "-",
       link: "https://www.google.com",
     },
@@ -46,7 +48,9 @@ router.get(`/`, async (req, res) => {
   const workbook = new ExcelJS.Workbook();
   workbook.calcProperties.fullCalcOnLoad = true;
   workbook.creator = "system";
-  const worksheet = workbook.addWorksheet("Sheet1", { properties: { tabColor: { argb: "FFC0000" } } });
+  const worksheet = workbook.addWorksheet("Sheet1", {
+    properties: { tabColor: { argb: "FFC0000" } },
+  });
 
   // definisi kolom
   worksheet.columns = [
@@ -72,21 +76,36 @@ router.get(`/`, async (req, res) => {
       nomer_iku: row.nomer_iku,
       indikator: row.indikator,
       catatan: row.catatan,
-      link: row.link,
+      link: `https://${process.env.LINK}/${row.link}`,
     });
     counter++;
   });
 
   // styling column
   const columnAlignments = [
-    { column: 1, alignment: { vertical: "middle", horizontal: "center", wrapText: true } },
-    { column: 2, alignment: { vertical: "middle", horizontal: "right", wrapText: true } },
+    {
+      column: 1,
+      alignment: { vertical: "middle", horizontal: "center", wrapText: true },
+    },
+    {
+      column: 2,
+      alignment: { vertical: "middle", horizontal: "right", wrapText: true },
+    },
     { column: 3, alignment: { vertical: "middle", wrapText: true } },
     { column: 4, alignment: { vertical: "middle", wrapText: true } },
-    { column: 5, alignment: { vertical: "middle", horizontal: "center", wrapText: true } },
-    { column: 6, alignment: { vertical: "middle", horizontal: "center", wrapText: true } },
+    {
+      column: 5,
+      alignment: { vertical: "middle", horizontal: "center", wrapText: true },
+    },
+    {
+      column: 6,
+      alignment: { vertical: "middle", horizontal: "center", wrapText: true },
+    },
     { column: 7, alignment: { vertical: "middle", wrapText: true } },
-    { column: 8, alignment: { vertical: "middle", horizontal: "center", wrapText: true } },
+    {
+      column: 8,
+      alignment: { vertical: "middle", horizontal: "center", wrapText: true },
+    },
     { column: 9, alignment: { vertical: "middle", wrapText: true } },
   ];
   columnAlignments.forEach(({ column, alignment }) => {
@@ -97,16 +116,34 @@ router.get(`/`, async (req, res) => {
   worksheet.getRow(1).eachCell((cell) => {
     cell.style.font;
     cell.font = { size: 15, name: "Calibri" };
-    cell.alignment = { vertical: "middle", horizontal: "center", wrapText: true };
-    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF9900" } };
-    cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
+    cell.alignment = {
+      vertical: "middle",
+      horizontal: "center",
+      wrapText: true,
+    };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF9900" },
+    };
+    cell.border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" },
+    };
   });
   worksheet.getRow(1).height = 40;
   for (let i = 2; i <= counter; i++) {
     // add border to each cell and change font
     worksheet.getRow(i).eachCell((cell) => {
       cell.font = { size: 11, name: "Courier New" };
-      cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
     });
     // hyperlink
     worksheet.getCell(`I${i}`).value = {
@@ -116,7 +153,12 @@ router.get(`/`, async (req, res) => {
   }
 
   //save under export folder
-  const filePath = path.join(__dirname, "../../../../", "export", "archive.xlsx");
+  const filePath = path.join(
+    __dirname,
+    "../../../../",
+    "export",
+    "archive.xlsx"
+  );
   await workbook.xlsx.writeFile(filePath);
   res.download(filePath);
 });

@@ -26,10 +26,11 @@ router.get(`/:url_code`, async (req, res) => {
     let filepath = await get_file_path(url_code);
     console.log("filepath:", filepath); //filepath: daftar_surat\c5fde2c4-1707932773126-uji%20TU%201-acc-acc.pdf
     filepath = path.resolve(__dirname, "../../../../", filepath);
-    if (!fs.existsSync(filepath)) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: "File not found" });
+    filepath = decodeURIComponent(filepath);
+    if (fs.existsSync(filepath)) {
+      res.download(filepath);
+    } else {
+      res.status(StatusCodes.NOT_FOUND).json({ error: "File not found" });
     }
   } catch (error) {
     console.error("Error:", error);

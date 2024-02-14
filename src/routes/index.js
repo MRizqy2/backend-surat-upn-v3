@@ -59,7 +59,7 @@ router.use(
   require("../Http/controllers/download_controller/download_excel_controller")
 );
 router.use(
-  "/access",
+  "/",
   require("../Http/controllers/download_controller/open_access_download")
 );
 
