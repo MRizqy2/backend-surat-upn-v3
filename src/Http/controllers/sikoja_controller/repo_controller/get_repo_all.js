@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { StatusCodes } = require("http-status-codes");
+const { Op } = require("sequelize");
 const {
   REPO,
   DAFTAR_SURAT,
@@ -15,6 +16,9 @@ const {
   // AKSES_SURAT,
   PRODI,
   FAKULTAS,
+  INDIKATOR,
+  STRATEGI,
+  IKU,
 } = require("../../../../models");
 const catchStatus = require("../../status_surat_controller/catch_status");
 
@@ -27,6 +31,7 @@ const getRepo = async (req, res) => {
 
     //data array
     const { prodi_id, strategi_id, indikator_id, iku_id } = req.body;
+    console.log("prodi_id", prodi_id);
     if (endDate) {
       end = new Date(endDate);
       end.setHours(23, 59, 59, 999);
@@ -49,23 +54,23 @@ const getRepo = async (req, res) => {
         [Op.between]: [startDate, endDate],
       };
     }
-    if (req.body && prodi_id) {
-      whereClause.prodi_id = {
+    if (prodi_id && prodi_id.length > 0) {
+      whereClause["$surat.user.prodi.id$"] = {
         [Op.in]: prodi_id,
       };
     }
-    if (req.body && strategi_id) {
-      whereClause.strategi_id = {
+    if (strategi_id && strategi_id.length > 0) {
+      whereClause["$indikator.strategi.id$"] = {
         [Op.in]: strategi_id,
       };
     }
-    if (req.body && indikator_id) {
+    if (indikator_id && indikator_id.length > 0) {
       whereClause.indikator_id = {
         [Op.in]: indikator_id,
       };
     }
-    if (req.body && iku_id) {
-      whereClause.iku_id = {
+    if (iku_id && iku_id.length > 0) {
+      whereClause["$indikator.iku.id$"] = {
         [Op.in]: iku_id,
       };
     }
@@ -74,7 +79,27 @@ const getRepo = async (req, res) => {
     const repo = await REPO.findAll({
       where: { ...whereClause, visible: true },
       order: [["id", "ASC"]],
+      attributes: { exclude: ["indikator_id", "surat_id"] },
       include: [
+        {
+          model: INDIKATOR,
+          as: "indikator",
+          attributes: {
+            exclude: ["iku_id", "strategi_id", "createdAt", "updatedAt"],
+          },
+          include: [
+            {
+              model: STRATEGI,
+              as: "strategi",
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
+            {
+              model: IKU,
+              as: "iku",
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
+          ],
+        },
         {
           model: DAFTAR_SURAT,
           as: "surat",
@@ -147,7 +172,9 @@ const getRepo = async (req, res) => {
     return res.json({ repo });
   } catch (error) {
     console.error("Error:", error);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

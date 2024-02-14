@@ -2,25 +2,30 @@ const express = require("express");
 const router = express.Router();
 const { REPO, DAFTAR_SURAT } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
+const path = require("path");
+const fs = require("fs");
 
 async function get_file_path(url_code) {
-  const repo = await REPO.findOne({ where: { url_code: url_code } });
+  console.log("url_code:", url_code);
+  const repo = await REPO.findOne({ where: { unix_code: url_code } });
+  console.log("repo:", repo);
   if (!repo) {
     return "File not found";
   }
-  const path = await DAFTAR_SURAT.findOne({
+  const path_file = await DAFTAR_SURAT.findOne({
     where: {
       id: repo.surat_id,
     },
   });
-  return path.path;
+  return path_file.path;
 }
 
-router.get(`/`, async (req, res) => {
+router.get(`/:url_code`, async (req, res) => {
   try {
     let url_code = req.params.url_code;
-    const path = await get_file_path(url_code);
-    const filepath = path.resolve(__dirname, "../../../../", get_file_path);
+    let filepath = await get_file_path(url_code);
+    console.log("filepath:", filepath); //filepath: daftar_surat\c5fde2c4-1707932773126-uji%20TU%201-acc-acc.pdf
+    filepath = path.resolve(__dirname, "../../../../", filepath);
     if (!fs.existsSync(filepath)) {
       return res
         .status(StatusCodes.NOT_FOUND)
