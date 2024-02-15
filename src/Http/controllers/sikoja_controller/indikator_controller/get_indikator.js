@@ -1,30 +1,48 @@
-const { INDIKATOR } = require("../../../../models");
-const { StatusCodes } = require("http-status-codes");
 const express = require("express");
+const { StatusCodes } = require("http-status-codes");
+const { Op } = require("sequelize");
+const { INDIKATOR, STRATEGI, IKU } = require("../../../../models");
 const router = express.Router();
 
 const getIndikator = async (req, res) => {
   try {
-    const { indikator_id } = req.query;
+    const { indikator_id, strategi_id, iku_id } = req.body;
 
-    if (!indikator_id) {
-      // Mendapatkan semua data
-      const allData = await INDIKATOR.findAll({ order: [["id", "ASC"]] });
-      res.send(allData);
-    } else if (indikator_id) {
-      // Mendapatkan data berdasarkan ID
-      const findOneData = await INDIKATOR.findOne({
-        where: { id: indikator_id },
-      });
-
-      if (findOneData) {
-        res.send(findOneData);
-      } else {
-        res.status(StatusCodes.NOT_FOUND).json({ error: "Data not found" });
-      }
-    } else {
-      res.status(StatusCodes.BAD_REQUEST).json({ error: "Invalid parameters" });
+    const whereClause = {};
+    if (req.query && indikator_id.length > 0) {
+      whereClause.id = indikator_id;
     }
+    if (strategi_id && strategi_id.length > 0) {
+      whereClause.strategi_id = {
+        [Op.in]: strategi_id,
+      };
+    }
+    if (iku_id && iku_id.length > 0) {
+      whereClause.iku_id = {
+        [Op.in]: iku_id,
+      };
+    }
+
+    const indikator = await INDIKATOR.findAll({
+      where: whereClause,
+      order: [["id", "ASC"]],
+      attributes: {
+        exclude: ["iku_id", "strategi_id", "createdAt", "updatedAt"],
+      },
+      include: [
+        {
+          model: STRATEGI,
+          as: "strategi",
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+        {
+          model: IKU,
+          as: "iku",
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+        },
+      ],
+    });
+    return res.json({ indikator });
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
