@@ -23,7 +23,7 @@ const { Op } = require("sequelize");
 const router = express.Router();
 const ExcelJS = require("exceljs");
 
-router.get(`/`, async (req, res) => {
+router.post(`/`, async (req, res) => {
   // definisi data yang akan di export
   // ganti data dengan data dari database saat production
   const { repo_id } = req.body;
@@ -128,41 +128,6 @@ router.get(`/`, async (req, res) => {
     // change repo to json format
     repo = JSON.parse(JSON.stringify(repo));
   }
-
-  // const data_dumb = [
-  //   {
-  //     timestamp: "2021/08/01",
-  //     nomor_surat_tugas: "020/UN63.7/TU-IF/2024",
-  //     judul_surat_tugas: "PENGABDIAN MASYARAKAT DI DESA WARU SIDOARJO",
-  //     program_studi: "Teknik Informatika",
-  //     nomer_iku: 1,
-  //     indikator: "Responden lulusan (Kerja / Studi Lanjut / Wirausaha)",
-  //     catatan: "-",
-  //     link: "https://www.google.com",
-  //   },
-  //   {
-  //     timestamp: "2021/08/01",
-  //     nomor_surat_tugas: "030/UN63.7/TU-IF/2024",
-  //     judul_surat_tugas: "PENGABDIAN MASYARAKAT DI DESA WARU SIDOARJO",
-  //     program_studi: "Teknik Informatika",
-  //     nomer_iku: 3,
-  //     indikator:
-  //       "Mahasiswa MBKM di luar kampus inbound / outbond dan Mahasiswa Berprestasi",
-  //     catatan: "-",
-  //     link: "https://www.google.com",
-  //   },
-  //   {
-  //     timestamp: "2023/08/01",
-  //     nomor_surat_tugas: "020.1/UN63.7/TU-IF/2024",
-  //     judul_surat_tugas: "PENGABDIAN MASYARAKAT DI DESA WARU SIDOARJO",
-  //     program_studi: "Teknik Informatika",
-  //     nomer_iku: 2,
-  //     indikator:
-  //       "Jumlah dosen kegiatan diluar kampus (Penelitian / Pengabdian Masyarakat / Praktisi)",
-  //     catatan: "-",
-  //     link: "https://www.google.com",
-  //   },
-  // ];
 
   // persiapan file excel
   let counter = 1;

@@ -32,6 +32,13 @@ const getRepo = async (req, res) => {
     //data array
     const { prodi_id, strategi_id, indikator_id, iku_id } = req.body;
     console.log("prodi_id", prodi_id);
+    let dateFilter = {};
+    if (startDate) {
+      const start = new Date(startDate);
+      dateFilter[Op.gte] = start;
+    }
+
+    let end;
     if (endDate) {
       end = new Date(endDate);
       end.setHours(23, 59, 59, 999);
@@ -51,7 +58,7 @@ const getRepo = async (req, res) => {
     const whereClause = {};
     if (req.query && startDate && endDate) {
       whereClause.createdAt = {
-        [Op.between]: [startDate, endDate],
+        [Op.between]: [new Date(startDate), end],
       };
     }
     if (prodi_id && prodi_id.length > 0) {
@@ -75,9 +82,11 @@ const getRepo = async (req, res) => {
       };
     }
 
-    console.log("whereClause", whereClause);
     const repo = await REPO.findAll({
-      where: { ...whereClause, visible: true },
+      where: {
+        ...whereClause,
+        visible: true,
+      },
       order: [["id", "ASC"]],
       attributes: { exclude: ["indikator_id", "surat_id"] },
       include: [
@@ -178,7 +187,7 @@ const getRepo = async (req, res) => {
   }
 };
 
-router.get("/", getRepo);
+router.post("/", getRepo);
 
 module.exports = { getRepo, router };
 

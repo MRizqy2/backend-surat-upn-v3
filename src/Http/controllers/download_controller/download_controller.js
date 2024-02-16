@@ -4,7 +4,7 @@ const fs = require("fs");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
 
-router.get(`/`, (req, res) => {
+router.post(`/`, (req, res) => {
   if (req.query.filepath !== undefined) {
     handleFileRequest(req, res);
   } else if (req.body.paths !== undefined) {
@@ -18,7 +18,7 @@ function handleFileRequest(req, res) {
   try {
     let filepath = decodeURIComponent(req.query.filepath);
     filepath = path.resolve(__dirname, "../../../../", filepath);
-
+    console.log("adaadwa",filepath);
     if (!fs.existsSync(filepath)) {
       return res.status(StatusCodes.NOT_FOUND).json({ error: "File not found" });
     }
