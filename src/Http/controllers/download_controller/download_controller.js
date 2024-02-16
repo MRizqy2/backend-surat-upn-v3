@@ -18,15 +18,19 @@ function handleFileRequest(req, res) {
   try {
     let filepath = decodeURIComponent(req.query.filepath);
     filepath = path.resolve(__dirname, "../../../../", filepath);
-    console.log("adaadwa",filepath);
+    console.log("adaadwa", filepath);
     if (!fs.existsSync(filepath)) {
-      return res.status(StatusCodes.NOT_FOUND).json({ error: "File not found" });
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "File not found" });
     }
     const buffer = fs.readFileSync(filepath);
     res.end(buffer);
   } catch (error) {
     console.error("Error:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 }
 
@@ -34,9 +38,11 @@ function handleZipRequest(req, res) {
   const paths = req.body.paths;
 
   const formattedPaths = paths.map((file_path, index) => {
+    const parts = file_path.split("-");
+    const fileName = parts[parts.length - 2] + "-" + parts[parts.length - 1];
     return {
       path: path.join(__dirname, `../../../../${file_path}`),
-      name: file_path.split("-").pop(),
+      name: fileName,
     };
   });
 
