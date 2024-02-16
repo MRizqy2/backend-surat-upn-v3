@@ -1,13 +1,30 @@
 const express = require("express");
 const app = express.Router();
-const { STATUS, DAFTAR_SURAT, USERS, JABATAN, PERMISION, REVISI, NOMOR_SURAT, REPO } = require("../../../models");
+const {
+  STATUS,
+  DAFTAR_SURAT,
+  USERS,
+  JABATAN,
+  PERMISION,
+  REVISI,
+  NOMOR_SURAT,
+  REPO,
+} = require("../../../models");
 const catchStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
-const { postTampilan } = require("./../tampilan_surat_controller/post_tampilan");
-const { postNomorSurat } = require("./../nomor_surat_controller/post_nomor_surat");
+const {
+  postTampilan,
+} = require("./../tampilan_surat_controller/post_tampilan");
+const {
+  postNomorSurat,
+} = require("./../nomor_surat_controller/post_nomor_surat");
 const { postNotif } = require("../notifikasi_controller/post_notifikasi");
-const { postAksesSurat } = require("../akses_surat_controller/post_akses_surat");
-const { postNomorSuratRevisi } = require("../nomor_surat_controller/post_nomor_surat_revisi");
+const {
+  postAksesSurat,
+} = require("../akses_surat_controller/post_akses_surat");
+const {
+  postNomorSuratRevisi,
+} = require("../nomor_surat_controller/post_nomor_surat_revisi");
 const { postRepo } = require("../sikoja_controller/repo_controller/post_repo");
 
 app.use(express.json());
@@ -169,13 +186,17 @@ const putStatus = async (req, res) => {
         }
       }
       if (permision.tagging) {
-        if (!indikator_id) {
-          return res.status(StatusCodes.BAD_REQUEST).json({ error: "Indikator ID is required" });
+        // if (!indikator_id) {
+        //   return res.status(StatusCodes.BAD_REQUEST).json({ error: "Indikator ID is required" });
+        // }
+        let id;
+        if (indikator_id && indikator_id.length > 0) {
+          id = indikator_id;
         }
         const reqRepo = {
           body: {
             surat_id: surat_id,
-            indikator_id: indikator_id,
+            indikator_id: id,
             from: `status_surat_controller/put_status.js`,
           },
         };

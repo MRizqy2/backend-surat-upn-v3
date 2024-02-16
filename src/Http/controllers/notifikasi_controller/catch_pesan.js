@@ -16,9 +16,11 @@ async function catchPesan(req, res) {
     const prodi_surat = await PRODI.findOne({
       where: { id: user_surat.prodi_id },
     });
-
     const jabatan_user = await JABATAN.findOne({
       where: { id: jabatan_id },
+    });
+    const jabatan_atas = await JABATAN.findOne({
+      where: { id: jabatan_user.jabatan_atas_id },
     });
 
     const isiPesan = [
@@ -27,7 +29,9 @@ async function catchPesan(req, res) {
           ? jabatan_surat.name
           : prodi_surat.name
       }`, //Prodi->TU; TU->Dekan; Dekan->Admin Dekan
-      `Surat di ${jabatan_user.name}`, //TU->Prodi; Dekan->Prodi; Admin Dekan->Prodi
+      `Surat di ${
+        jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""
+      }`, //TU->Prodi; Dekan->Prodi; Admin Dekan->Prodi
       `Surat ditolak ${jabatan_user.name}`, //TU->Prodi; Dekan->Prodi;
       `Surat telah ditandatangani`, //Admin Dekan->Prodi
     ];
