@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.post("/", postRepo);
-app.get("/", getRepo);
+app.post("/filter", getRepo);
 app.get("/detail", getRepoDetail);
 app.put("/", putRepo);
 

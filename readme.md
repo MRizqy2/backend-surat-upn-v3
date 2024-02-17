@@ -25,7 +25,7 @@ for install secret_key:
 > node
 > require('crypto').randomBytes(64).toString('hex')
 
-> pip install r requirements.txt
+> pip install -r requirements.txt
 
 `python: v3.11`
 
