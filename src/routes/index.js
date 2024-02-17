@@ -23,6 +23,8 @@ const sikojaController = require("../Http/controllers/sikoja_controller/sikoja_c
 const repoController = require("../Http/controllers/sikoja_controller/repo_controller/repo_controller");
 const getProgressBar =
   require("../Http/controllers/progress_bar_controller/get_progress_bar").router;
+const downloadExel = require("../Http/controllers/download_controller/download_excel_controller");
+const downloadAccess = require("../Http/controllers/download_controller/open_access_download");
 
 const router = express.Router();
 
@@ -54,13 +56,7 @@ router.use("/progress-bar", authMiddleware, getProgressBar);
 router.use("/repo", authMiddleware, repoController);
 
 router.use("/sikoja", authMiddleware, sikojaController);
-router.use(
-  "/excel",
-  require("../Http/controllers/download_controller/download_excel_controller")
-);
-router.use(
-  "/",
-  require("../Http/controllers/download_controller/open_access_download")
-);
+router.use("/excel", authMiddleware, downloadExel);
+router.use("/", downloadAccess);
 
 module.exports = router;

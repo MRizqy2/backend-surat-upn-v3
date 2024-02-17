@@ -51,5 +51,6 @@ const getIndikator = async (req, res) => {
 };
 
 router.get("/", getIndikator);
+router.post("/", getIndikator);
 
 module.exports = { router, getIndikator };
