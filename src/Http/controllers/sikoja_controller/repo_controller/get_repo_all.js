@@ -54,6 +54,9 @@ const getRepo = async (req, res) => {
     const prodi = await PRODI.findOne({
       where: { id: user.prodi_id },
     });
+    const fakultas = await FAKULTAS.findOne({
+      where: { id: user.fakultas_id },
+    });
 
     const whereClause = {};
     if (req.query && startDate && endDate) {
@@ -62,6 +65,7 @@ const getRepo = async (req, res) => {
       };
     }
     if (prodi_id && prodi_id.length > 0) {
+      console.log("v2edf2prodi id : ", prodi_id);
       whereClause["$surat.user.prodi.id$"] = {
         [Op.in]: prodi_id,
       };
@@ -81,6 +85,13 @@ const getRepo = async (req, res) => {
         [Op.in]: iku_id,
       };
     }
+    // if (fakultas.name != `-` && prodi.name != `-`) {
+    //   whereClause.jabatan_id = {
+    //     [Op.in]: jabatan.id,
+    //   };
+    // }
+
+    console.log("veffwhereClause : ", whereClause);
 
     const repo = await REPO.findAll({
       where: {
@@ -114,20 +125,11 @@ const getRepo = async (req, res) => {
           as: "surat",
           attributes: { exclude: [, "createdAt", "updatedAt"] },
           order: [["id", "ASC"]],
-          // where: {
-          //   ...whereClause,
-          // },
           include: [
             {
               model: STATUS,
               as: "status",
               attributes: ["status", "persetujuan"],
-            },
-            {
-              model: TAMPILAN,
-              as: "tampilan",
-              attributes: ["pin", "dibaca"],
-              where: { jabatan_id: jabatan.id },
             },
             {
               model: JENIS_SURAT,

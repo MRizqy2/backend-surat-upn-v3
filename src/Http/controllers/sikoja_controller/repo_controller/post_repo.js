@@ -7,6 +7,8 @@ const crypto = require("crypto");
 const postRepo = async (req, res) => {
   try {
     const { surat_id, indikator_id } = req.body;
+    console.log("surat id : ", surat_id);
+    console.log("indikator id : ", indikator_id);
 
     // const latestRepo = await REPO.findAll({
     //   limit: 1,
@@ -30,11 +32,15 @@ const postRepo = async (req, res) => {
     if (req.body.from) {
       return repo;
     }
-    return res.status(StatusCodes.OK).json({ message: `repo telah dibuat`, repo });
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: `repo telah dibuat`, repo });
     // res.json( `repo telah dibuat`);
   } catch (error) {
     console.error("Error:", error);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

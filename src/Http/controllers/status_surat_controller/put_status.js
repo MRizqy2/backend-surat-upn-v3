@@ -185,18 +185,17 @@ const putStatus = async (req, res) => {
           await postNomorSuratRevisi(reqTampilan);
         }
       }
+      console.log("permisson tagging: ", permision.tagging);
       if (permision.tagging) {
-        // if (!indikator_id) {
-        //   return res.status(StatusCodes.BAD_REQUEST).json({ error: "Indikator ID is required" });
-        // }
-        let id;
-        if (indikator_id && indikator_id.length > 0) {
-          id = indikator_id;
+        if (!indikator_id) {
+          return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ error: "Indikator ID is required" });
         }
         const reqRepo = {
           body: {
             surat_id: surat_id,
-            indikator_id: id,
+            indikator_id: indikator_id,
             from: `status_surat_controller/put_status.js`,
           },
         };

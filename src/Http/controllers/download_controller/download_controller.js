@@ -38,6 +38,7 @@ function handleZipRequest(req, res) {
   const paths = req.body.paths;
 
   const formattedPaths = paths.map((file_path, index) => {
+    file_path = decodeURIComponent(file_path);
     const parts = file_path.split("-");
     const fileName = parts[parts.length - 2] + "-" + parts[parts.length - 1];
     return {
