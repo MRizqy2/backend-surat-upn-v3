@@ -248,13 +248,15 @@ router.post(`/`, async (req, res) => {
     };
   }
 
+  const tempDir = path.resolve("export/");
+  // Check if the directory exists
+  if (!fs.existsSync(tempDir)) {
+    // If not, create the directory
+    fs.mkdirSync(tempDir, { recursive: true });
+  }
   //save under export folder
-  const filePath = path.join(
-    __dirname,
-    "../../../../",
-    "export",
-    "archive.xlsx"
-  );
+  const filePath = path.join(tempDir, "archive.xlsx");
+
   await workbook.xlsx.writeFile(filePath);
   res.download(filePath);
 });
