@@ -41,9 +41,9 @@ const OCR = async (req, res) => {
 
     let fileNameWithoutExtension = fileName;
 
-    if (!fileName.endsWith("-acc.pdf")) {
-      fileNameWithoutExtension = fileName.replace(".pdf", "-acc.pdf"); // Ganti ekstensi .pdf dengan -acc.pdf
-    }
+    // if (!fileName.endsWith("-acc.pdf")) {
+    //   fileNameWithoutExtension = fileName.replace(".pdf", "-acc.pdf"); // Ganti ekstensi .pdf dengan -acc.pdf
+    // }
     const outputPath = path.join(tempDir, fileNameWithoutExtension);
 
     const searchText = "XYXY";

@@ -38,7 +38,7 @@ const postPembetulan = async function (req, res) {
   try {
     const { surat_id, judul, deskripsi } = req.body;
     const suratFile = req.files["surat"][0];
-    const judulExt = judul + path.extname(suratFile.originalname);
+    const judulExt = judul;
     const suratPath = path
       .join(suratFile.destination, suratFile.filename)
       .replaceAll(" ", "%20");
@@ -46,6 +46,7 @@ const postPembetulan = async function (req, res) {
     const surat_lama = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
+    console.log("mpqcpoqmw", surat_lama.user_id);
 
     const user = await USERS.findOne({
       where: { id: req.token.id },

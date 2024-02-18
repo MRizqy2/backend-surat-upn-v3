@@ -31,8 +31,8 @@ const putSuratUrl = async (req, res, next) => {
       where: { id: surat_id },
     });
     // const fileName = outputPath.split("\\").pop();
-    const judul = surat.judul.replace(".pdf", "-acc.pdf");
-    const path = surat.path.replace(".pdf", "-acc.pdf");
+    // const judul = surat.judul.replace(".pdf", "-acc.pdf");
+    // const path = surat.path.replace(".pdf", "-acc.pdf");
 
     // const suratFile = req.files["surat"][0];
     const suratPath = path.replaceAll(" ", "%20");
@@ -43,7 +43,7 @@ const putSuratUrl = async (req, res, next) => {
 
     const update_surat = await DAFTAR_SURAT.update(
       {
-        judul: judul,
+        judul: surat.judul,
         path: suratPath,
       },
       {
