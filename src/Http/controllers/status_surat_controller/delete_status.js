@@ -29,9 +29,7 @@ const deleteStatus = async (req, res) => {
       }
     } else {
       if (res) {
-        res
-          .status(StatusCodes.NOT_FOUND)
-          .json({ error: "Akses Surat not found" });
+        res.status(StatusCodes.NOT_FOUND).json({ error: "Status not found" });
       }
     }
   } catch (error) {

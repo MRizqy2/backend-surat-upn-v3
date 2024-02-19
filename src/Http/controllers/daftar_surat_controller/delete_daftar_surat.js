@@ -8,6 +8,8 @@ const {
 } = require("../tampilan_surat_controller/delete_tampilan");
 const { deleteStatus } = require("../status_surat_controller/delete_status");
 const { deleteKomentar } = require("../komentar_controller/delete_komentar");
+const { deleteRevisi } = require("../revisi_surat_controller/delete_revisi");
+const { deletePerbaikan } = require("./perbaikan_controller/delete_perbaikan");
 const {
   deleteNotifikasi,
 } = require("../notifikasi_controller/delete_notifikasi");
@@ -38,14 +40,14 @@ const deleteSurat = async (req, res) => {
     const deletedStatus = await deleteStatus(reqDelete);
     const deletedKomentar = await deleteKomentar(reqDelete);
     const deletedNotifikasi = await deleteNotifikasi(reqDelete);
-
+    const deletedRevisi = await deleteRevisi(reqDelete);
+    const deletedPerbaikan = await deletePerbaikan(reqDelete);
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
     const deletedSurat = await DAFTAR_SURAT.destroy({
       where: { id: surat_id },
     });
-
     if (deletedSurat) {
       const suratPath = surat.path;
       const filePath = path.join(

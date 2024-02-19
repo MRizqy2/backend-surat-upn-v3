@@ -31,10 +31,10 @@ const storage = multer.diskStorage({
     const surat_lama = await DAFTAR_SURAT.findOne({
       where: { id: req.body.surat_id },
     });
-    const judul = surat_lama.judul || "default";
+    // const judul = surat_lama.judul || "default";
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
-    const filename = `${randomString}-${timestamp}-${judul}${path.extname(
+    const filename = `${randomString}-${timestamp}${path.extname(
       file.originalname
     )}`;
     cb(null, filename);
@@ -46,11 +46,10 @@ const upload = multer({ storage: storage });
 const postPerbaikan = async function (req, res) {
   try {
     const { surat_id, deskripsi } = req.body;
-    const suratFile = req.files["surat"][0];
+    const suratFile = req.files["surat"][0]; //ikut aku ki
     // const judulExt = judul + path.extname(suratFile.originalname);
-    const suratPath = path
-      .join(suratFile.destination, suratFile.filename)
-      .replaceAll(" ", "%20");
+    const suratPath = path.join(suratFile.destination, suratFile.filename);
+    // .replaceAll(" ", "%20");
 
     const surat_lama = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },

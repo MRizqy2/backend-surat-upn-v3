@@ -12,13 +12,29 @@ const postNomorSuratRevisi = async (req, res) => {
     let nomor;
     let nomor_surat;
     let updateNomorSurat;
+    let revisiSurat;
+    let i = 0,
+      j = 0;
 
-    const revisiSurat = await REVISI.findOne({
+    revisiSurat = await REVISI.findOne({
       where: { surat_id_baru: surat_id },
     });
+    console.log("mopmpqasd", revisiSurat);
+    do {
+      if (revisiSurat) {
+        console.log("nety ", i++);
+        nomor_surat = await NOMOR_SURAT.findOne({
+          where: { surat_id: revisiSurat.surat_id_lama },
+        });
+      }
+      console.log(";89l8 ", j); //iki ono/0/1
+      revisiSurat = await REVISI.findOne({
+        where: { surat_id_baru: revisiSurat.surat_id_lama },
+      });
+    } while (!nomor_surat);
 
     const nomor_surat_lama = await NOMOR_SURAT.findOne({
-      where: { surat_id: revisiSurat.surat_id_lama },
+      where: { surat_id: nomor_surat.surat_id },
     });
 
     nomor = nomor_surat_lama.nomor_surat;
@@ -51,7 +67,9 @@ const postNomorSuratRevisi = async (req, res) => {
 
     const saveOcr = await OCR(reqOcr);
     if (!saveOcr) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Failed to save OCR" });
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Failed to save OCR" });
     }
     // const reqRepo = {
     //   save: {
@@ -59,16 +77,21 @@ const postNomorSuratRevisi = async (req, res) => {
     //     from: `nomor_surat_controller`,
     //   },
     // };
-    // const saveRepo = await repo(reqRepo);
+    // const saveRepo = await repo(reqRepo);// hmm sek tak coba//iyo emang ga iso
 
     if (saveNomorSurat && saveOcr) {
+      //aman/ eh mau aku nyoba delete surat gk isok/ okk
       return (res = { message: "Success", saveNomorSurat, saveOcr });
     } else {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Failed to save nomor surat" });
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Failed to save nomor surat" });
     }
   } catch (error) {
     console.error("Error:", error);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

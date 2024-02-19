@@ -32,7 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const putStatus = async (req, res) => {
   try {
-    let reqTampilan, updateStatus, reqStatus;
+    let reqTampilan, updateStatus, reqStatus, reqNomorSuratRevisi;
     const { persetujuan, status, indikator_id } = req.body;
     const { surat_id } = req.query;
 
@@ -158,28 +158,40 @@ const putStatus = async (req, res) => {
         where: { jabatan_id: jabatan.id },
       });
       if (permision.generate_nomor_surat) {
-        const surat_revisi = await REVISI.findOne({
+        //iki
+        let surat_revisi = await REVISI.findOne({
           where: { surat_id_baru: surat_id },
         });
-        // if (surat_revisi) {
-        //   const nomor_surat = await NOMOR_SURAT.findOne({
-        //     where: { surat_id: surat_revisi.surat_id_lama },
-        //   });
-        //   if (nomor_surat) {
-        //     await postNomorSuratRevisi(reqTampilan);
-        //   }
-        // } else {
-        //   await postNomorSurat(reqTampilan);
-        // }
 
         let nomor_surat = null;
+        let i = 0, //coba lagi
+          j = 0; //okee
+        //     Error: TypeError: Cannot read properties of null (reading 'surat_id_lama')
+        //     at putStatus (D:\Rizal\PENS\Semester 6\Magang KP\Sejahtera Mandiri Solusindo\upn
+        // \backend-surat-upn-server\backend-surat-upn-server\src\Http\controllers\status_surat
+        // _controller\put_status.js:189:52)
+        //     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
         if (surat_revisi) {
-          nomor_surat = await NOMOR_SURAT.findOne({
-            where: { surat_id: surat_revisi.surat_id_lama },
-          });
+          // nomor_surat = await NOMOR_SURAT.findOne({
+          //   where: { surat_id: surat_revisi.surat_id_lama },
+          // });
+          console.log(nomor_surat, "nomor_surat");
+          do {
+            if (surat_revisi) {
+              console.log("pmomoa ", i++);
+              nomor_surat = await NOMOR_SURAT.findOne({
+                where: { surat_id: surat_revisi.surat_id_lama },
+              });
+            }
+            surat_revisi = await REVISI.findOne({
+              //harusnya bisa sih ;v/ iyo
+              where: { surat_id_baru: surat_revisi?.surat_id_lama || 0 },
+            });
+            console.log("snvpow ", j++); //iki ono/0/1/ coba lagi ki
+          } while (!nomor_surat || (surat_revisi && nomor_surat)); // coba kah//oke//woke// gagal
         }
-
-        if (!surat_revisi || !nomor_surat) {
+        console.log("mclmqm");
+        if (!surat_revisi || (!surat_revisi && !nomor_surat)) {
           await postNomorSurat(reqTampilan);
         } else {
           await postNomorSuratRevisi(reqTampilan);

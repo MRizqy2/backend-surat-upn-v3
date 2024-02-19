@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       surat_id_lama: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "DAFTAR_SURAT",
           key: "id",
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       surat_id_baru: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "DAFTAR_SURAT",
           key: "id",

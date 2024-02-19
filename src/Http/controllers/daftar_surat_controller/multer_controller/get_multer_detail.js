@@ -213,9 +213,11 @@ const getDaftarSurat = async (req, res) => {
     { query: { surat_id, from: `daftar_surat_controller/get_daftar-surat` } },
     {}
   );
-  surat.dataValues.progressBar = progressBarRes.progressBar;
+  if (surat) {
+    surat.dataValues.progressBar = progressBarRes.progressBar;
+  } //intine eror karena surat == null
 
-  res.status(200).json({ surat, revisi });
+  res.status(200).json({ surat, revisi }); //
 };
 
 router.get("/", getDaftarSurat);

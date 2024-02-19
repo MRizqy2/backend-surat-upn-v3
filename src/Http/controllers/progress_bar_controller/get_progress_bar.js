@@ -17,18 +17,19 @@ const getProgressBar = async (req, res) => {
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
-    console.log("ntebr", surat.id);
+    // console.log("ntebr", surat.id);
 
     if (!surat) {
-      return res.status(StatusCodes.NOT_FOUND).json({
+      return console.log({
         error: "Daftar surat not found",
-      });
+      }); //lah mau kok isok eror?/ akun opo/ gk  ih/ tak reset 1x/iyo/ok/sg biasa iku yaopo/hmmm
     }
     const statusSurat = await STATUS.findOne({
+      //oke tak coba sek//sing perbaikan biasa ga iso dihapus// ketika buat surat, langsung ditolak trus diperbaiki//kok terminal e eror ngunu maneh ;v
       where: { surat_id: surat.id },
     });
 
-    console.log("pcqpo", statusSurat.status);
+    // console.log("pcqpo", statusSurat.status);
 
     let progressBarPercentage;
     if (statusSurat.status === "Surat Telah Ditandatangani") {

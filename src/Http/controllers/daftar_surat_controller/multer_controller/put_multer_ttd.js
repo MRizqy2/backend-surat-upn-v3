@@ -22,10 +22,10 @@ const storage = multer.diskStorage({
       where: { id: req.query.surat_id },
     });
 
-    const judul = data_surat.judul;
-    const timestamp = Date.now();
+    const judul = path.extname(data_surat.judul);
+    const timestamp = Date.now(); //coba kik/ sampe ttd/ nak revisi kik
     const randomString = crypto.randomBytes(4).toString("hex");
-    const filename = `${randomString}-${timestamp}-${judul}`;
+    const filename = `${randomString}-${timestamp}${judul}`; // upload biasa yo//oke// lek upload ttd nama file e tak buat & juga ?//aman aman// hasil download e ngene testing & aja _.pdf
     cb(null, filename);
   },
 });
@@ -36,10 +36,14 @@ const putMulterTtd = async function (req, res) {
   try {
     const { surat_id } = req.query;
     if (!req.files["surat"][0]) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: "Missing files in request" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Missing files in request" });
     }
     const suratFile = req.files["surat"][0];
-    const suratPath = path.join(suratFile.destination, suratFile.filename).replaceAll(" ", "%20");
+    const suratPath = path
+      .join(suratFile.destination, suratFile.filename)
+      .replaceAll(" ", "%20");
 
     const data_surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
@@ -96,10 +100,14 @@ const putMulterTtd = async function (req, res) {
     };
     await putRepo(reqRepo);
 
-    return res.status(StatusCodes.CREATED).json({ message: "File successfully uploaded", updateSurat });
+    return res
+      .status(StatusCodes.CREATED)
+      .json({ message: "File successfully uploaded", updateSurat });
   } catch (error) {
     console.error("Error:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 
