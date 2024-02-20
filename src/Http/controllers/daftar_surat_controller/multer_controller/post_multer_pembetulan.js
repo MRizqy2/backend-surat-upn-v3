@@ -21,13 +21,8 @@ const storage = multer.diskStorage({
   },
 
   filename: function (req, file, cb) {
-    // Gunakan judul sebagai nama file
-    // const judul = req.body.judul || "default";
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
-    // const filename = `${randomString}-${timestamp}-${judul}${path.extname(
-    //   file.originalname
-    // )}`;
     const filename = `${randomString}-${timestamp}${path.extname(
       file.originalname
     )}`;
@@ -39,16 +34,14 @@ const upload = multer({ storage: storage });
 
 const postPembetulan = async function (req, res) {
   try {
-    const { surat_id, judul, deskripsi } = req.body; // iyo/ hmm tetep .1 deh/ Iyo yo
-    const suratFile = req.files["surat"][0]; //hmm /// soale nek testing & aja _ iku lanjut dari 29 ke 30
+    const { surat_id, judul, deskripsi } = req.body;
+    const suratFile = req.files["surat"][0];
     const judulExt = judul;
     const suratPath = path.join(suratFile.destination, suratFile.filename);
-    // .replaceAll(" ", "%20");
 
     const surat_lama = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
-    console.log("mpqcpoqmw", surat_lama.user_id);
 
     const user = await USERS.findOne({
       where: { id: req.token.id },

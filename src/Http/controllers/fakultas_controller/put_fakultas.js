@@ -33,12 +33,6 @@ const putFakultas = async (req, res) => {
       }
     );
 
-    // fakultas.name = nama;
-    // fakultas.jenjang = jenjang;
-    // fakultas.kode_fakultas = kode_fakultas;
-
-    // await fakultas.save();
-
     res.json({ updateFakultas });
   } catch (error) {
     console.error("Error:", error);

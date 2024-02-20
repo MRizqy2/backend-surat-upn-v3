@@ -17,7 +17,7 @@ module.exports = {
       },
       fakultas_id: {
         type: Sequelize.INTEGER,
-        // allowNull: false,
+
         references: {
           model: "FAKULTAS",
           key: "id",

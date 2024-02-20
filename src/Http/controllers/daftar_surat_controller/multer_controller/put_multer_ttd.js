@@ -23,9 +23,9 @@ const storage = multer.diskStorage({
     });
 
     const judul = path.extname(data_surat.judul);
-    const timestamp = Date.now(); //coba kik/ sampe ttd/ nak revisi kik
+    const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
-    const filename = `${randomString}-${timestamp}${judul}`; // upload biasa yo//oke// lek upload ttd nama file e tak buat & juga ?//aman aman// hasil download e ngene testing & aja _.pdf
+    const filename = `${randomString}-${timestamp}${judul}`;
     cb(null, filename);
   },
 });

@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       strategi_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
         references: {
           model: "STRATEGI",
           key: "id",
@@ -30,7 +29,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       iku_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
         references: {
           model: "IKU",
           key: "id",

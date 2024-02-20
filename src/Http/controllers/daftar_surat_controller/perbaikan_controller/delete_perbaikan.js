@@ -5,11 +5,10 @@ const { StatusCodes } = require("http-status-codes");
 
 const deletePerbaikan = async (req, res) => {
   try {
-    const { perbaikan_id, surat_id } = req.query; //kik
-    // /gelek delete iku piye/ hah/ code SQL ta gmn
-    const whereClause = {}; //
+    const { perbaikan_id, surat_id } = req.query;
+    const whereClause = {};
     if (req.query && perbaikan_id) {
-      whereClause.id = perbaikan_id; //yok// iyo diperbaiki// iyo ilang// gelek delete ben nek postgre e langsung kehapus// gelek cara ben iso delete nek postgre e maksude// ne
+      whereClause.id = perbaikan_id;
     }
     if (req.query && surat_id) {
       whereClause.surat_id = surat_id;

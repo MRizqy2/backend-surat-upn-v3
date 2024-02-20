@@ -27,7 +27,6 @@ router.post(`/`, async (req, res) => {
   // definisi data yang akan di export
   // ganti data dengan data dari database saat production
   const { repo_id } = req.body;
-  console.log("repo id", repo_id);
   let whereClause = {};
   let repo;
   if (repo_id && repo_id.length > 0) {
@@ -106,19 +105,16 @@ router.post(`/`, async (req, res) => {
                   model: PRODI,
                   as: "prodi",
                   attributes: ["id", "name"],
-                  // where: { id: prodi.id },
                 },
                 {
                   model: JABATAN,
                   as: "jabatan",
                   attributes: ["id", "name"],
-                  // where: { id: jabatan.id },
                 },
                 {
                   model: FAKULTAS,
                   as: "fakultas",
                   attributes: ["id", "name"],
-                  // where: { id: fakultas.id },
                 },
               ],
             },
@@ -130,7 +126,6 @@ router.post(`/`, async (req, res) => {
     repo = JSON.parse(JSON.stringify(repo));
   }
 
-  console.log("repo", repo);
   // persiapan file excel
   let counter = 1;
   const workbook = new ExcelJS.Workbook();

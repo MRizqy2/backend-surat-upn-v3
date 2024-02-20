@@ -5,7 +5,6 @@ const { StatusCodes } = require("http-status-codes");
 
 const deleteAllNotifikasi = async (req, res) => {
   try {
-    // const { jabatan_id } = req.query;
     let hapusNotifikasi;
 
     const user = await USERS.findOne({

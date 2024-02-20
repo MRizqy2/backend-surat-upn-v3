@@ -8,18 +8,11 @@ const router = express.Router();
 const getDownloadBlob = (req, res) => {
   try {
     const filename = req.params.filename;
-    const filePath = path.resolve(__dirname, "../../../../daftar_surat/", filename);
-    ```
-    const path_file = req.params.path_file;
-    // path_file = daftar_surat/filename
-    // path_file = repo/filename
-
-    const path_file = repo/surat tugas2/filename
-    const filePath = path.resolve(__dirname, "../../../../../", path_file);
-    filepath = ../../../../../repo/surat tugas2/filename
-
-    https://localhost:3000/download - /repo/surat%20tugas2/filename
-    ```;
+    const filePath = path.resolve(
+      __dirname,
+      "../../../../daftar_surat/",
+      filename
+    );
 
     // Baca file sebagai buffer
     const buffer = fs.readFileSync(filePath);
@@ -28,7 +21,9 @@ const getDownloadBlob = (req, res) => {
     res.end(buffer);
   } catch (error) {
     console.error("Error:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
   }
 };
 

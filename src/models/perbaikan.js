@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       surat_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
+
         references: {
           model: "DAFTAR_SURAT",
           key: "id",

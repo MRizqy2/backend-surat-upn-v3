@@ -15,7 +15,7 @@ const {
   PERIODE,
   PERBAIKAN,
 } = require("../../../models");
-const { Op } = require("sequelize"); //
+const { Op } = require("sequelize");
 const {
   getProgressBar,
 } = require("../progress_bar_controller/get_progress_bar");
@@ -135,16 +135,6 @@ const getDaftarSurat = async (req, res) => {
       ],
       order: [["id", "ASC"]],
     });
-    // for (let i = 0; i < surat.length; i++) {
-    //   const surat_id = surat[i].id;
-    //   const progressBarRes = await getProgressBar(
-    //     {
-    //       query: { surat_id, from: `daftar_surat_controller/get_daftar-surat` },
-    //     },
-    //     {}
-    //   );
-    //   surat[i].dataValues.progressBar = progressBarRes.progressBar;
-    // }
   } else if (!prodi.id || prodi.name == `-` || prodi.id == 1) {
     surat = await DAFTAR_SURAT.findAll({
       //by fakultas / bukan oleh prodi

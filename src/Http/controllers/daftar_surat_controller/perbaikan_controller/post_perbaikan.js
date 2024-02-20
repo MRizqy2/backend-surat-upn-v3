@@ -27,11 +27,6 @@ const storage = multer.diskStorage({
   },
 
   filename: async function (req, file, cb) {
-    // Gunakan judul sebagai nama file
-    const surat_lama = await DAFTAR_SURAT.findOne({
-      where: { id: req.body.surat_id },
-    });
-    // const judul = surat_lama.judul || "default";
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
     const filename = `${randomString}-${timestamp}${path.extname(
@@ -46,10 +41,8 @@ const upload = multer({ storage: storage });
 const postPerbaikan = async function (req, res) {
   try {
     const { surat_id, deskripsi } = req.body;
-    const suratFile = req.files["surat"][0]; //ikut aku ki
-    // const judulExt = judul + path.extname(suratFile.originalname);
+    const suratFile = req.files["surat"][0];
     const suratPath = path.join(suratFile.destination, suratFile.filename);
-    // .replaceAll(" ", "%20");
 
     const surat_lama = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
@@ -172,43 +165,3 @@ router.post(
 );
 
 module.exports = router;
-
-// const express = require("express");
-// const { PERBAIKAN, DAFTAR_SURAT, KOMENTAR } = require("../../../../models");
-// const { StatusCodes } = require("http-status-codes");
-// const postUploadSurat = require("../multer_controller/post_multer_upload");
-// const postRevisi = require("../multer_controller/post_multer_revisi");
-
-// const router = express.Router();
-
-// const postPerbaikan = async (req, res) => {
-//   try {
-//     const { surat_id } = req.body;
-
-//     const surat = await DAFTAR_SURAT.findOne({
-//       where: { id: surat_id },
-//     });
-//     const komentar = await KOMENTAR.findOne({
-//       where: { surat_id: surat.id },
-//     });
-
-//     const savePerbaikan = await PERBAIKAN.create({
-//       surat_id: surat.id,
-//       perbaikan: komentar.komentar,
-//     });
-
-//     return "sukses perbaikan";
-//   } catch (error) {
-//     console.error("Error:", error);
-//     return res
-//       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-//       .json({ error: "Internal Server Error" });
-//   }
-// };
-
-// router.post("/", postUploadSurat, postRevisi, postPerbaikan);
-
-// module.exports = {
-//   postPerbaikan,
-//   router,
-// };

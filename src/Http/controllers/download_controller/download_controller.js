@@ -19,7 +19,6 @@ function handleFileRequest(req, res) {
   try {
     let filepath = decodeURIComponent(req.query.filepath);
     filepath = path.resolve(__dirname, "../../../../", filepath);
-    console.log("utmyt", filepath);
     if (!fs.existsSync(filepath)) {
       return res
         .status(StatusCodes.NOT_FOUND)

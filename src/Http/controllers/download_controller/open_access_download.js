@@ -6,9 +6,7 @@ const path = require("path");
 const fs = require("fs");
 
 async function get_file_path(url_code) {
-  console.log("url_code:", url_code);
   const repo = await REPO.findOne({ where: { unix_code: url_code } });
-  console.log("repo:", repo);
   if (!repo) {
     return "File not found";
   }
@@ -24,7 +22,6 @@ router.get(`/:url_code`, async (req, res) => {
   try {
     let url_code = req.params.url_code;
     let filepath = await get_file_path(url_code);
-    console.log("filepath:", filepath); //filepath: daftar_surat\c5fde2c4-1707932773126-uji%20TU%201-acc-acc.pdf
     filepath = path.resolve(__dirname, "../../../../", filepath);
     filepath = decodeURIComponent(filepath);
     if (fs.existsSync(filepath)) {
@@ -38,7 +35,6 @@ router.get(`/:url_code`, async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Internal Server Error" });
   }
-  // res.json({ message: "Hello from open access download" });
 });
 
 module.exports = router;

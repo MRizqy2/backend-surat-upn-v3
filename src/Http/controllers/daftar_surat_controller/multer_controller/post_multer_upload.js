@@ -25,15 +25,10 @@ const storage = multer.diskStorage({
   },
 
   filename: function (req, file, cb) {
-    // Gunakan judul sebagai nama file
-    // const judul = req.body.judul || "default";
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
-    // const filename = `${randomString}-${timestamp}-${judul}${path.extname(
-    //   file.originalname
-    // )}`;// mending gk usah judul kik path e//coba ae cuy
     const filename = `${randomString}-${timestamp}${path.extname(
-      file.originalname //iki? iki mek jupuk pdf
+      file.originalname
     )}`;
     cb(null, filename);
   },
@@ -47,7 +42,6 @@ const postMulter = async function (req, res) {
     const suratFile = req.files["surat"][0];
     const judulExt = judul + path.extname(suratFile.originalname);
     const suratPath = path.join(suratFile.destination, suratFile.filename);
-    console.log("suratPath :", suratPath);
     const jenis = await JENIS_SURAT.findOne({
       where: { id: jenis_id },
     });

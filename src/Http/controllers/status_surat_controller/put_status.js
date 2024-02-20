@@ -8,7 +8,6 @@ const {
   PERMISION,
   REVISI,
   NOMOR_SURAT,
-  REPO,
 } = require("../../../models");
 const catchStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
@@ -158,27 +157,16 @@ const putStatus = async (req, res) => {
         where: { jabatan_id: jabatan.id },
       });
       if (permision.generate_nomor_surat) {
-        //iki
         let surat_revisi = await REVISI.findOne({
           where: { surat_id_baru: surat_id },
         });
 
         let nomor_surat = null;
-        let i = 0, //coba lagi
-          j = 0; //okee
-        //     Error: TypeError: Cannot read properties of null (reading 'surat_id_lama')
-        //     at putStatus (D:\Rizal\PENS\Semester 6\Magang KP\Sejahtera Mandiri Solusindo\upn
-        // \backend-surat-upn-server\backend-surat-upn-server\src\Http\controllers\status_surat
-        // _controller\put_status.js:189:52)
-        //     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+        let i = 0,
+          j = 0;
         if (surat_revisi) {
-          // nomor_surat = await NOMOR_SURAT.findOne({
-          //   where: { surat_id: surat_revisi.surat_id_lama },
-          // });
-          console.log(nomor_surat, "nomor_surat");
           do {
             if (surat_revisi) {
-              console.log("pmomoa ", i++);
               nomor_surat = await NOMOR_SURAT.findOne({
                 where: { surat_id: surat_revisi.surat_id_lama },
               });
@@ -187,20 +175,16 @@ const putStatus = async (req, res) => {
               break;
             }
             surat_revisi = await REVISI.findOne({
-              //harusnya bisa sih ;v/ iyo
               where: { surat_id_baru: surat_revisi?.surat_id_lama || 0 },
             });
-            console.log("snvpow ", j++);
           } while (!nomor_surat);
         }
-        console.log("mclmqm");
         if (!surat_revisi || (!surat_revisi && !nomor_surat)) {
           await postNomorSurat(reqTampilan);
         } else {
           await postNomorSuratRevisi(reqTampilan);
         }
       }
-      console.log("permisson tagging: ", permision.tagging);
       if (permision.tagging) {
         if (!indikator_id) {
           return res

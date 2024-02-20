@@ -10,10 +10,8 @@ const {
   KOMENTAR,
   NOMOR_SURAT,
   PERIODE,
-  TAMPILAN,
   JENIS_SURAT,
   JABATAN,
-  // AKSES_SURAT,
   PRODI,
   FAKULTAS,
   INDIKATOR,
@@ -27,11 +25,10 @@ const getRepo = async (req, res) => {
     //data tunggal
     const { startDate, endDate } = req.query;
     const { id } = req.token;
-    console.log("id", id);
 
     //data array
     const { prodi_id, strategi_id, indikator_id, iku_id } = req.body;
-    console.log("prodi_id", prodi_id);
+
     let dateFilter = {};
     if (startDate) {
       const start = new Date(startDate);
@@ -65,7 +62,6 @@ const getRepo = async (req, res) => {
       };
     }
     if (prodi_id && prodi_id.length > 0) {
-      console.log("v2edf2prodi id : ", prodi_id);
       whereClause["$surat.user.prodi.id$"] = {
         [Op.in]: prodi_id,
       };
@@ -85,13 +81,6 @@ const getRepo = async (req, res) => {
         [Op.in]: iku_id,
       };
     }
-    // if (fakultas.name != `-` && prodi.name != `-`) {
-    //   whereClause.jabatan_id = {
-    //     [Op.in]: jabatan.id,
-    //   };
-    // }
-
-    console.log("veffwhereClause : ", whereClause);
 
     const repo = await REPO.findAll({
       where: {
@@ -187,8 +176,8 @@ const getRepo = async (req, res) => {
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Internal Server Error" });
   }
-}; //iyo/ sama eror iki, dekan gk bisa akses edit table sikoja/ udah/ difrontend iku masalahe/ sek tak commit iki se
+};
 
-router.post("/", getRepo); // sisa ne front end eror e berarti?/ketika surat sudah di setujui tidak bisa dihapus(hide button hapus)?
+router.post("/", getRepo);
 
-module.exports = { getRepo, router }; //
+module.exports = { getRepo, router };

@@ -2,7 +2,6 @@ const express = require("express");
 const { NOMOR_SURAT, REVISI } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const { OCR } = require("./../ocr_controller/ocr_controller");
-// const { repo } = require("./../repo_controller/repo_controller");
 const router = express.Router();
 
 const postNomorSuratRevisi = async (req, res) => {
@@ -19,15 +18,12 @@ const postNomorSuratRevisi = async (req, res) => {
     revisiSurat = await REVISI.findOne({
       where: { surat_id_baru: surat_id },
     });
-    console.log("mopmpqasd", revisiSurat);
     do {
       if (revisiSurat) {
-        console.log("nety ", i++);
         nomor_surat = await NOMOR_SURAT.findOne({
           where: { surat_id: revisiSurat.surat_id_lama },
         });
       }
-      console.log(";89l8 ", j); //iki ono/0/1
       revisiSurat = await REVISI.findOne({
         where: { surat_id_baru: revisiSurat.surat_id_lama },
       });
@@ -90,16 +86,8 @@ const postNomorSuratRevisi = async (req, res) => {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Failed to save OCR" });
     }
-    // const reqRepo = {
-    //   save: {
-    //     surat_id: saveNomorSurat.surat_id,
-    //     from: `nomor_surat_controller`,
-    //   },
-    // };
-    // const saveRepo = await repo(reqRepo);// hmm sek tak coba//iyo emang ga iso
 
     if (saveNomorSurat && saveOcr) {
-      //aman/ eh mau aku nyoba delete surat gk isok/ okk
       return (res = { message: "Success", saveNomorSurat, saveOcr });
     } else {
       return res

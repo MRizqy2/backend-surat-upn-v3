@@ -22,7 +22,6 @@ module.exports = {
       },
       indikator_id: {
         type: Sequelize.INTEGER,
-        // allowNull: false,
         references: {
           model: "INDIKATORS",
           key: "id",
