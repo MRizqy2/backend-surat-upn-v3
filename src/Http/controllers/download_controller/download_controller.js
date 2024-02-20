@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const { StatusCodes } = require("http-status-codes");
 const router = express.Router();
+const { DAFTAR_SURAT } = require("../../../models");
 
 router.post(`/`, (req, res) => {
   if (req.query.filepath !== undefined) {
@@ -18,7 +19,7 @@ function handleFileRequest(req, res) {
   try {
     let filepath = decodeURIComponent(req.query.filepath);
     filepath = path.resolve(__dirname, "../../../../", filepath);
-    console.log("adaadwa", filepath);
+    console.log("utmyt", filepath);
     if (!fs.existsSync(filepath)) {
       return res
         .status(StatusCodes.NOT_FOUND)
@@ -34,18 +35,22 @@ function handleFileRequest(req, res) {
   }
 }
 
-function handleZipRequest(req, res) {
+async function handleZipRequest(req, res) {
   const paths = req.body.paths;
 
-  const formattedPaths = paths.map((file_path, index) => {
+  const formattedPathsPromises = paths.map(async (file_path, index) => {
     file_path = decodeURIComponent(file_path);
-    const parts = file_path.split("-");
-    const fileName = parts[parts.length - 2] + "-" + parts[parts.length - 1];
+    const fileName = await DAFTAR_SURAT.findOne({
+      where: { path: file_path },
+    });
+
     return {
       path: path.join(__dirname, `../../../../${file_path}`),
-      name: fileName,
+      name: `${index + 1} ${fileName.judul}`,
     };
   });
+
+  const formattedPaths = await Promise.all(formattedPathsPromises);
 
   res.header("Content-Type", "application/zip");
   res.zip({

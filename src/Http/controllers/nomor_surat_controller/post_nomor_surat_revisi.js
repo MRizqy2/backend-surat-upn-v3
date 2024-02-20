@@ -38,9 +38,9 @@ const postNomorSuratRevisi = async (req, res) => {
     });
 
     nomor = nomor_surat_lama.nomor_surat;
-    const nomorSuratSplit = nomor.split("/");
-    const nomorSplit = nomorSuratSplit[0];
-    const nomorSplitv2 = nomorSplit.split(".");
+    let nomorSuratSplit = nomor.split("/");
+    let nomorSplit = nomorSuratSplit[0];
+    let nomorSplitv2 = nomorSplit.split(".");
 
     if (nomorSuratSplit.length === 5 && nomorSplitv2.length === 2) {
       nomorRevisi = parseInt(nomorSplitv2[1], 10);
@@ -50,6 +50,25 @@ const postNomorSuratRevisi = async (req, res) => {
       updateNomorSurat = `${nomorSuratSplit[0]}.1/${nomorSuratSplit[1]}/${nomorSuratSplit[2]}/${nomorSuratSplit[3]}/${nomorSuratSplit[4]}`;
     }
     nomor_surat = String(nomor_surat);
+
+    const searchNomorSurat = await NOMOR_SURAT.findOne({
+      where: { nomor_surat: nomor_surat },
+    });
+
+    if (searchNomorSurat) {
+      nomor = searchNomorSurat.nomor_surat;
+      nomorSuratSplit = nomor.split("/");
+      nomorSplit = nomorSuratSplit[0];
+      nomorSplitv2 = nomorSplit.split(".");
+      if (nomorSuratSplit.length === 5 && nomorSplitv2.length === 2) {
+        nomorRevisi = parseInt(nomorSplitv2[1], 10);
+        nomorRevisi++;
+        updateNomorSurat = `${nomorSplitv2[0]}.${nomorRevisi}/${nomorSuratSplit[1]}/${nomorSuratSplit[2]}/${nomorSuratSplit[3]}/${nomorSuratSplit[4]}`;
+      } else if (nomorSuratSplit.length === 5) {
+        updateNomorSurat = `${nomorSuratSplit[0]}.1/${nomorSuratSplit[1]}/${nomorSuratSplit[2]}/${nomorSuratSplit[3]}/${nomorSuratSplit[4]}`;
+      }
+      nomor_surat = String(nomor_surat);
+    }
 
     const saveNomorSurat = await NOMOR_SURAT.create({
       nomor_surat: updateNomorSurat,

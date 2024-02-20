@@ -183,12 +183,15 @@ const putStatus = async (req, res) => {
                 where: { surat_id: surat_revisi.surat_id_lama },
               });
             }
+            if (!surat_revisi) {
+              break;
+            }
             surat_revisi = await REVISI.findOne({
               //harusnya bisa sih ;v/ iyo
               where: { surat_id_baru: surat_revisi?.surat_id_lama || 0 },
             });
-            console.log("snvpow ", j++); //iki ono/0/1/ coba lagi ki
-          } while (!nomor_surat || (surat_revisi && nomor_surat)); // coba kah//oke//woke// gagal
+            console.log("snvpow ", j++);
+          } while (!nomor_surat);
         }
         console.log("mclmqm");
         if (!surat_revisi || (!surat_revisi && !nomor_surat)) {

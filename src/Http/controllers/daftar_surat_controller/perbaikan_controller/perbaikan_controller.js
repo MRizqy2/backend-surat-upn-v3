@@ -4,6 +4,6 @@ const postPerbaikan = require("./post_perbaikan");
 const deletePerbaikan = require("./delete_perbaikan").router;
 
 app.use("/perbaikan", postPerbaikan);
-app.use("/delete", deletePerbaikan); //
+app.use("/delete", deletePerbaikan);
 
-module.exports = app; // kok eror wwkwk// reset
+module.exports = app;

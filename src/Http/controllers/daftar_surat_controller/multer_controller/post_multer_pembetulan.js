@@ -39,8 +39,8 @@ const upload = multer({ storage: storage });
 
 const postPembetulan = async function (req, res) {
   try {
-    const { surat_id, judul, deskripsi } = req.body;
-    const suratFile = req.files["surat"][0];
+    const { surat_id, judul, deskripsi } = req.body; // iyo/ hmm tetep .1 deh/ Iyo yo
+    const suratFile = req.files["surat"][0]; //hmm /// soale nek testing & aja _ iku lanjut dari 29 ke 30
     const judulExt = judul;
     const suratPath = path.join(suratFile.destination, suratFile.filename);
     // .replaceAll(" ", "%20");

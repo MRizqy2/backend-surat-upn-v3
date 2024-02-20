@@ -215,9 +215,9 @@ const getDaftarSurat = async (req, res) => {
   );
   if (surat) {
     surat.dataValues.progressBar = progressBarRes.progressBar;
-  } //intine eror karena surat == null
+  }
 
-  res.status(200).json({ surat, revisi }); //
+  res.status(200).json({ surat, revisi }); //okee
 };
 
 router.get("/", getDaftarSurat);
