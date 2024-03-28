@@ -51,12 +51,13 @@ router.use("/tampilan", authMiddleware, tampilanController);
 router.use("/status", authMiddleware, statusController);
 router.use("/komentar", authMiddleware, komentarController);
 router.use("/notifikasi", authMiddleware, notifikasiController);
-router.use("/download", authMiddleware, downloadController);
+router.use("/download", downloadController);
 router.use("/progress-bar", authMiddleware, getProgressBar);
 router.use("/repo", authMiddleware, repoController);
 
 router.use("/sikoja", authMiddleware, sikojaController);
 router.use("/excel", authMiddleware, downloadExel);
 router.use("/", downloadAccess);
+// router.use("/download-template", downloadTemplate);
 
 module.exports = router;
