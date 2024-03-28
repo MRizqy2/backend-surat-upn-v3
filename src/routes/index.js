@@ -51,7 +51,7 @@ router.use("/tampilan", authMiddleware, tampilanController);
 router.use("/status", authMiddleware, statusController);
 router.use("/komentar", authMiddleware, komentarController);
 router.use("/notifikasi", authMiddleware, notifikasiController);
-router.use("/download", downloadController);
+router.use("/download", authMiddleware, downloadController);
 router.use("/progress-bar", authMiddleware, getProgressBar);
 router.use("/repo", authMiddleware, repoController);
 

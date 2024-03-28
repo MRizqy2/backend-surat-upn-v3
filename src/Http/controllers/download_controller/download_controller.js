@@ -19,13 +19,13 @@ function handleFileRequest(req, res) {
   try {
     let filepath = decodeURIComponent(req.query.filepath);
     console.log("filepath1: ", filepath);
+    filepath = path.resolve(__dirname, "../../../../", filepath);
+    filepath = filepath.replace(/\\/g, "/");
     if (!fs.existsSync(filepath)) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "File not found" });
     }
-    filepath = path.resolve(__dirname, "../../../../", filepath);
-    console.log("filepath2: ", filepath);
     // res.setHeader("Content-Disposition", `attachment; filename="123"`);
 
     res.download(filepath, (err) => {
