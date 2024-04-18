@@ -1,3 +1,6 @@
+pm2 start npm --name "my-app" -- start
+
+
 npm install
 change the 'config.json' and .env
 
