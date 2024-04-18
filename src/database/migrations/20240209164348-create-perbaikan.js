@@ -11,7 +11,6 @@ module.exports = {
       },
       surat_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: "DAFTAR_SURATS",
           key: "id",

@@ -19,8 +19,8 @@ const OCR = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "Daftar Surat not found" });
     }
+    // const fileName = decodeURIComponent(surat.path.split("\\").pop()).slice("/".pop());
     const fileName = decodeURIComponent(surat.path.split("\\").pop());
-    console.log("fileName", fileName);
     const fileBuffer = fs.readFileSync(decodeURIComponent(surat.path));
 
     const tempDir = path.resolve("daftar_surat/");
@@ -41,9 +41,6 @@ const OCR = async (req, res) => {
 
     let fileNameWithoutExtension = fileName;
 
-    if (!fileName.endsWith("-acc.pdf")) {
-      fileNameWithoutExtension = fileName.replace(".pdf", "-acc.pdf"); // Ganti ekstensi .pdf dengan -acc.pdf
-    }
     const outputPath = path.join(tempDir, fileNameWithoutExtension);
 
     const searchText = "XYXY";

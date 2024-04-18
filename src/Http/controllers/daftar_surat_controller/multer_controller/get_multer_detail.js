@@ -119,7 +119,6 @@ const getDaftarSurat = async (req, res) => {
           model: TAMPILAN,
           as: "tampilan",
           attributes: ["pin", "dibaca"],
-          // where: { jabatan_id: user.jabatan_id },
         },
         {
           model: JENIS_SURAT,
@@ -213,9 +212,11 @@ const getDaftarSurat = async (req, res) => {
     { query: { surat_id, from: `daftar_surat_controller/get_daftar-surat` } },
     {}
   );
-  surat.dataValues.progressBar = progressBarRes.progressBar;
+  if (surat) {
+    surat.dataValues.progressBar = progressBarRes.progressBar;
+  }
 
-  res.status(200).json({ surat, revisi });
+  res.status(200).json({ surat, revisi }); //okee
 };
 
 router.get("/", getDaftarSurat);

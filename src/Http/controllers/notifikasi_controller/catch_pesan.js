@@ -28,12 +28,10 @@ async function catchPesan(req, res) {
         user_surat.prodi_id === 1 || !user_surat.prodi_id
           ? jabatan_surat.name
           : prodi_surat.name
-      }`, //Prodi->TU; TU->Dekan; Dekan->Admin Dekan
-      `Surat di ${
-        jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""
-      }`, //TU->Prodi; Dekan->Prodi; Admin Dekan->Prodi
-      `Surat ditolak ${jabatan_user.name}`, //TU->Prodi; Dekan->Prodi;
-      `Surat telah ditandatangani`, //Admin Dekan->Prodi
+      }`,
+      `Surat di ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
+      `Surat ditolak ${jabatan_user.name}`,
+      `Surat telah ditandatangani`,
     ];
 
     if (isSign) {

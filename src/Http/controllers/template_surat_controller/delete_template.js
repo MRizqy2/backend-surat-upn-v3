@@ -23,9 +23,6 @@ const deleteTemplate = async (req, res) => {
 
     if (deletedTemplate) {
       const templatePath = template.path;
-      // console.log("url", urlFile);
-
-      // const fileName = urlFile.split("\\").pop();
 
       const filePath = path.join(
         __dirname,

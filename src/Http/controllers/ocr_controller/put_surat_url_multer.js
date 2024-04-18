@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
     const judul = req.body.judul || "default";
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
-    const filename = `${randomString}-${timestamp}-${judul}${path.extname(
+    const filename = `${randomString}-${timestamp}${path.extname(
       file.originalname
     )}`;
     cb(null, filename);
@@ -30,20 +30,12 @@ const putSuratUrl = async (req, res, next) => {
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
-    // const fileName = outputPath.split("\\").pop();
-    const judul = surat.judul.replace(".pdf", "-acc.pdf");
-    const path = surat.path.replace(".pdf", "-acc.pdf");
-
-    // const suratFile = req.files["surat"][0];
-    const suratPath = path.replaceAll(" ", "%20");
-
-    // const downloadUrl = `${
-    //   process.env.NGROK
-    // }/daftar-surat/multer/download/${encodeURIComponent(fileName)}`;
+    const filePath = surat.path;
+    const suratPath = filePath.replaceAll(" ", "%20");
 
     const update_surat = await DAFTAR_SURAT.update(
       {
-        judul: judul,
+        judul: surat.judul,
         path: suratPath,
       },
       {

@@ -8,7 +8,6 @@ const {
   PERMISION,
   REVISI,
   NOMOR_SURAT,
-  REPO,
 } = require("../../../models");
 const catchStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
@@ -32,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const putStatus = async (req, res) => {
   try {
-    let reqTampilan, updateStatus, reqStatus;
+    let reqTampilan, updateStatus, reqStatus, reqNomorSuratRevisi;
     const { persetujuan, status, indikator_id } = req.body;
     const { surat_id } = req.query;
 
@@ -158,45 +157,44 @@ const putStatus = async (req, res) => {
         where: { jabatan_id: jabatan.id },
       });
       if (permision.generate_nomor_surat) {
-        const surat_revisi = await REVISI.findOne({
+        let surat_revisi = await REVISI.findOne({
           where: { surat_id_baru: surat_id },
         });
-        // if (surat_revisi) {
-        //   const nomor_surat = await NOMOR_SURAT.findOne({
-        //     where: { surat_id: surat_revisi.surat_id_lama },
-        //   });
-        //   if (nomor_surat) {
-        //     await postNomorSuratRevisi(reqTampilan);
-        //   }
-        // } else {
-        //   await postNomorSurat(reqTampilan);
-        // }
 
         let nomor_surat = null;
+        let i = 0,
+          j = 0;
         if (surat_revisi) {
-          nomor_surat = await NOMOR_SURAT.findOne({
-            where: { surat_id: surat_revisi.surat_id_lama },
-          });
+          do {
+            if (surat_revisi) {
+              nomor_surat = await NOMOR_SURAT.findOne({
+                where: { surat_id: surat_revisi.surat_id_lama },
+              });
+            }
+            if (!surat_revisi) {
+              break;
+            }
+            surat_revisi = await REVISI.findOne({
+              where: { surat_id_baru: surat_revisi?.surat_id_lama || 0 },
+            });
+          } while (!nomor_surat);
         }
-
-        if (!surat_revisi || !nomor_surat) {
+        if (!surat_revisi || (!surat_revisi && !nomor_surat)) {
           await postNomorSurat(reqTampilan);
         } else {
           await postNomorSuratRevisi(reqTampilan);
         }
       }
       if (permision.tagging) {
-        // if (!indikator_id) {
-        //   return res.status(StatusCodes.BAD_REQUEST).json({ error: "Indikator ID is required" });
-        // }
-        let id;
-        if (indikator_id && indikator_id.length > 0) {
-          id = indikator_id;
+        if (!indikator_id) {
+          return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ error: "Indikator ID is required" });
         }
         const reqRepo = {
           body: {
             surat_id: surat_id,
-            indikator_id: id,
+            indikator_id: indikator_id,
             from: `status_surat_controller/put_status.js`,
           },
         };

@@ -105,19 +105,16 @@ router.post(`/`, async (req, res) => {
                   model: PRODI,
                   as: "prodi",
                   attributes: ["id", "name"],
-                  // where: { id: prodi.id },
                 },
                 {
                   model: JABATAN,
                   as: "jabatan",
                   attributes: ["id", "name"],
-                  // where: { id: jabatan.id },
                 },
                 {
                   model: FAKULTAS,
                   as: "fakultas",
                   attributes: ["id", "name"],
-                  // where: { id: fakultas.id },
                 },
               ],
             },
@@ -146,7 +143,7 @@ router.post(`/`, async (req, res) => {
     { header: "JUDUL SURAT TUGAS", key: "judul_surat_tugas", width: 32 },
     { header: "PROGRAM STUDI", key: "program_studi", width: 30 },
     { header: "NOMOR IKU", key: "nomer_iku", width: 16 },
-    { header: "INDIKATOR 2024", key: "indikator", width: 60 },
+    { header: "INDIKATOR", key: "indikator", width: 60 },
     { header: "CATATAN", key: "catatan", width: 30 },
     { header: "LINK", key: "link", width: 35 },
   ];

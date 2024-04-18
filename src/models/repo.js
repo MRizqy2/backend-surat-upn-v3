@@ -26,7 +26,6 @@ module.exports = (sequelize, DataTypes) => {
       unix_code: DataTypes.STRING,
       indikator_id: {
         type: DataTypes.INTEGER,
-        // allowNull: false,
         references: {
           model: "INDIKATOR",
           key: "id",

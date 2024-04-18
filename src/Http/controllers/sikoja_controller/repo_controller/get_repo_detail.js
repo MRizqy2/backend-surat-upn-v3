@@ -56,33 +56,18 @@ const getRepoDetail = async (req, res) => {
           as: "surat",
           attributes: { exclude: [, "createdAt", "updatedAt"] },
           order: [["id", "ASC"]],
-          // where: {
-          //   // "$surat.status.status$": status,
-          //   ...whereClause,
-          // },
+
           include: [
             {
               model: STATUS,
               as: "status",
               attributes: ["status", "persetujuan"],
             },
-            // {
-            //   model: TAMPILAN,
-            //   as: "tampilan",
-            //   attributes: ["pin", "dibaca"],
-            //   // where: { jabatan_id: jabatan.id },
-            // },
             {
               model: JENIS_SURAT,
               as: "jenis",
               attributes: { exclude: ["createdAt", "updatedAt"] },
             },
-            // {
-            //   model: AKSES_SURAT,
-            //   as: "akses_surat",
-            //   attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-            //   // where: { jabatan_id: user.jabatan_id },
-            // },
             {
               model: KOMENTAR,
               as: "komentar",
@@ -114,19 +99,16 @@ const getRepoDetail = async (req, res) => {
                   model: PRODI,
                   as: "prodi",
                   attributes: ["id", "name"],
-                  // where: { id: prodi.id },
                 },
                 {
                   model: JABATAN,
                   as: "jabatan",
                   attributes: ["id", "name"],
-                  // where: { id: jabatan.id },
                 },
                 {
                   model: FAKULTAS,
                   as: "fakultas",
                   attributes: ["id", "name"],
-                  // where: { id: fakultas.id },
                 },
               ],
             },
