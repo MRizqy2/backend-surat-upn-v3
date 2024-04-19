@@ -8,6 +8,7 @@ const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
 const router = express.Router();
 const path = require("path");
 const { putRepo } = require("../../sikoja_controller/repo_controller/put_repo");
+const { getProgressBar } = require("./get_progress_bar");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -99,6 +100,17 @@ const putMulterTtd = async function (req, res) {
       },
     };
     await putRepo(reqRepo);
+
+    const progressBarRes = await getProgressBar(
+      {
+        query: {
+          surat_id: surat_id,
+          from: `daftar_surat_controller/multer_controller/post_multer_upload`,
+        },
+      },
+      {}
+    );
+    const progressBar = parseInt(progressBarRes.progressBar);
 
     return res
       .status(StatusCodes.CREATED)

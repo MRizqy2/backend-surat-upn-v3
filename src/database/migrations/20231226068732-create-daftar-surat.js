@@ -39,6 +39,9 @@ module.exports = {
       path: {
         type: Sequelize.STRING,
       },
+      progressBar: {
+        type: Sequelize.INTEGER,
+      },
       visible: {
         type: Sequelize.BOOLEAN,
       },

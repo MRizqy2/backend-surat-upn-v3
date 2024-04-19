@@ -14,7 +14,8 @@ const {
   postTampilan,
 } = require("../../tampilan_surat_controller/post_tampilan");
 const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
-const { send } = require("./../send_controller");
+const { send } = require("../send_controller");
+const { getProgressBar } = require("./get_progress_bar");
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -53,13 +54,14 @@ const postMulter = async function (req, res) {
       where: { id: user.jabatan_id },
     });
 
-    const daftar_surat = await DAFTAR_SURAT.create({
+    let daftar_surat = await DAFTAR_SURAT.create({
       judul: judulExt,
       jenis_id: jenis.id || "",
       user_id: req.token.id,
       deskripsi: deskripsi || "",
       tanggal: Date(),
       path: suratPath,
+      progressBar: 0,
       visible: true,
     });
 
@@ -71,6 +73,8 @@ const postMulter = async function (req, res) {
       },
     };
     const saveStatus = await postStatus(reqStatus);
+
+    // const surat_id = daftar_surat.id;
 
     const reqTampilan = {
       body: {
@@ -122,6 +126,24 @@ const postMulter = async function (req, res) {
       },
     };
     await postNotif(reqNotif);
+
+    const progressBarRes = await getProgressBar(
+      {
+        query: {
+          surat_id: daftar_surat.id,
+          from: `daftar_surat_controller/multer_controller/post_multer_upload`,
+        },
+      },
+      {}
+    );
+    // const progressBar = parseInt(progressBarRes.progressBar);
+    // daftar_surat = await DAFTAR_SURAT.update(
+    //   { progressBar },
+    //   {
+    //     where: { id: daftar_surat.id },
+    //     returning: true,
+    //   }
+    // );
 
     res
       .status(StatusCodes.CREATED)

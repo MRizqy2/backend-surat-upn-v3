@@ -74,6 +74,7 @@ module.exports = (sequelize, DataTypes) => {
       deskripsi: DataTypes.STRING,
       tanggal: DataTypes.DATE,
       path: DataTypes.STRING,
+      progressBar: DataTypes.INTEGER,
       visible: DataTypes.BOOLEAN,
     },
     {

@@ -25,7 +25,9 @@ const {
   postNomorSuratRevisi,
 } = require("../nomor_surat_controller/post_nomor_surat_revisi");
 const { postRepo } = require("../sikoja_controller/repo_controller/post_repo");
-
+const {
+  getProgressBar,
+} = require("../daftar_surat_controller/multer_controller/get_progress_bar");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -201,6 +203,24 @@ const putStatus = async (req, res) => {
         await postRepo(reqRepo);
       }
     }
+
+    const progressBarRes = await getProgressBar(
+      {
+        query: {
+          surat_id: surat_id,
+          from: `daftar_surat_controller/multer_controller/post_multer_upload`,
+        },
+      },
+      {}
+    );
+    // const progressBar = parseInt(progressBarRes.progressBar);
+    // await DAFTAR_SURAT.update(
+    //   { progressBar },
+    //   {
+    //     where: { id: surat_id },
+    //     returning: true,
+    //   }
+    // );
 
     if (req.body.from) {
       return updateStatus;
