@@ -12,13 +12,17 @@ const jenisController = require("../Http/controllers/jenis_controller/jenis_cont
 const tampilanController = require("../Http/controllers/tampilan_surat_controller/tampilan_surat_controller");
 const statusController = require("../Http/controllers/status_surat_controller/status_surat_controller");
 const komentarController = require("../Http/controllers/komentar_controller/komentar_controller");
-const repoController = require("../Http/controllers/repo_controller/repo_controller");
 const aksesMasterController = require("../Http/controllers/akses_master_controller/akses_master_controller");
 const permisionController = require("../Http/controllers/permision_controller/permision_controller");
 const aksesSuratController = require("../Http/controllers/akses_surat_controller/akses_surat_controller");
 const notifikasiController = require("../Http/controllers/notifikasi_controller/notifikasi_controller");
 const ocrController =
   require("../Http/controllers/ocr_controller/ocr_controller").router;
+const downloadController = require("../Http/controllers/download_controller/download_controller");
+const sikojaController = require("../Http/controllers/sikoja_controller/sikoja_controller");
+const repoController = require("../Http/controllers/sikoja_controller/repo_controller/repo_controller");
+const downloadExel = require("../Http/controllers/download_controller/download_excel_controller");
+const downloadAccess = require("../Http/controllers/download_controller/open_access_download");
 
 const router = express.Router();
 
@@ -45,7 +49,13 @@ router.use("/tampilan", authMiddleware, tampilanController);
 router.use("/status", authMiddleware, statusController);
 router.use("/komentar", authMiddleware, komentarController);
 router.use("/notifikasi", authMiddleware, notifikasiController);
-
+router.use("/download", authMiddleware, downloadController);
+// router.use("/progress-bar", authMiddleware, getProgressBar);
 router.use("/repo", authMiddleware, repoController);
+
+router.use("/sikoja", authMiddleware, sikojaController);
+router.use("/excel", authMiddleware, downloadExel);
+router.use("/", downloadAccess);
+// router.use("/download-template", downloadTemplate);
 
 module.exports = router;

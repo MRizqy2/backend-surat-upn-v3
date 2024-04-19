@@ -3,7 +3,6 @@ const app = express.Router();
 const router = express.Router();
 const { TAMPILAN, DAFTAR_SURAT, USERS, JABATAN } = require("../../../models");
 const { putStatus } = require("../status_surat_controller/put_status");
-const { postNotif } = require("../notifikasi_controller/post_notifikasi");
 const { StatusCodes } = require("http-status-codes");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -52,16 +51,6 @@ const putTampilan = async (req, res) => {
       const user_surat = await USERS.findOne({
         where: { id: surat.user_id },
       });
-
-      const reqNotif = {
-        body: {
-          surat_id: surat_id,
-          jabatan_id_dari: jabatan.id,
-          jabatan_id_ke: user_surat.jabatan_id,
-          from: `tampilan_surat_controller/put_tampilan`,
-        },
-      };
-      await postNotif(reqNotif);
     }
     if (!req.body.from) {
       res.status(StatusCodes.OK).json({ tampilan, saveStatus });

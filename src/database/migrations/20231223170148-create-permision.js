@@ -34,6 +34,9 @@ module.exports = {
       persetujuan: {
         type: Sequelize.BOOLEAN,
       },
+      tagging: {
+        type: Sequelize.BOOLEAN,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

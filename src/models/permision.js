@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       generate_nomor_surat: DataTypes.BOOLEAN,
       upload_tandatangan: DataTypes.BOOLEAN,
       persetujuan: DataTypes.BOOLEAN,
+      tagging: DataTypes.BOOLEAN,
     },
     {
       sequelize,

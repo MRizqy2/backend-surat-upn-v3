@@ -29,7 +29,6 @@ module.exports = {
         {
           id: 5,
           name: "Admin Dekan",
-          // jabatan_atas_id: ,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

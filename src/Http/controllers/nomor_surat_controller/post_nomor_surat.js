@@ -11,12 +11,11 @@ const {
 } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 const { OCR } = require("./../ocr_controller/ocr_controller");
-// const { repo } = require("./../repo_controller/repo_controller");
 const router = express.Router();
 
 const postNomorSurat = async (req, res) => {
   try {
-    const { surat_id } = req.body;
+    const { surat_id, indikator_id } = req.body;
 
     let nomor;
     let nomor_surat;
@@ -157,13 +156,6 @@ const postNomorSurat = async (req, res) => {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Failed to save OCR" });
     }
-    // const reqRepo = {
-    //   save: {
-    //     surat_id: saveNomorSurat.surat_id,
-    //     from: `nomor_surat_controller`,
-    //   },
-    // };
-    // const saveRepo = await repo(reqRepo);
 
     if (saveNomorSurat && saveOcr) {
       return (res = { message: "Success", saveNomorSurat, saveOcr });

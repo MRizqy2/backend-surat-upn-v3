@@ -7,6 +7,7 @@ const {
   JABATAN,
   PERMISION,
   REVISI,
+  NOMOR_SURAT,
 } = require("../../../models");
 const catchStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
@@ -23,14 +24,17 @@ const {
 const {
   postNomorSuratRevisi,
 } = require("../nomor_surat_controller/post_nomor_surat_revisi");
-
+const { postRepo } = require("../sikoja_controller/repo_controller/post_repo");
+const {
+  getProgressBar,
+} = require("../daftar_surat_controller/multer_controller/get_progress_bar");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const putStatus = async (req, res) => {
   try {
-    let reqTampilan, updateStatus, reqStatus;
-    const { persetujuan, status } = req.body;
+    let reqTampilan, updateStatus, reqStatus, reqNomorSuratRevisi;
+    const { persetujuan, status, indikator_id } = req.body;
     const { surat_id } = req.query;
 
     const user = await USERS.findOne({
@@ -42,6 +46,9 @@ const putStatus = async (req, res) => {
 
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
+    });
+    const user_surat = await USERS.findOne({
+      where: { id: surat.user_id },
     });
     const status_surat = await STATUS.findOne({
       where: { surat_id: surat.id },
@@ -104,6 +111,18 @@ const putStatus = async (req, res) => {
       );
     }
 
+    const reqNotif = {
+      body: {
+        surat_id: surat_id,
+        jabatan_id_dari: jabatan.id,
+        jabatan_id_ke: user_surat.jabatan_id,
+        isSign: false,
+        persetujuan: persetujuan,
+        from: `status_surat_controller/put_status`,
+      },
+    };
+    await postNotif(reqNotif);
+
     if (persetujuan && persetujuan.toLowerCase().includes("disetujui")) {
       if (jabatan.jabatan_atas_id) {
         reqTampilan = {
@@ -123,45 +142,85 @@ const putStatus = async (req, res) => {
           },
         };
         await postAksesSurat(reqAkses);
-        const reqNotif = {
+        const reqNotif2 = {
           body: {
             surat_id: surat_id,
             jabatan_id_dari: jabatan.id,
             jabatan_id_ke: jabatan.jabatan_atas_id,
+            isSign: false,
+            persetujuan: false,
             from: `status_surat_controller/put_status`,
           },
         };
-        await postNotif(reqNotif);
+        await postNotif(reqNotif2);
       }
 
       const permision = await PERMISION.findOne({
         where: { jabatan_id: jabatan.id },
       });
       if (permision.generate_nomor_surat) {
-        const surat_revisi = await REVISI.findOne({
+        let surat_revisi = await REVISI.findOne({
           where: { surat_id_baru: surat_id },
         });
-        if (!surat_revisi) {
+
+        let nomor_surat = null;
+        let i = 0,
+          j = 0;
+        if (surat_revisi) {
+          do {
+            if (surat_revisi) {
+              nomor_surat = await NOMOR_SURAT.findOne({
+                where: { surat_id: surat_revisi.surat_id_lama },
+              });
+            }
+            if (!surat_revisi) {
+              break;
+            }
+            surat_revisi = await REVISI.findOne({
+              where: { surat_id_baru: surat_revisi?.surat_id_lama || 0 },
+            });
+          } while (!nomor_surat);
+        }
+        if (!surat_revisi || (!surat_revisi && !nomor_surat)) {
           await postNomorSurat(reqTampilan);
-        } else if (surat_revisi) {
+        } else {
           await postNomorSuratRevisi(reqTampilan);
         }
-      } //surat_id
+      }
+      if (permision.tagging) {
+        if (!indikator_id) {
+          return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ error: "Indikator ID is required" });
+        }
+        const reqRepo = {
+          body: {
+            surat_id: surat_id,
+            indikator_id: indikator_id,
+            from: `status_surat_controller/put_status.js`,
+          },
+        };
+        await postRepo(reqRepo);
+      }
     }
-    if (persetujuan && persetujuan.toLowerCase().includes("ditolak")) {
-      const user_surat = await USERS.findOne({
-        where: { id: surat.user_id },
-      });
-      const reqNotif = {
-        body: {
+
+    const progressBarRes = await getProgressBar(
+      {
+        query: {
           surat_id: surat_id,
-          jabatan_id_dari: jabatan.id,
-          jabatan_id_ke: user_surat.jabatan_id,
-          from: `status_surat_controller/put_status`,
+          from: `daftar_surat_controller/multer_controller/post_multer_upload`,
         },
-      };
-      await postNotif(reqNotif);
-    }
+      },
+      {}
+    );
+    // const progressBar = parseInt(progressBarRes.progressBar);
+    // await DAFTAR_SURAT.update(
+    //   { progressBar },
+    //   {
+    //     where: { id: surat_id },
+    //     returning: true,
+    //   }
+    // );
 
     if (req.body.from) {
       return updateStatus;

@@ -9,13 +9,13 @@ const deleteAksesSurat = async (req, res) => {
 
     const whereClause = {};
 
-    if (req.query && akses_surat_id !== undefined) {
+    if (req.query && akses_surat_id) {
       whereClause.id = akses_surat_id;
     }
-    if (req.query && surat_id !== undefined) {
+    if (req.query && surat_id) {
       whereClause.surat_id = surat_id;
     }
-    if (req.query && jabatan_id !== undefined) {
+    if (req.query && jabatan_id) {
       whereClause.jabatan_id = jabatan_id;
     }
 

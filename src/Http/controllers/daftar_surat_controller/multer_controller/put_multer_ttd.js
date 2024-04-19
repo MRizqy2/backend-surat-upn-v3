@@ -6,15 +6,15 @@ const crypto = require("crypto");
 const { putStatus } = require("../../status_surat_controller/put_status");
 const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
 const router = express.Router();
+const path = require("path");
+const { putRepo } = require("../../sikoja_controller/repo_controller/put_repo");
+const { getProgressBar } = require("./get_progress_bar");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const isThumbnail = file.fieldname === "thumbnail";
-    const destinationPath = isThumbnail
-      ? "daftar_surat/thumbnail/"
-      : "daftar_surat/";
+    const destination = "daftar_surat/";
 
-    cb(null, destinationPath);
+    cb(null, destination);
   },
 
   filename: async function (req, file, cb) {
@@ -23,10 +23,10 @@ const storage = multer.diskStorage({
       where: { id: req.query.surat_id },
     });
 
-    const judul = data_surat.judul;
+    const judul = path.extname(data_surat.judul);
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
-    const filename = `${randomString}-${timestamp}-${judul}`;
+    const filename = `${randomString}-${timestamp}${judul}`;
     cb(null, filename);
   },
 });
@@ -41,12 +41,10 @@ const putMulterTtd = async function (req, res) {
         .status(StatusCodes.BAD_REQUEST)
         .json({ error: "Missing files in request" });
     }
-    const thumbnailUrl = "";
-    const suratUrl = `${req.files["surat"][0].filename}`;
-
-    const downloadUrl = `${
-      process.env.NGROK
-    }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;
+    const suratFile = req.files["surat"][0];
+    const suratPath = path
+      .join(suratFile.destination, suratFile.filename)
+      .replaceAll(" ", "%20");
 
     const data_surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
@@ -63,8 +61,7 @@ const putMulterTtd = async function (req, res) {
     });
     const updateSurat = await DAFTAR_SURAT.update(
       {
-        url: downloadUrl,
-        thumbnail: thumbnailUrl || "",
+        path: suratPath,
       },
       {
         where: { id: surat_id }, // Gantilah dengan kriteria yang sesuai
@@ -90,10 +87,30 @@ const putMulterTtd = async function (req, res) {
         surat_id: data_surat.id,
         jabatan_id_dari: user.jabatan_id,
         jabatan_id_ke: user_surat.jabatan_id,
+        isSign: true,
+        persetujuan: false,
         from: `daftar_surat_controller/multer_controller/put_multer_ttd`,
       },
     };
     await postNotif(reqNotif);
+    const reqRepo = {
+      query: {
+        surat_id: surat_id,
+        from: "daftar_surat_controller/multer_controller/put_multer_ttd",
+      },
+    };
+    await putRepo(reqRepo);
+
+    const progressBarRes = await getProgressBar(
+      {
+        query: {
+          surat_id: surat_id,
+          from: `daftar_surat_controller/multer_controller/post_multer_upload`,
+        },
+      },
+      {}
+    );
+    const progressBar = parseInt(progressBarRes.progressBar);
 
     return res
       .status(StatusCodes.CREATED)
@@ -106,13 +123,6 @@ const putMulterTtd = async function (req, res) {
   }
 };
 
-router.put(
-  "/",
-  upload.fields([
-    { name: "surat", maxCount: 1 },
-    { name: "thumbnail", maxCount: 1 },
-  ]),
-  putMulterTtd
-);
+router.put("/", upload.fields([{ name: "surat", maxCount: 1 }]), putMulterTtd);
 
 module.exports = router;

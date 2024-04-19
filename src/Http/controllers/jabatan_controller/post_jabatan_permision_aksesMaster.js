@@ -18,6 +18,7 @@ const postJabatanPermisionAksesMaster = async (req, res) => {
     generate_nomor_surat,
     upload_tandatangan,
     persetujuan,
+    tagging,
     // req akses master
     prodi,
     template,
@@ -25,9 +26,10 @@ const postJabatanPermisionAksesMaster = async (req, res) => {
     fakultas,
     jabatan,
     jenis_surat,
+    sikoja,
   } = req.body;
   try {
-    const latestJabatan = await JABATANfindOne({
+    const latestJabatan = await JABATAN.findOne({
       order: [["id", "DESC"]],
     });
     // Tentukan ID yang baru
@@ -51,6 +53,7 @@ const postJabatanPermisionAksesMaster = async (req, res) => {
         generate_nomor_surat,
         upload_tandatangan,
         persetujuan,
+        tagging,
       },
     };
     const savePermision = await postPermision(reqPermision);
@@ -65,6 +68,7 @@ const postJabatanPermisionAksesMaster = async (req, res) => {
         fakultas,
         jabatan,
         jenis_surat,
+        sikoja,
       },
     };
     const saveAksesMaster = await postAksesMaster(reqAksesMaster);

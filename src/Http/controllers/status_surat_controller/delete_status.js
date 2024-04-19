@@ -8,10 +8,10 @@ const deleteStatus = async (req, res) => {
     const { status_id, surat_id } = req.query;
 
     const whereClause = {};
-    if (req.query && status_id !== undefined) {
+    if (req.query && status_id) {
       whereClause.id = status_id;
     }
-    if (req.query && surat_id !== undefined) {
+    if (req.query && surat_id) {
       whereClause.surat_id = surat_id;
     }
 
@@ -29,9 +29,7 @@ const deleteStatus = async (req, res) => {
       }
     } else {
       if (res) {
-        res
-          .status(StatusCodes.NOT_FOUND)
-          .json({ error: "Akses Surat not found" });
+        res.status(StatusCodes.NOT_FOUND).json({ error: "Status not found" });
       }
     }
   } catch (error) {

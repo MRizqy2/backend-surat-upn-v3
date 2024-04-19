@@ -1,5 +1,5 @@
 // fusion of post word and get koor
-const { PDFDocument, rgb } = require("pdf-lib");
+const { PDFDocument, rgb, StandardFonts } = require("pdf-lib");
 const fs = require("fs");
 const { PythonShell } = require("python-shell");
 
@@ -48,7 +48,8 @@ async function changeTextInPdfV2(inputPath, outputPath, searchText, newText) {
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const pages = pdfDoc.getPages();
     const coordinate = await getCoordinate(inputPath, searchText, pages.length);
-    const fontSize = 11;
+    const font = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    const fontSize = 12;
     const backgroundColor = rgb(1, 1, 1);
     const textWidth = newText.length * fontSize * 0.6;
     const textHeight = fontSize;
@@ -72,6 +73,7 @@ async function changeTextInPdfV2(inputPath, outputPath, searchText, newText) {
           y: y,
           size: fontSize,
           color: rgb(0, 0, 0),
+          font: font,
         });
       }
     }

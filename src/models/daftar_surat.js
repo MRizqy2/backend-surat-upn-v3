@@ -44,12 +44,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "surat_id_baru",
         as: "surat_id_new",
       });
+      DAFTAR_SURAT.hasMany(models.PERBAIKAN, {
+        foreignKey: "surat_id",
+        as: "perbaikan",
+      });
     }
   }
   DAFTAR_SURAT.init(
     {
       judul: DataTypes.STRING,
-      thumbnail: DataTypes.STRING,
       jenis_id: {
         type: DataTypes.INTEGER,
         references: {
@@ -70,7 +73,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       deskripsi: DataTypes.STRING,
       tanggal: DataTypes.DATE,
-      url: DataTypes.STRING,
+      path: DataTypes.STRING,
+      progressBar: DataTypes.INTEGER,
+      visible: DataTypes.BOOLEAN,
     },
     {
       sequelize,

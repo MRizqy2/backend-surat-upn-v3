@@ -14,25 +14,21 @@ const {
   postTampilan,
 } = require("../../tampilan_surat_controller/post_tampilan");
 const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
-const { send } = require("./../send_controller");
+const { send } = require("../send_controller");
+const { getProgressBar } = require("./get_progress_bar");
 const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const isThumbnail = file.fieldname === "thumbnail";
-    const destinationPath = isThumbnail
-      ? "daftar_surat/thumbnail/"
-      : "daftar_surat/";
+    const destination = "daftar_surat/";
 
-    cb(null, destinationPath);
+    cb(null, destination);
   },
 
   filename: function (req, file, cb) {
-    // Gunakan judul sebagai nama file
-    const judul = req.body.judul || "default";
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
-    const filename = `${randomString}-${timestamp}-${judul}${path.extname(
+    const filename = `${randomString}-${timestamp}${path.extname(
       file.originalname
     )}`;
     cb(null, filename);
@@ -45,12 +41,8 @@ const postMulter = async function (req, res) {
   try {
     const { judul, jenis_id, deskripsi } = req.body;
     const suratFile = req.files["surat"][0];
-    const thumbnailUrl = "";
     const judulExt = judul + path.extname(suratFile.originalname);
-    const suratUrl = `${suratFile.filename}`;
-    const downloadUrl = `${
-      process.env.NGROK
-    }/daftar-surat/multer/download/${encodeURIComponent(suratUrl)}`;
+    const suratPath = path.join(suratFile.destination, suratFile.filename);
     const jenis = await JENIS_SURAT.findOne({
       where: { id: jenis_id },
     });
@@ -62,14 +54,15 @@ const postMulter = async function (req, res) {
       where: { id: user.jabatan_id },
     });
 
-    const daftar_surat = await DAFTAR_SURAT.create({
+    let daftar_surat = await DAFTAR_SURAT.create({
       judul: judulExt,
-      thumbnail: thumbnailUrl || "",
       jenis_id: jenis.id || "",
       user_id: req.token.id,
       deskripsi: deskripsi || "",
       tanggal: Date(),
-      url: downloadUrl,
+      path: suratPath,
+      progressBar: 0,
+      visible: true,
     });
 
     const reqStatus = {
@@ -80,6 +73,8 @@ const postMulter = async function (req, res) {
       },
     };
     const saveStatus = await postStatus(reqStatus);
+
+    // const surat_id = daftar_surat.id;
 
     const reqTampilan = {
       body: {
@@ -105,30 +100,50 @@ const postMulter = async function (req, res) {
     reqSend = {
       body: {
         surat_id: daftar_surat.id,
-        jabatan_id: jabatan.jabatan_atas_id,
-        from: `daftar_surat_controller/multer_controller/post_multer_upload`,
-      },
-    };
-    await send(reqSend); //akses
-
-    reqSend = {
-      body: {
-        surat_id: daftar_surat.id,
         jabatan_id: jabatan.id,
         from: `daftar_surat_controller/multer_controller/post_multer_upload`,
       },
     };
     await send(reqSend);
 
+    reqSend = {
+      body: {
+        surat_id: daftar_surat.id,
+        jabatan_id: jabatan.jabatan_atas_id,
+        from: `daftar_surat_controller/multer_controller/post_multer_upload`,
+      },
+    };
+    await send(reqSend); //akses
+
     const reqNotif = {
       body: {
         surat_id: daftar_surat.id,
         jabatan_id_dari: jabatan.id,
         jabatan_id_ke: jabatan.jabatan_atas_id,
+        isSign: null,
+        persetujuan: null,
         from: `daftar_surat_controller/multer_controller/post_multer_upload`,
       },
     };
     await postNotif(reqNotif);
+
+    const progressBarRes = await getProgressBar(
+      {
+        query: {
+          surat_id: daftar_surat.id,
+          from: `daftar_surat_controller/multer_controller/post_multer_upload`,
+        },
+      },
+      {}
+    );
+    // const progressBar = parseInt(progressBarRes.progressBar);
+    // daftar_surat = await DAFTAR_SURAT.update(
+    //   { progressBar },
+    //   {
+    //     where: { id: daftar_surat.id },
+    //     returning: true,
+    //   }
+    // );
 
     res
       .status(StatusCodes.CREATED)
@@ -138,13 +153,6 @@ const postMulter = async function (req, res) {
   }
 };
 
-router.post(
-  "/",
-  upload.fields([
-    { name: "surat", maxCount: 1 },
-    { name: "thumbnail", maxCount: 1 },
-  ]),
-  postMulter
-);
+router.post("/", upload.fields([{ name: "surat", maxCount: 1 }]), postMulter);
 
 module.exports = router;

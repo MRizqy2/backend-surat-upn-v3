@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       fakultas: DataTypes.BOOLEAN,
       jabatan: DataTypes.BOOLEAN,
       jenis_surat: DataTypes.BOOLEAN,
+      sikoja: DataTypes.BOOLEAN,
     },
     {
       sequelize,

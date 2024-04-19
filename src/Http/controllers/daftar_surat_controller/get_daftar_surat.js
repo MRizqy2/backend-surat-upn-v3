@@ -13,6 +13,7 @@ const {
   KOMENTAR,
   NOMOR_SURAT,
   PERIODE,
+  PERBAIKAN,
 } = require("../../../models");
 const { Op } = require("sequelize");
 
@@ -22,6 +23,8 @@ router.use(express.urlencoded({ extended: true }));
 const getDaftarSurat = async (req, res) => {
   let surat;
   const { startDate, endDate } = req.query;
+  const { repo } = req.query;
+  const { prodi_id } = req.query;
 
   let dateFilter = {};
   if (startDate) {
@@ -68,6 +71,7 @@ const getDaftarSurat = async (req, res) => {
   }
 
   if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
+    //super admin
     surat = await DAFTAR_SURAT.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
       where: {
@@ -130,10 +134,11 @@ const getDaftarSurat = async (req, res) => {
     });
   } else if (!prodi.id || prodi.name == `-` || prodi.id == 1) {
     surat = await DAFTAR_SURAT.findAll({
-      //by fakultas
+      //by fakultas / bukan oleh prodi
       attributes: { exclude: ["createdAt", "updatedAt"] },
       where: {
         ...whereClause,
+        visible: true,
       },
       include: [
         {
@@ -161,6 +166,12 @@ const getDaftarSurat = async (req, res) => {
         {
           model: KOMENTAR,
           as: "komentar",
+          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
+        },
+        {
+          model: PERBAIKAN,
+          as: "perbaikan",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
           required: false,
         },
@@ -209,6 +220,7 @@ const getDaftarSurat = async (req, res) => {
       where: {
         "$user.prodi.id$": prodi.id,
         ...whereClause,
+        visible: true,
       },
       include: [
         {
@@ -237,6 +249,13 @@ const getDaftarSurat = async (req, res) => {
           model: KOMENTAR,
           as: "komentar",
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
+        },
+        {
+          model: PERBAIKAN,
+          as: "perbaikan",
+          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          required: false,
         },
         {
           model: NOMOR_SURAT,
@@ -279,6 +298,16 @@ const getDaftarSurat = async (req, res) => {
       order: [["id", "ASC"]],
     });
   }
+
+  // for (let i = 0; i < surat.length; i++) {
+  //   const surat_id = surat[i].id;
+  //   const progressBarRes = await getProgressBar(
+  //     { query: { surat_id, from: `daftar_surat_controller/get_daftar-surat` } },
+  //     {}
+  //   );
+  //   surat[i].dataValues.progressBar = progressBarRes.progressBar;
+  // }
+
   res.json(surat);
 };
 

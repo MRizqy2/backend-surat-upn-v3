@@ -2,15 +2,39 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class REPO extends Model {
-    static associate(models) {}
+    static associate(models) {
+      REPO.belongsTo(models.DAFTAR_SURAT, {
+        foreignKey: "surat_id",
+        as: "surat",
+      });
+      REPO.belongsTo(models.INDIKATOR, {
+        foreignKey: "indikator_id",
+        as: "indikator",
+      });
+    }
   }
   REPO.init(
     {
-      judul: DataTypes.STRING,
-      jenis: DataTypes.STRING,
-      data_user: DataTypes.STRING,
-      tanggal: DataTypes.DATE,
-      url: DataTypes.STRING,
+      surat_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "DAFTAR_SURAT",
+          key: "id",
+        },
+      },
+      unix_code: DataTypes.STRING,
+      indikator_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "INDIKATOR",
+          key: "id",
+        },
+      },
+      visible: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,

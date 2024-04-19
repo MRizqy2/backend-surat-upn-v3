@@ -12,12 +12,8 @@ module.exports = {
       judul: {
         type: Sequelize.STRING,
       },
-      thumbnail: {
-        type: Sequelize.STRING,
-      },
       jenis_id: {
         type: Sequelize.INTEGER,
-        // allowNull: false,
         references: {
           model: "JENIS_SURATS",
           key: "id",
@@ -27,7 +23,6 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.INTEGER,
-        // allowNull: false,
         references: {
           model: "USERS",
           key: "id",
@@ -41,8 +36,14 @@ module.exports = {
       tanggal: {
         type: Sequelize.DATE,
       },
-      url: {
+      path: {
         type: Sequelize.STRING,
+      },
+      progressBar: {
+        type: Sequelize.INTEGER,
+      },
+      visible: {
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,

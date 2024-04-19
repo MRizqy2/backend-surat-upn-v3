@@ -5,7 +5,7 @@ const router = express.Router();
 
 const putAksesMaster = async (req, res) => {
   try {
-    const { prodi, template, periode, fakultas, jabatan, jenis_surat } =
+    const { prodi, template, periode, fakultas, jabatan, jenis_surat, sikoja } =
       req.body;
     const { jabatan_id } = req.query;
     if (!jabatan_id) {
@@ -35,6 +35,7 @@ const putAksesMaster = async (req, res) => {
         fakultas,
         jabatan,
         jenis_surat,
+        sikoja,
       },
       {
         where: { id: akses_master.id },

@@ -20,9 +20,9 @@ const OCR = async (req, res) => {
         .json({ error: "Daftar Surat not found" });
     }
 
-    const fileName = decodeURIComponent(surat.url.split("/").pop());
-
-    const fileBuffer = fs.readFileSync(`daftar_surat/${fileName}`);
+    // const fileName = decodeURIComponent(surat.path.split("\\").pop()).slice("/".pop());
+    const fileName = decodeURIComponent(surat.path.split("\\").pop());
+    const fileBuffer = fs.readFileSync(decodeURIComponent(surat.path));
 
     const tempDir = path.resolve("daftar_surat/");
     // Check if the directory exists
@@ -42,9 +42,6 @@ const OCR = async (req, res) => {
 
     let fileNameWithoutExtension = fileName;
 
-    if (!fileName.endsWith("-acc.pdf")) {
-      fileNameWithoutExtension = fileName.replace(".pdf", "-acc.pdf"); // Ganti ekstensi .pdf dengan -acc.pdf
-    }
     const outputPath = path.join(tempDir, fileNameWithoutExtension);
 
     const searchText = "XYXY";

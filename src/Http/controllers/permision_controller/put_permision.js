@@ -11,6 +11,7 @@ const putPermision = async (req, res) => {
       generate_nomor_surat,
       upload_tandatangan,
       persetujuan,
+      tagging,
     } = req.body;
     const { jabatan_id } = req.query;
     if (!jabatan_id) {
@@ -26,13 +27,14 @@ const putPermision = async (req, res) => {
     if (!permision) {
       return res.status(404).json({ error: "Permision not found" });
     }
-    const permision_update = await Permision.update(
+    const permision_update = await PERMISION.update(
       {
         buat_surat,
         download_surat,
         generate_nomor_surat,
         upload_tandatangan,
         persetujuan,
+        tagging,
       },
       {
         where: { jabatan_id: permision.jabatan_id },
