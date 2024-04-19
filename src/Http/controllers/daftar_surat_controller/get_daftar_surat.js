@@ -16,9 +16,6 @@ const {
   PERBAIKAN,
 } = require("../../../models");
 const { Op } = require("sequelize");
-const {
-  getProgressBar,
-} = require("../progress_bar_controller/get_progress_bar");
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
