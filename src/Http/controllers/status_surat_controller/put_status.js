@@ -213,14 +213,6 @@ const putStatus = async (req, res) => {
       },
       {}
     );
-    // const progressBar = parseInt(progressBarRes.progressBar);
-    // await DAFTAR_SURAT.update(
-    //   { progressBar },
-    //   {
-    //     where: { id: surat_id },
-    //     returning: true,
-    //   }
-    // );
 
     if (req.body.from) {
       return updateStatus;

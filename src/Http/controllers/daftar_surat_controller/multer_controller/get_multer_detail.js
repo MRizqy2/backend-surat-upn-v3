@@ -16,9 +16,6 @@ const {
   TAMPILAN,
   PERBAIKAN,
 } = require("../../../../models");
-// const {
-//   getProgressBar,
-// } = require("../../progress_bar_controller/get_progress_bar");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -207,14 +204,6 @@ const getDaftarSurat = async (req, res) => {
     ],
     order: [["id", "ASC"]],
   });
-
-  // const progressBarRes = await getProgressBar(
-  //   { query: { surat_id, from: `daftar_surat_controller/get_daftar-surat` } },
-  //   {}
-  // );
-  // if (surat) {
-  //   surat.dataValues.progressBar = progressBarRes.progressBar;
-  // }
 
   res.status(200).json({ surat, revisi }); //okee
 };

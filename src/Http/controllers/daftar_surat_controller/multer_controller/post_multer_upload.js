@@ -74,8 +74,6 @@ const postMulter = async function (req, res) {
     };
     const saveStatus = await postStatus(reqStatus);
 
-    // const surat_id = daftar_surat.id;
-
     const reqTampilan = {
       body: {
         jabatan_id: jabatan.id,
@@ -136,14 +134,6 @@ const postMulter = async function (req, res) {
       },
       {}
     );
-    // const progressBar = parseInt(progressBarRes.progressBar);
-    // daftar_surat = await DAFTAR_SURAT.update(
-    //   { progressBar },
-    //   {
-    //     where: { id: daftar_surat.id },
-    //     returning: true,
-    //   }
-    // );
 
     res
       .status(StatusCodes.CREATED)

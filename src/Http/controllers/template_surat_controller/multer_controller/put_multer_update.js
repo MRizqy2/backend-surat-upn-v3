@@ -1,5 +1,5 @@
-const multer = require("multer");
 const express = require("express");
+const multer = require("multer");
 const path = require("path");
 const { TEMPLATE_SURAT, JENIS_SURAT } = require("../../../../models");
 const { StatusCodes } = require("http-status-codes");
@@ -15,27 +15,31 @@ router.use(express.urlencoded({ extended: true }));
 // Konfigurasi Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
+    console.log("tes1");
     const destination = "template_surat/";
 
     cb(null, destination);
   },
   filename: function (req, file, cb) {
     // Gunakan judul sebagai nama file
-
+    console.log("tes3");
     const judul = req.body.judul || "default";
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
-    const filename = `${randomString}-${timestamp}-${judul}${path.extname(
+    const filename = `${randomString}-${timestamp}${path.extname(
       file.originalname
     )}`;
     cb(null, filename);
+    console.log("tes4");
   },
 });
+// console.log("tes5");
 const upload = multer({ storage: storage });
 
 // Route untuk endpoint /multer
 const putMulter = async function (req, res) {
   try {
+    console.log("tes2");
     const { judul, deskripsi, jenis_id } = req.body;
     const { template_id } = req.query;
     let suratFile, suratPath, judulEx;
@@ -75,7 +79,7 @@ const putMulter = async function (req, res) {
     const jenis = await JENIS_SURAT.findOne({
       where: whereClause,
     });
-
+    console.log("template_id", template_id);
     const template_surat = await TEMPLATE_SURAT.update(
       {
         judul: judulEx || data_template_surat.judul,
