@@ -21,7 +21,7 @@ const OCR = async (req, res) => {
     }
 
     // const fileName = decodeURIComponent(surat.path.split("\\").pop()).slice("/".pop());
-    const fileName = decodeURIComponent(surat.path.split("\\").pop());
+    const fileName = decodeURIComponent(surat.path.split("/").pop());
     const fileBuffer = fs.readFileSync(decodeURIComponent(surat.path));
 
     const tempDir = path.resolve("daftar_surat/");

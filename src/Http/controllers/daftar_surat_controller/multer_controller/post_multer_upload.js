@@ -1,4 +1,5 @@
 const express = require("express");
+const router = express();
 const {
   DAFTAR_SURAT,
   JABATAN,
@@ -16,7 +17,11 @@ const {
 const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
 const { send } = require("../send_controller");
 const { getProgressBar } = require("./get_progress_bar");
-const router = express.Router();
+
+const { createServer } = require("node:http");
+const { Server } = require("socket.io");
+const server = createServer(router);
+const io = new Server(server);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -134,6 +139,19 @@ const postMulter = async function (req, res) {
       },
       {}
     );
+
+    io.on("connection", (socket) => {
+      console.log("Client connected");
+
+      // Setelah selesai, Anda bisa mengirim pesan balasan ke frontend jika diperlukan
+      io.emit("data-from-backend", {
+        message: "update tabel surat",
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Client disconnected");
+      });
+    });
 
     res
       .status(StatusCodes.CREATED)

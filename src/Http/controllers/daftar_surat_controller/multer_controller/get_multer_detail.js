@@ -205,7 +205,7 @@ const getDaftarSurat = async (req, res) => {
     order: [["id", "ASC"]],
   });
 
-  res.status(200).json({ surat, revisi }); //okee
+  res.status(200).json({ surat, revisi });
 };
 
 router.get("/", getDaftarSurat);
