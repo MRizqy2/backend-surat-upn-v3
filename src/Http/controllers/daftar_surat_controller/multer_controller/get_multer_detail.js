@@ -31,7 +31,7 @@ const getDaftarSurat = async (req, res) => {
     return res.status(404).json("Surat not found");
   }
 
-  if (user.fakultas_id !== 1) {
+  if (user.fakultas_id !== 1 || user.prodi !== 1) {
     surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
       attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -41,12 +41,12 @@ const getDaftarSurat = async (req, res) => {
           as: "status",
           attributes: ["status", "persetujuan"],
         },
-        {
-          model: TAMPILAN,
-          as: "tampilan",
-          attributes: ["pin", "dibaca"],
-          where: { jabatan_id: user.jabatan_id },
-        },
+        // {
+        //   model: TAMPILAN,
+        //   as: "tampilan",
+        //   attributes: ["pin", "dibaca"],
+        //   where: { jabatan_id: user.jabatan_id },
+        // },
         {
           model: JENIS_SURAT,
           as: "jenis",

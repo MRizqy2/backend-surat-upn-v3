@@ -229,10 +229,10 @@ const getDaftarSurat = async (req, res) => {
           attributes: ["status", "persetujuan"],
         },
         // {
-        //   model: TAMPILAN,
-        //   as: "tampilan",
-        //   attributes: ["pin", "dibaca"],
-        //   // where: { jabatan_id: jabatan.id },
+        // model: TAMPILAN,
+        // as: "tampilan",
+        // attributes: ["pin", "dibaca"],
+        // where: { jabatan_id: jabatan.id },
         // },
         {
           model: JENIS_SURAT,
@@ -240,10 +240,10 @@ const getDaftarSurat = async (req, res) => {
           attributes: { exclude: ["createdAt", "updatedAt"] },
         },
         // {
-        //   model: AKSES_SURAT,
-        //   as: "akses_surat",
-        //   attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-        //   where: { jabatan_id: user.jabatan_id },
+        // model: AKSES_SURAT,
+        // as: "akses_surat",
+        // attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+        // where: { jabatan_id: user.jabatan_id },
         // },
         {
           model: KOMENTAR,
