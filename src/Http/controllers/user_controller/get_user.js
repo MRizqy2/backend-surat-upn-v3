@@ -2,6 +2,7 @@ const express = require("express");
 const { USERS, JABATAN, FAKULTAS, PRODI } = require("../../../models");
 const router = express.Router();
 const { StatusCodes } = require("http-status-codes");
+const { Op } = require("sequelize");
 
 const getUser = async (req, res) => {
   try {
@@ -9,6 +10,11 @@ const getUser = async (req, res) => {
     let user;
     if (!user_id) {
       user = await USERS.findAll({
+        where: {
+          id: {
+            [Op.ne]: 1,
+          },
+        },
         include: [
           {
             model: PRODI,
