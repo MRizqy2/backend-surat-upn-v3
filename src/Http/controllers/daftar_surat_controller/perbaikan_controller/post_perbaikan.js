@@ -154,7 +154,7 @@ const postPerbaikan = async function (req, res) {
     const progressBarRes = await getProgressBar(
       {
         query: {
-          surat_id: daftar_surat.id,
+          surat_id: suratBaru.id,
           from: `daftar_surat_controller/multer_controller/post_multer_upload`,
         },
       },
