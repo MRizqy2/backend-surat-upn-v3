@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  DAFTAR_SURAT.init(
+  DAFTAR_SURAT.init( 
     {
       judul: DataTypes.STRING,
       jenis_id: {
