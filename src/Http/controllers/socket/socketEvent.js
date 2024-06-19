@@ -1,17 +1,39 @@
 const express = require("express");
 const router = express.Router();
+const { NOTIFIKASI, USERS } = require("../../../models");
 
-router.post("/api/socket-event", (req, res) => {
-  const io = req.io; // Get io instance from request
-  const { api, dataServer, isForAll, idClient } = req.body;
+router.post("/api/socket-event", async (req, res) => {
+  try {
+    const io = req.io; // Get io instance from request
+    const { api, dataServer, isForAll } = req.body;
+    console.log(io);
+    // const { idClient } = io.id
 
-  if (isForAll) {
-    io.emit("message", dataServer); // Emit message to all connected clients
-  } else {
-    io.to(idClient).emit(api, dataServer); // Emit message to a specific client
+    if (api === "test") {
+      if (isForAll) {
+        io.emit("message", dataServer); // Emit message to all connected clients
+      } else if (!isForAll) {
+        io.to("contoh").emit(api, dataServer); // Emit message to a specific client
+      }
+    } else if (api === "get notifikation") {
+      const notifikasi = await NOTIFIKASI.findone({
+        where: { jabatan_id_ke: dataServer.id },
+      });
+      io.to(`${notifikasi.jabatan.id}`).emit("message", dataServer);
+    } else if (api === "get mail") {
+      io.emit("message", dataServer);
+    } else if (api === "login") {
+      const user = await USERS.findone({
+        where: { id: dataServer.id },
+      });
+      io.join(user.jabatan_id);
+    }
+
+    res.status(200).send("Message sent");
+  } catch (error) {
+    console.error("socket error", error);
+    res.status(500).send("Internal Server Error");
   }
-
-  res.status(200).send("Message sent");
 });
 
 module.exports = router;

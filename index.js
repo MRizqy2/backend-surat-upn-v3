@@ -26,6 +26,7 @@ app.use(router);
 // Initialize socket connection
 io.on("connection", (socket) => {
   console.log("a user connected");
+  socket.emit("welcome", { message: "Welcome to the server!" });
 
   socket.on("message", (data) => {
     console.log(data);
