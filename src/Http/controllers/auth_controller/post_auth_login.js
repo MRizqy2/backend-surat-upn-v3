@@ -7,6 +7,7 @@ const express = require("express");
 const { getJabatan } = require("../jabatan_controller/get_jabatan.js");
 const router = express.Router();
 const sequelize = require("sequelize");
+const { socketEvent } = require("../socket/socketEvent.js");
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -72,6 +73,16 @@ const postLogin = async (req, res) => {
         },
       };
       const saveJabatan = await getJabatan(reqJabatan);
+
+      const reqSocket = {
+        body: {
+          api: "post login",
+          dataServer: user_response,
+        },
+      };
+      // router.use(socketEvent);
+      await socketEvent(reqSocket);
+
       res.json({
         message: "Login Berhasil",
         token,

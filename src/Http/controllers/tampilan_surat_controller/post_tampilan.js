@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express.Router();
-const router = express.Router();
+// const router = express.Router();
 const { TAMPILAN, DAFTAR_SURAT, USERS, JABATAN } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
 
@@ -55,10 +55,10 @@ const postTampilan = async (req, res) => {
   }
 };
 
-router.post("/", postTampilan);
+app.post("/", postTampilan);
 
 module.exports = {
-  router,
+  // router,
   postTampilan,
   app,
 };

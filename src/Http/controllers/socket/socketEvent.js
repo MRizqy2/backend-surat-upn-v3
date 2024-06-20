@@ -1,13 +1,17 @@
 const express = require("express");
 const router = express.Router();
+const http = require("http");
 const { NOTIFIKASI, USERS } = require("../../../models");
+const { getSocketIo } = require("./socket");
 
-router.post("/api/socket-event", async (req, res) => {
+const socketEvent = async (req, res) => {
   try {
-    const io = req.io; // Get io instance from request
-    const { api, dataServer, isForAll } = req.body;
-    console.log(io);
-    // const { idClient } = io.id
+    const { api, dataServer } = req.body;
+    const { isForAll } = req.body;
+    console.log(api);
+    const io = getSocketIo();
+
+    io.emit("welcome", { message: "Welcome to the server!" });
 
     if (api === "test") {
       if (isForAll) {
@@ -15,30 +19,154 @@ router.post("/api/socket-event", async (req, res) => {
       } else if (!isForAll) {
         io.to("contoh").emit(api, dataServer); // Emit message to a specific client
       }
-    } else if (api === "get notifikation") {
+    } else if (api === "post notifikation") {
       const notifikasi = await NOTIFIKASI.findone({
         where: { jabatan_id_ke: dataServer.id },
       });
       io.to(`${notifikasi.jabatan.id}`).emit("message", dataServer);
-    } else if (api === "get mail") {
+    } else if (api === "post mail") {
       io.emit("message", dataServer);
-    } else if (api === "login") {
-      const user = await USERS.findone({
+    } else if (api === "post login") {
+      const user = await USERS.findOne({
         where: { id: dataServer.id },
       });
-      io.join(user.jabatan_id);
-    }
 
-    res.status(200).send("Message sent");
+      if (user.prodi_id == 1) {
+        // io.emit("message", { message: "Hello from another file!" });
+        // io.join(user.jabatan_id);
+        io.to(`${user.jabatan_id}`).emit("message", "login success");
+        console.log("ampdmwp: ", user.jabatan_id);
+      } else {
+        // io.join(user.prodi_id);
+        io.to(`${user.prodi_id}`).emit("message", "login success");
+      }
+    }
+    console.log("socket is success");
+    // res.status(200).send("Message sent");
   } catch (error) {
     console.error("socket error", error);
     res.status(500).send("Internal Server Error");
   }
-});
+};
 
-module.exports = router;
+router.post("/api/socket-event", socketEvent);
+
+module.exports = { socketEvent };
+//=============================================
+
+// const express = require("express");
+// const router = express.Router();
+// const http = require("http");
+// const { NOTIFIKASI, USERS } = require("../../../models");
+// const socketIO = require("socket.io");
+// const server = http.createServer(router);
+
+// const socketEvent = async (req, res) => {
+//   try {
+//     // let io = getIo(); // Get io instance from request
+//     const io = socketIO(server, {
+//       cors: {
+//         origin: "http://localhost:3000", // Sesuaikan dengan URL frontend Anda
+//         methods: ["GET", "POST"],
+//       },
+//     });
+//     const { api, dataServer } = req.body;
+//     const { isForAll } = req.body;
+//     console.log(api);
+//     // const { idClient } = io.id
+
+//     if (api === "test") {
+//       if (isForAll) {
+//         io.emit("message", dataServer); // Emit message to all connected clients
+//       } else if (!isForAll) {
+//         io.to("contoh").emit(api, dataServer); // Emit message to a specific client
+//       }
+//     } else if (api === "post notifikation") {
+//       const notifikasi = await NOTIFIKASI.findone({
+//         where: { jabatan_id_ke: dataServer.id },
+//       });
+//       io.to(`${notifikasi.jabatan.id}`).emit("message", dataServer);
+//     } else if (api === "post mail") {
+//       io.emit("message", dataServer);
+//     } else if (api === "post login") {
+//       const user = await USERS.findOne({
+//         where: { id: dataServer.id },
+//       });
+
+//       if (user.prodi_id == 1) {
+//         io = io.emit("message", { message: "Hello from another file!" });
+//         // io.join(user.jabatan_id);
+//         // io.to(`${user.jabatan_id}`).emit("message", "login success");
+//         console.log("ampdmwp: ", user.jabatan_id);
+//       } else {
+//         io.join(user.prodi_id);
+//         io.to(`${user.prodi_id}`).emit("message", "login success");
+//       }
+//     }
+//     console.log("socket is success");
+//     // res.status(200).send("Message sent");
+//   } catch (error) {
+//     console.error("socket error", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// };
+
+// router.post("/api/socket-event", socketEvent);
+
+// module.exports = { socketEvent, router };
 
 //======================================================
+
+// const express = require("express");
+// const router = express.Router();
+// const { NOTIFIKASI, USERS } = require("../../../models");
+
+// router.post("/api/socket-event", async (req, res) => {
+//   try {
+//     const io = req.io; // Get io instance from request
+//     const { api, dataServer } = req.body;
+//     const { isForAll } = req.body;
+//     // console.log(io);
+//     // const { idClient } = io.id
+
+//     if (api === "test") {
+//       if (isForAll) {
+//         io.emit("message", dataServer); // Emit message to all connected clients
+//       } else if (!isForAll) {
+//         io.to("contoh").emit(api, dataServer); // Emit message to a specific client
+//       }
+//     } else if (api === "post notifikation") {
+//       const notifikasi = await NOTIFIKASI.findone({
+//         where: { jabatan_id_ke: dataServer.id },
+//       });
+//       io.to(`${notifikasi.jabatan.id}`).emit("message", dataServer);
+//     } else if (api === "post mail") {
+//       io.emit("message", dataServer);
+//     } else if (api === "post login") {
+//       const user = await USERS.findOne({
+//         where: { id: dataServer.id },
+//       });
+
+//       if (user.prodi_id == 1) {
+//         io.emit("message", "login success");
+//         io.join(user.jabatan_id);
+//         io.to(`${user.jabatan_id}`).emit("message", "login success");
+//       } else {
+//         io.join(user.prodi_id);
+//         io.to(`${user.prodi_id}`).emit("message", "login success");
+//       }
+//     }
+//     console.log("socket is success");
+//     // res.status(200).send("Message sent");
+//   } catch (error) {
+//     console.error("socket error", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
+
+// module.exports = router ;
+
+//=================================================
 
 // const express = require("express");
 // // const http = require("http");

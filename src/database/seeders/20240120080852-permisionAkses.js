@@ -53,6 +53,18 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
+        {
+          id: 6,
+          jabatan_id: 6,
+          buat_surat: false,
+          download_surat: false,
+          generate_nomor_surat: false,
+          upload_tandatangan: false,
+          persetujuan: false,
+          tagging: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ],
       {}
     );
