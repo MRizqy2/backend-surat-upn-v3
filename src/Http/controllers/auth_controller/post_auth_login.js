@@ -76,7 +76,7 @@ const postLogin = async (req, res) => {
 
       const reqSocket = {
         body: {
-          api: "post login",
+          api: "login",
           dataServer: user_response,
         },
       };

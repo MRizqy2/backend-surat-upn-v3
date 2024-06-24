@@ -18,6 +18,7 @@ const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
 const { send } = require("../send_controller");
 const { postRevisi } = require("../../revisi_surat_controller/post_revisi");
 const { getProgressBar } = require("../multer_controller/get_progress_bar");
+const { socketEvent } = require("../../socket/socketEvent");
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -160,6 +161,14 @@ const postPerbaikan = async function (req, res) {
       },
       {}
     );
+
+    let reqSocket = {
+      body: {
+        api: "mail",
+        dataServer: jabatan.jabatan_atas_id,
+      },
+    };
+    await socketEvent(reqSocket);
 
     res
       .status(StatusCodes.CREATED)

@@ -9,6 +9,7 @@ const router = express.Router();
 const path = require("path");
 const { putRepo } = require("../../sikoja_controller/repo_controller/put_repo");
 const { getProgressBar } = require("./get_progress_bar");
+const { socketEvent } = require("../../socket/socketEvent");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -111,6 +112,14 @@ const putMulterTtd = async function (req, res) {
       {}
     );
     const progressBar = parseInt(progressBarRes.progressBar);
+
+    let reqSocket = {
+      body: {
+        api: "mail",
+        dataServer: jabatan.jabatan_atas_id,
+      },
+    };
+    await socketEvent(reqSocket);
 
     return res
       .status(StatusCodes.CREATED)

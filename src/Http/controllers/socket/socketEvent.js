@@ -7,43 +7,170 @@ const { getSocketIo, setSocketIo } = require("./socket");
 const socketEvent = async (req, res) => {
   try {
     const { api, dataServer } = req.body;
+    let message = "new";
+    let user;
     console.log(api);
     const io = getSocketIo();
 
-    if (api === "post login") {
-      const user = await USERS.findOne({
-        where: { id: dataServer.id },
+    if (api === "login") {
+      message = `halo from server`;
+      io.emit("welcome", message);
+    } else if (api === "mail") {
+      user = await USERS.findOne({
+        where: { jabatan_id: dataServer },
       });
-
-      if (user.prodi_id == 1) {
-        io.on("connection", (socket) => {
-          socket.join(`${user.jabatan_id}`);
-          console.log(`User joined room: ${user.jabatan_id}`);
-          socket
-            .to(`${user.jabatan_id}`)
-            .emit("coba", { message: `private ${user.jabatan_id}` });
-          // socket.emit("coba", { message: "Hello from another file!" });
-        });
-        // io.emit("message", { message: "Hello from another file!" });
-
-        console.log(`User joined room: ${user.jabatan_id}`);
-      } else {
-        // io.join(user.prodi_id);
-        io.to(`${user.prodi_id}`).emit("coba", { message: "login success" });
-      }
+      message = `new`;
+      io.emit("message", `private ${message} ${api}/${user.jabatan_id}`);
+    } else if (api === "notifikation") {
+      console.log("notifikation");
+      user = await USERS.findOne({
+        where: { jabatan_id: dataServer },
+      });
+      message = `new`;
+      io.emit("message", `private ${message} ${api}/${user.jabatan_id}`);
     }
 
     console.log("socket is success");
-    // res.status(200).send("Message sent");
   } catch (error) {
     console.error("socket error", error);
-    res.status(500).send("Internal Server Error");
+    // res.status(500).send("Internal Server Error");
   }
 };
 
 router.post("/api/socket-event", socketEvent);
 
 module.exports = { socketEvent };
+
+//===============================
+
+// const express = require("express");
+// const router = express.Router();
+// const http = require("http");
+// const { NOTIFIKASI, USERS } = require("../../../models");
+// const { getSocketIo, setSocketIo } = require("./socket");
+
+// const socketEvent = async (req, res) => {
+//   try {
+//     const { api, dataServer } = req.body;
+//     let message = "new";
+//     let user;
+//     console.log(api);
+//     const io = getSocketIo();
+
+//     if (api === "login") {
+//       message = `halo from server`;
+//       io.emit("welcome", message);
+//       // console.log(message);
+//     } else if (api === "mail") {
+//       // message = `halo from mail`;
+//       // io.emit("welcome", message);
+//       // console.log("data server", dataServer);
+//       user = await USERS.findOne({
+//         where: { jabatan_id: dataServer },
+//       });
+//       message = `new`;
+//       io.to(user.jabatan_id).emit("message", `private ${message} ${api}`);
+
+//       // if (user.prodi_id == 1) {
+//       //   // console.log("tes");
+//       //   message = `new`;
+//       //   io.to(user.jabatan_id).emit("message", `private ${message} ${api}`);
+//       // } else {
+//       //   io.to(user.prodi_id).emit("message", `private ${message} ${api}`);
+//       // }
+//     } else if (api === "notifikation") {
+//       console.log("data server", dataServer);
+//       user = await USERS.findOne({
+//         where: { jabatan_id: dataServer },
+//       });
+//       console.log(";mcpqw, ", user.jabatan_id);
+//       message = `new`;
+//       // io.to(user.jabatan_id).emit("notif", `private ${message} ${api} `);
+//       io.emit("notif", `private ${message} ${api} `);
+
+//       // if (user.prodi_id == 1) {
+//       //   console.log("tes");
+//       //   message = `new`;
+//       //   io.to(user.jabatan_id).emit("message", `private ${message} ${api} `);
+//       // } else {
+//       //   io.to(user.prodi_id).emit("message", `private ${message} ${api} `);
+//       // }
+//     }
+
+//     console.log("socket is success");
+//   } catch (error) {
+//     console.error("socket error", error);
+//     // res.status(500).send("Internal Server Error");
+//   }
+// };
+
+// router.post("/api/socket-event", socketEvent);
+
+// module.exports = { socketEvent };
+
+//==========================================
+
+// const express = require("express");
+// const router = express.Router();
+// const http = require("http");
+// const { NOTIFIKASI, USERS } = require("../../../models");
+// const { getSocketIo, setSocketIo } = require("./socket");
+
+// const socketEvent = async (req, res) => {
+//   try {
+//     const { api, dataServer } = req.body;
+//     let message;
+//     console.log(api);
+//     const io = getSocketIo();
+
+//     if (api === "login") {
+//       message = `halo from server`;
+//       io.emit("welcome", message);
+//       console.log(message);
+//     } else if (api === "mail") {
+//       message = `halo from mail`;
+//       io.emit("welcome", message);
+//       console.log("data server", dataServer);
+//       const user = await USERS.findOne({
+//         where: { jabatan_id: dataServer },
+//       });
+
+//       if (user.prodi_id == 1) {
+//         console.log("tes");
+//         message = `baru`;
+//         io.to(user.jabatan_id).emit("message", `private ${api} ${message}`);
+//         // io.emit("message2", `private ${user.jabatan_id}: ${message}3`);
+//         // console.log("tes2");
+//         // io.on("connection", (socket) => {
+//         //   socket.join(`${user.jabatan_id}`);
+//         //   console.log(
+//         //     `User with socket ID ${socket.id} joined room: ${user.jabatan_id}`
+//         //   );
+//         //   socket
+//         //     .to(`${user.jabatan_id}`)
+//         //     .emit("coba", { message: `private ${user.jabatan_id}` });
+//         //   // socket.emit("coba", { message: "Hello from another file!" });
+//         // });
+//         // io.emit("message", { message: "Hello from another file!" });
+
+//         // console.log(`User joined room: ${user.jabatan_id}`);
+//       } else {
+//         // io.join(user.prodi_id);
+//         io.to(`${user.prodi_id}`).emit("coba", { message: "login success" });
+//       }
+//     }
+
+//     console.log("socket is success");
+//     // res.status(200).send("Message sent");
+//   } catch (error) {
+//     console.error("socket error", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// };
+
+// router.post("/api/socket-event", socketEvent);
+
+// module.exports = { socketEvent };
 
 //==========================================================================
 // const express = require("express");

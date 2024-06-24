@@ -16,6 +16,7 @@ const {
   PERBAIKAN,
 } = require("../../../models");
 const { Op } = require("sequelize");
+const { socketEvent } = require("../socket/socketEvent.js");
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -298,6 +299,14 @@ const getDaftarSurat = async (req, res) => {
       order: [["id", "ASC"]],
     });
   }
+
+  // const reqSocket = {
+  //   body: {
+  //     api: "mail",
+  //     dataServer: user.jabatan_id,
+  //   },
+  // };
+  // await socketEvent(reqSocket);
 
   // for (let i = 0; i < surat.length; i++) {
   //   const surat_id = surat[i].id;

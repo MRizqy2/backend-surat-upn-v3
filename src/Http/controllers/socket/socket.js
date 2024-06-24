@@ -25,12 +25,23 @@ function setSocketIo(server) {
     cors: {
       origin: "http://localhost:3000", // Sesuaikan dengan URL frontend Anda
       methods: ["GET", "POST"],
+      // credentials: true,
     },
+    // cookie: {
+    //   name: "io",
+    //   httpOnly: true,
+    //   // secure: process.env.NODE_ENV === 'production',
+    //   sameSite: "Lax",
+    // },
   });
 
   io.on("connection", (socket) => {
     console.log("a user connected");
-    socket.emit("welcome", { message: "Welcome to the server!" });
+    // socket.emit("welcome", { message: "Welcome to the server!" });
+    // socket.on("message", (data) => {
+    //   socket.join(data);
+    //   console.log("Entered room: " + data);
+    // });
 
     // socket.on("message", (data) => {
     //   console.log(data);
@@ -68,7 +79,7 @@ function getSocketIo() {
   if (!io) {
     throw new Error("Socket.io not initialized!");
   }
-  console.log("test");
+  // console.log("test");
   // io.emit("message", { message: "Hello from server!" });
   // console.log(io);
   return io;

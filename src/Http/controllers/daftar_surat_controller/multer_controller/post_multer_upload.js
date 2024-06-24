@@ -17,6 +17,7 @@ const {
 const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
 const { send } = require("../send_controller");
 const { getProgressBar } = require("./get_progress_bar");
+const { socketEvent } = require("../../socket/socketEvent.js");
 
 // const { createServer } = require("node:http");
 // const { Server } = require("socket.io");
@@ -139,6 +140,22 @@ const postMulter = async function (req, res) {
       },
       {}
     );
+
+    let reqSocket = {
+      body: {
+        api: "mail",
+        dataServer: jabatan.jabatan_atas_id,
+      },
+    };
+    await socketEvent(reqSocket);
+
+    reqSocket = {
+      body: {
+        api: "mail",
+        dataServer: jabatan.id,
+      },
+    };
+    await socketEvent(reqSocket);
 
     // io.on("connection", (socket) => {
     //   console.log("Client connected");

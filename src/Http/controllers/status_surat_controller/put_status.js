@@ -28,6 +28,7 @@ const { postRepo } = require("../sikoja_controller/repo_controller/post_repo");
 const {
   getProgressBar,
 } = require("../daftar_surat_controller/multer_controller/get_progress_bar");
+const { socketEvent } = require("../socket/socketEvent");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -202,7 +203,21 @@ const putStatus = async (req, res) => {
         };
         await postRepo(reqRepo);
       }
+      let reqSocket = {
+        body: {
+          api: "mail",
+          dataServer: jabatan.jabatan_atas_id,
+        },
+      };
+      await socketEvent(reqSocket);
     }
+    reqSocket = {
+      body: {
+        api: "mail",
+        dataServer: user_surat.jabatan_id,
+      },
+    };
+    await socketEvent(reqSocket);
 
     const progressBarRes = await getProgressBar(
       {
