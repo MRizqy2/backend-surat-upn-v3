@@ -37,9 +37,7 @@ const deleteNotifikasi = async (req, res) => {
         return hapusNotifikasi;
       }
     } else {
-      res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: "Notifikasi Surat not found" });
+      console.log({ error: "Notifikasi Surat not found" });
     }
   } catch (error) {
     console.error("Error:", error);
