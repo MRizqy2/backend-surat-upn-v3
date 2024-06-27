@@ -23,7 +23,7 @@ let io;
 function setSocketIo(server) {
   io = socketIo(server, {
     cors: {
-      origin: "http://localhost:3000", // Sesuaikan dengan URL frontend Anda
+      origin: `${process.env.FRONTEND}`, // Sesuaikan dengan URL frontend Anda
       methods: ["GET", "POST"],
       // credentials: true,
     },
