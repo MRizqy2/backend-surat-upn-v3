@@ -48,6 +48,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "surat_id",
         as: "perbaikan",
       });
+      DAFTAR_SURAT.hasMany(models.REPO, {
+        foreignKey: "surat_id",
+        as: "repo",
+      });
     }
   }
   DAFTAR_SURAT.init(

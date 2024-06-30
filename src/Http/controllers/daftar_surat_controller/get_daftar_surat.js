@@ -14,6 +14,10 @@ const {
   NOMOR_SURAT,
   PERIODE,
   PERBAIKAN,
+  REPO,
+  INDIKATOR,
+  IKU,
+  STRATEGI,
 } = require("../../../models");
 const { Op } = require("sequelize");
 const { socketEvent } = require("../socket/socketEvent.js");
@@ -24,8 +28,7 @@ router.use(express.urlencoded({ extended: true }));
 const getDaftarSurat = async (req, res) => {
   let surat;
   const { startDate, endDate } = req.query;
-  const { repo } = req.query;
-  const { prodi_id } = req.query;
+  const { strategi_id, indikator_id } = req.body;
 
   let dateFilter = {};
   if (startDate) {
@@ -69,6 +72,17 @@ const getDaftarSurat = async (req, res) => {
       end.setDate(end.getDate() + 1);
       end.setMilliseconds(end.getMilliseconds() - 1);
     }
+  }
+
+  if (strategi_id && strategi_id.length > 0) {
+    whereClause["$indikator.strategi.id$"] = {
+      [Op.in]: strategi_id,
+    };
+  }
+  if (indikator_id && indikator_id.length > 0) {
+    whereClause.indikator_id = {
+      [Op.in]: indikator_id,
+    };
   }
 
   if (!fakultas.id || fakultas.name == `-` || fakultas.id == 1) {
@@ -127,6 +141,29 @@ const getDaftarSurat = async (req, res) => {
               model: FAKULTAS,
               as: "fakultas",
               attributes: ["id", "name"],
+            },
+          ],
+        },
+        {
+          model: REPO,
+          as: "repo",
+          attributes: {
+            exclude: ["indikator_id", "surat_id", "createdAt", "updatedAt"],
+          },
+          include: [
+            {
+              model: INDIKATOR,
+              as: "indikator",
+              attributes: {
+                exclude: ["iku_id", "strategi_id", "createdAt", "updatedAt"],
+              },
+              include: [
+                {
+                  model: STRATEGI,
+                  as: "strategi",
+                  attributes: { exclude: ["createdAt", "updatedAt"] },
+                },
+              ],
             },
           ],
         },
@@ -208,6 +245,29 @@ const getDaftarSurat = async (req, res) => {
               as: "fakultas",
               attributes: ["id", "name"],
               where: { id: fakultas.id },
+            },
+          ],
+        },
+        {
+          model: REPO,
+          as: "repo",
+          attributes: {
+            exclude: ["indikator_id", "surat_id", "createdAt", "updatedAt"],
+          },
+          include: [
+            {
+              model: INDIKATOR,
+              as: "indikator",
+              attributes: {
+                exclude: ["iku_id", "strategi_id", "createdAt", "updatedAt"],
+              },
+              include: [
+                {
+                  model: STRATEGI,
+                  as: "strategi",
+                  attributes: { exclude: ["createdAt", "updatedAt"] },
+                },
+              ],
             },
           ],
         },
@@ -295,9 +355,38 @@ const getDaftarSurat = async (req, res) => {
             },
           ],
         },
+        {
+          model: REPO,
+          as: "repo",
+          attributes: {
+            exclude: ["indikator_id", "surat_id", "createdAt", "updatedAt"],
+          },
+          include: [
+            {
+              model: INDIKATOR,
+              as: "indikator",
+              attributes: {
+                exclude: ["iku_id", "strategi_id", "createdAt", "updatedAt"],
+              },
+              include: [
+                {
+                  model: STRATEGI,
+                  as: "strategi",
+                  attributes: { exclude: ["createdAt", "updatedAt"] },
+                },
+              ],
+            },
+          ],
+        },
       ],
       order: [["id", "ASC"]],
     });
+  }
+  for (let i = 0; i < surat.length; i++) {
+    if (!surat[i].repo || surat[i].repo.length === 0) {
+      surat[i].dataValues.indikator = "-";
+      surat[i].dataValues.strategi = "-";
+    }
   }
 
   res.json(surat);
