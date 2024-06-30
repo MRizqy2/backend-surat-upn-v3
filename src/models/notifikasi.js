@@ -51,6 +51,9 @@ module.exports = (sequelize, DataTypes) => {
       pesan: {
         type: DataTypes.STRING,
       },
+      terkirim: {
+        type: DataTypes.BOOLEAN,
+      },
     },
     {
       sequelize,

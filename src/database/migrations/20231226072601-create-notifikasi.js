@@ -42,6 +42,9 @@ module.exports = {
       pesan: {
         type: Sequelize.STRING,
       },
+      terkirim: {
+        type: Sequelize.BOOLEAN,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

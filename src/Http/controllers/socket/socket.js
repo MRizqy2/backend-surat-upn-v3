@@ -47,9 +47,9 @@ function setSocketIo(server) {
     //   console.log(data);
     // });
 
-    // socket.on("disconnect", () => {
-    //   console.log("user disconnected");
-    // });
+    socket.on("disconnect", () => {
+      console.log("user disconnected");
+    });
   });
   // console.log(io);
 

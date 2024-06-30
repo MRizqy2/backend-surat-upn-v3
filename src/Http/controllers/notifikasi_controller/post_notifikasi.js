@@ -25,6 +25,7 @@ const postNotif = async (req, res) => {
       jabatan_id_dari: jabatan_id_dari,
       jabatan_id_ke: jabatan_id_ke,
       pesan: savePesan,
+      terkirim: false,
     });
 
     if (notifikasi) {
