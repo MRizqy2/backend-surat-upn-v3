@@ -1,5 +1,5 @@
 const express = require("express");
-const { DAFTAR_SURAT, USERS } = require("../../../../models");
+const { DAFTAR_SURAT, USERS, JABATAN } = require("../../../../models");
 const { StatusCodes } = require("http-status-codes");
 const multer = require("multer");
 const crypto = require("crypto");
@@ -116,7 +116,7 @@ const putMulterTtd = async function (req, res) {
     let reqSocket = {
       body: {
         api: "mail",
-        dataServer: jabatan.jabatan_atas_id,
+        dataServer: user_surat.jabatan_id,
       },
     };
     await socketEvent(reqSocket);

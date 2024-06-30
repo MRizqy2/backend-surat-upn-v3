@@ -18,14 +18,28 @@ async function get_file_path(url_code) {
   return path_file.path;
 }
 
+async function get_file_name(url_code) {
+  const repo = await REPO.findOne({ where: { unix_code: url_code } });
+  if (!repo) {
+    return "File not found";
+  }
+  const path_file = await DAFTAR_SURAT.findOne({
+    where: {
+      id: repo.surat_id,
+    },
+  });
+  return path_file.judul;
+}
+
 router.get(`/:url_code`, async (req, res) => {
   try {
     let url_code = req.params.url_code;
     let filepath = await get_file_path(url_code);
+    let filename = await get_file_name(url_code);
     filepath = path.resolve(__dirname, "../../../../", filepath);
     filepath = decodeURIComponent(filepath);
     if (fs.existsSync(filepath)) {
-      res.download(filepath);
+      res.download(filepath, filename);
     } else {
       res.status(StatusCodes.NOT_FOUND).json({ error: "File not found" });
     }
