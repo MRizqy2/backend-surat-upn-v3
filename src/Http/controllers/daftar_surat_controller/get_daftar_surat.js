@@ -300,23 +300,6 @@ const getDaftarSurat = async (req, res) => {
     });
   }
 
-  // const reqSocket = {
-  //   body: {
-  //     api: "mail",
-  //     dataServer: user.jabatan_id,
-  //   },
-  // };
-  // await socketEvent(reqSocket);
-
-  // for (let i = 0; i < surat.length; i++) {
-  //   const surat_id = surat[i].id;
-  //   const progressBarRes = await getProgressBar(
-  //     { query: { surat_id, from: `daftar_surat_controller/get_daftar-surat` } },
-  //     {}
-  //   );
-  //   surat[i].dataValues.progressBar = progressBarRes.progressBar;
-  // }
-
   res.json(surat);
 };
 
