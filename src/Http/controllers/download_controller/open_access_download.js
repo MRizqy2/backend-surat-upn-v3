@@ -28,7 +28,9 @@ async function get_file_name(url_code) {
       id: repo.surat_id,
     },
   });
-  return path_file.judul;
+
+  const nama_file = `${path_file.id} ${path_file.judul}.pdf`;
+  return nama_file;
 }
 
 router.get(`/:url_code`, async (req, res) => {
