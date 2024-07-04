@@ -74,7 +74,7 @@ const putMulterTtd = async function (req, res) {
       body: {
         user: user,
         isSigned: true,
-        from: "daftar_surat_controller/multer_controller/put_multer_update.js",
+        from: "daftar_surat_controller/multer_controller/put_multer_ttd.js",
       },
       query: {
         surat_id: surat_id,

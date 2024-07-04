@@ -19,6 +19,7 @@ async function catchStatus(req, res) {
     `Diproses ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
     `Ditolak ${jabatan.name}`,
     `Ditolak ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
+    "Diproses ke BSRE",
     "Surat Telah Ditandatangani",
   ];
 
@@ -42,7 +43,7 @@ async function catchStatus(req, res) {
         updatedStatusMap[jabatan.id] = isiStatus[5];
       }
     } else if (isSigned) {
-      return isiStatus[7];
+      return isiStatus[8];
     }
 
     if (latestStatus != updatedStatusMap[jabatan.id]) {
