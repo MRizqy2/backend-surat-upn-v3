@@ -15,12 +15,14 @@ const socketEvent = async (req, res) => {
     if (api === "login") {
       message = `halo from server`;
       io.emit("welcome", message);
+      console.log("socket login");
     } else if (api === "mail") {
       user = await USERS.findOne({
         where: { jabatan_id: dataServer },
       });
       message = `new`;
       io.emit("message", `private ${message} ${api}/${user.jabatan_id}`);
+      console.log("socket mail");
     } else if (api === "notifikation") {
       console.log("notifikation");
       user = await USERS.findOne({
@@ -28,6 +30,7 @@ const socketEvent = async (req, res) => {
       });
       message = `new`;
       io.emit("message", `private ${message} ${api}/${user.jabatan_id}`);
+      console.log("socket notif");
     }
 
     console.log("socket is success");

@@ -6,7 +6,7 @@ const postPembetulan = require("./post_multer_pembetulan");
 const getDetail = require("./get_multer_detail").router;
 const putMulterTtd = require("./put_multer_ttd");
 
-app.use("/download", getDownload);
+app.use("/download", getDownload); //tidak terpakai
 app.use("/upload", postMulter);
 app.use("/pembetulan", postPembetulan);
 app.use("/detail", getDetail);

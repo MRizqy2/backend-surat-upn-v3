@@ -5,7 +5,7 @@ const postMulter = require("./post_multer_upload");
 const getDetail = require("./get_multer_detail").router;
 const putMulter = require("./put_multer_update");
 
-app.use("/download", getDownload);
+app.use("/download", getDownload); // tidak terpakai
 app.use("/upload", postMulter);
 app.use("/detail", getDetail);
 app.use("/update", putMulter);

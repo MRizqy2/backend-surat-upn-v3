@@ -41,12 +41,12 @@ const getDaftarSurat = async (req, res) => {
           as: "status",
           attributes: ["status", "persetujuan"],
         },
-        // {
-        //   model: TAMPILAN,
-        //   as: "tampilan",
-        //   attributes: ["pin", "dibaca"],
-        //   where: { jabatan_id: user.jabatan_id },
-        // },
+        {
+          model: TAMPILAN,
+          as: "tampilan",
+          attributes: ["pin", "dibaca"],
+          where: { jabatan_id: user.jabatan_id },
+        },
         {
           model: JENIS_SURAT,
           as: "jenis",
