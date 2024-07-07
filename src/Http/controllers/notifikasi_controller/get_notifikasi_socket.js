@@ -117,6 +117,24 @@ const getNotifSocket = async (req, res) => {
               "$surat.user.prodi.id$": user.prodi_id,
               terkirim: false,
             },
+            include: [
+              {
+                model: DAFTAR_SURAT,
+                as: "surat",
+                include: [
+                  {
+                    model: USERS,
+                    as: "user",
+                    include: [
+                      {
+                        model: PRODI,
+                        as: "prodi",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
           }
         );
         console.log("setelah update");

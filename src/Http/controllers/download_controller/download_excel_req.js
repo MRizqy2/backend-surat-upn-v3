@@ -18,12 +18,12 @@ const {
   INDIKATOR,
   STRATEGI,
   IKU,
-} = require("../../../models/");
+} = require("../../../models");
 const { Op } = require("sequelize");
 const router = express.Router();
 const ExcelJS = require("exceljs");
 
-router.post(`/`, async (req, res) => {
+const handleExcelRequest = async (req, res) => {
   // definisi data yang akan di export
   // ganti data dengan data dari database saat production
   const { repo_id } = req.body;
@@ -256,6 +256,8 @@ router.post(`/`, async (req, res) => {
 
   await workbook.xlsx.writeFile(filePath);
   res.download(filePath);
-});
+};
 
-module.exports = router;
+router.post(`/`, handleExcelRequest);
+
+module.exports = { router, handleExcelRequest };

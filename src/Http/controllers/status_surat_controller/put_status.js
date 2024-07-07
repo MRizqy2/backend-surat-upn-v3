@@ -112,18 +112,19 @@ const putStatus = async (req, res) => {
       );
     }
 
-    const reqNotif = {
-      body: {
-        surat_id: surat_id,
-        jabatan_id_dari: jabatan.id,
-        jabatan_id_ke: user_surat.jabatan_id,
-        isSign: false,
-        persetujuan: persetujuan,
-        from: `status_surat_controller/put_status`,
-      },
-    };
-    await postNotif(reqNotif);
-
+    if (user_surat.jabatan_id != user.jabatan_id) {
+      const reqNotif = {
+        body: {
+          surat_id: surat_id,
+          jabatan_id_dari: jabatan.id,
+          jabatan_id_ke: user_surat.jabatan_id,
+          isSign: false,
+          persetujuan: persetujuan,
+          from: `status_surat_controller/put_status`,
+        },
+      };
+      await postNotif(reqNotif);
+    }
     if (persetujuan && persetujuan.toLowerCase().includes("disetujui")) {
       if (jabatan.jabatan_atas_id) {
         reqTampilan = {

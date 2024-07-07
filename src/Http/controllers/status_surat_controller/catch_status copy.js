@@ -1,27 +1,12 @@
 const { JABATAN } = require("../../../models");
 
 async function catchStatus(req, res) {
-  let {
-    jabatan_id,
-    isRead,
-    latestStatus,
-    persetujuan,
-    isSigned,
-    isDownloadAccept,
-  } = req.body;
-  //prodi sd | false | "" | "" | false | false
-
-  if (!isRead) isRead = false;
-  if (!latestStatus || latestStatus == "") latestStatus = "";
-  if (!persetujuan || persetujuan == "") persetujuan = "";
-  if (!isSigned) isSigned = false;
-  if (!isDownloadAccept) isDownloadAccept = false;
+  const { jabatan_id, isRead, latestStatus, persetujuan, isSigned } = req.body;
 
   const jabatan = await JABATAN.findOne({
     where: { id: jabatan_id },
   });
   const jabatan_atas = await JABATAN.findOne({
-    //TU
     where: { id: jabatan.jabatan_atas_id },
   });
   const isiStatus = [
@@ -34,31 +19,41 @@ async function catchStatus(req, res) {
     `Diproses ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
     `Ditolak ${jabatan.name}`,
     `Ditolak ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
-    `Diproses ke BSRE ${jabatan.name}`,
+    "Diproses ke BSRE",
     "Surat Telah Ditandatangani",
   ];
+
+  const statusMap = {
+    [jabatan.id]: !isRead ? isiStatus[3] : isiStatus[2],
+  };
+  const updatedStatusMap = { ...statusMap };
 
   if (
     latestStatus == isiStatus[1] ||
     latestStatus == isiStatus[2] ||
     !latestStatus
   ) {
-    if (!latestStatus) {
-      return isiStatus[3];
-    } else if (isRead) {
-      return isiStatus[2];
-    } else if (persetujuan) {
+    if (persetujuan) {
       if (persetujuan.toLowerCase().includes(`disetujui`)) {
-        return isiStatus[3];
+        updatedStatusMap[jabatan.id] = isiStatus[3];
+        if (!jabatan_atas) {
+          updatedStatusMap[jabatan.id] = persetujuan;
+        }
       } else if (persetujuan.toLowerCase().includes(`ditolak`)) {
-        return isiStatus[5];
+        updatedStatusMap[jabatan.id] = isiStatus[5];
       }
-    } else if (isDownloadAccept) {
-      return isiStatus[7];
     } else if (isSigned) {
       return isiStatus[8];
-    } else {
-      return latestStatus;
+    }
+
+    if (latestStatus != updatedStatusMap[jabatan.id]) {
+      //diproses TU != Disetujui Dekan
+      if (persetujuan) {
+        return updatedStatusMap[jabatan.id] || "";
+      } else if (!persetujuan && !isRead) {
+        return updatedStatusMap[jabatan.id] || "";
+      }
+      return updatedStatusMap[jabatan.id] || "";
     }
   } else {
     return latestStatus;

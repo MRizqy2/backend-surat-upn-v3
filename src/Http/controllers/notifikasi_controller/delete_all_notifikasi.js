@@ -33,6 +33,27 @@ const deleteAllNotifikasi = async (req, res) => {
           jabatan_id_ke: user.jabatan_id,
           "$surat.user.prodi.id$": prodi_id, // Menambahkan kondisi where berdasarkan prodi user
         },
+        include: [
+          {
+            model: DAFTAR_SURAT,
+            as: "surat",
+            attributes: ["id", "judul"],
+            include: [
+              {
+                model: USERS,
+                as: "user",
+                attributes: ["id", "name"],
+                include: [
+                  {
+                    model: PRODI,
+                    as: "prodi",
+                    attributes: ["id", "name"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
     }
     if (hapusNotifikasi) {
