@@ -26,11 +26,10 @@ const downloadAllUnsigned = async (req, res) => {
     });
 
     const alamats = daftarSurat.map((surat) => surat.path);
-    // console.log("alamats = ", alamats);
 
     const formattedPathsPromises = alamats.map(async (file_path, index) => {
       file_path = decodeURIComponent(file_path);
-      console.log("file_path = ", file_path);
+
       const fileName = await DAFTAR_SURAT.findOne({
         where: { path: file_path },
       });
@@ -44,7 +43,6 @@ const downloadAllUnsigned = async (req, res) => {
         token: { id: req.token.id },
       };
       await putStatus(reqStatus);
-      //   console.log("fileName = ", fileName);
 
       return {
         path: path.join(__dirname, `../../../../${file_path}`),

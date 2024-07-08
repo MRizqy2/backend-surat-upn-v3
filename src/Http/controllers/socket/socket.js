@@ -1,22 +1,4 @@
-// let io;
-
-// const getSocketIo = function () {
-//   if (!io) {
-//     throw new Error("Socket.io not initialized!");
-//   }
-//   return io;
-// };
-// const setSocketIo = function (value) {
-//   io = value;
-// };
-
-// module.exports = {
-//   getSocketIo,
-//   setSocketIo,
-// };
-//=======================================
 const socketIo = require("socket.io");
-// const { Server } = require("socket.io");
 
 let io;
 

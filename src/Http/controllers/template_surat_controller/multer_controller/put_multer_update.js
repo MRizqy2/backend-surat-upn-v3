@@ -15,14 +15,13 @@ router.use(express.urlencoded({ extended: true }));
 // Konfigurasi Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    console.log("tes1");
     const destination = "template_surat/";
 
     cb(null, destination);
   },
   filename: function (req, file, cb) {
     // Gunakan judul sebagai nama file
-    console.log("tes3");
+
     const judul = req.body.judul || "default";
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(4).toString("hex");
@@ -30,16 +29,13 @@ const storage = multer.diskStorage({
       file.originalname
     )}`;
     cb(null, filename);
-    console.log("tes4");
   },
 });
-// console.log("tes5");
 const upload = multer({ storage: storage });
 
 // Route untuk endpoint /multer
 const putMulter = async function (req, res) {
   try {
-    console.log("tes2");
     const { judul, deskripsi, jenis_id } = req.body;
     const { template_id } = req.query;
     let suratFile, suratPath, judulEx;

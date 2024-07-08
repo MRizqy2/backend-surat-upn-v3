@@ -36,7 +36,6 @@ const postNotif = async (req, res) => {
         },
       };
       await socketEvent(reqSocket);
-      // console.log("lorem3");
     }
 
     if (!req.body.from) {

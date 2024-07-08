@@ -16,7 +16,7 @@ async function catchStatus(req, res) {
     `Di Daftar Tunggu ${
       jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""
     }`,
-    `Diproses ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
+    `Diproses ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`, //
     `Ditolak ${jabatan.name}`,
     `Ditolak ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
     "Diproses ke BSRE",
