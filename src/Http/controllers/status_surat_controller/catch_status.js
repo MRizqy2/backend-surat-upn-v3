@@ -7,7 +7,7 @@ async function catchStatus(req, res) {
     latestStatus,
     persetujuan,
     isSigned,
-    isDownloadAccept,
+    isDownloadUnsigned,
   } = req.body;
   //prodi sd | false | "" | "" | false | false
 
@@ -15,7 +15,7 @@ async function catchStatus(req, res) {
   if (!latestStatus || latestStatus == "") latestStatus = "";
   if (!persetujuan || persetujuan == "") persetujuan = "";
   if (!isSigned) isSigned = false;
-  if (!isDownloadAccept) isDownloadAccept = false;
+  if (!isDownloadUnsigned) isDownloadUnsigned = false;
 
   const jabatan = await JABATAN.findOne({
     where: { id: jabatan_id },
@@ -53,7 +53,7 @@ async function catchStatus(req, res) {
       } else if (persetujuan.toLowerCase().includes(`ditolak`)) {
         return isiStatus[5];
       }
-    } else if (isDownloadAccept) {
+    } else if (isDownloadUnsigned) {
       return isiStatus[7];
     } else if (isSigned) {
       return isiStatus[8];

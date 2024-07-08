@@ -3,6 +3,8 @@ const router = express.Router();
 const { DAFTAR_SURAT, USERS, JABATAN, STATUS } = require("../../../models");
 const catchStatus = require("../status_surat_controller/catch_status");
 const { Op } = require("sequelize");
+const path = require("path");
+const { putStatus } = require("../status_surat_controller/put_status");
 
 const downloadAllUnsigned = async (req, res) => {
   try {
@@ -23,11 +25,40 @@ const downloadAllUnsigned = async (req, res) => {
       ],
     });
 
-    // const statusSurat = await STATUS.findAll({
-    //   where: { status: { [Op.like]: `%${user_jabatan.name}%` } },
-    // });
+    const alamats = daftarSurat.map((surat) => surat.path);
+    // console.log("alamats = ", alamats);
 
-    console.log("daftar surat = ", daftarSurat);
+    const formattedPathsPromises = alamats.map(async (file_path, index) => {
+      file_path = decodeURIComponent(file_path);
+      console.log("file_path = ", file_path);
+      const fileName = await DAFTAR_SURAT.findOne({
+        where: { path: file_path },
+      });
+      const reqStatus = {
+        body: {
+          from: "download_controller",
+        },
+        query: {
+          surat_id: fileName.id,
+        },
+        token: { id: req.token.id },
+      };
+      await putStatus(reqStatus);
+      //   console.log("fileName = ", fileName);
+
+      return {
+        path: path.join(__dirname, `../../../../${file_path}`),
+        name: `${index + 1} ${fileName.judul}`,
+      };
+    });
+
+    const formattedPaths = await Promise.all(formattedPathsPromises);
+
+    res.header("Content-Type", "application/zip");
+    res.zip({
+      files: formattedPaths,
+      filename: "download.zip",
+    });
   } catch (error) {
     console.error("Error:", error);
   }

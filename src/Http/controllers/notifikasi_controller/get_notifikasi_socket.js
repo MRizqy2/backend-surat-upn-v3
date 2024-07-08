@@ -7,6 +7,7 @@ const {
   PRODI,
 } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
+const { where } = require("sequelize");
 const app = express.Router();
 
 const getNotifSocket = async (req, res) => {
@@ -73,7 +74,7 @@ const getNotifSocket = async (req, res) => {
       console.log("jabatan adalah prodi");
       notifikasi = await NOTIFIKASI.findAll({
         where: {
-          "$surat.user.prodi.id$": user.prodi_id,
+          // "$surat.user.prodi.id$": user.prodi_id,
           jabatan_id_ke: user.jabatan_id,
           terkirim: false,
         },
@@ -98,6 +99,7 @@ const getNotifSocket = async (req, res) => {
                     model: PRODI,
                     as: "prodi",
                     attributes: ["id", "name"],
+                    where: { id: user.prodi_id },
                   },
                 ],
               },
@@ -108,33 +110,44 @@ const getNotifSocket = async (req, res) => {
       });
       console.log("sebelum update1");
       if (notifikasi.length > 0) {
-        console.log("error poasmcp, ", notifikasi);
+        console.log("error poasmcp, ");
         await NOTIFIKASI.update(
           { terkirim: true },
           {
             where: {
+              // "$surat.user.prodi.id$": user.prodi_id,
               jabatan_id_ke: user.jabatan_id,
-              "$surat.user.prodi.id$": user.prodi_id,
               terkirim: false,
             },
+            attributes: ["id", "pesan", "createdAt"],
             include: [
+              {
+                model: JABATAN,
+                as: "pengirim",
+                attributes: ["id", "name"],
+              },
               {
                 model: DAFTAR_SURAT,
                 as: "surat",
+                attributes: ["id", "judul"],
                 include: [
                   {
                     model: USERS,
                     as: "user",
+                    attributes: ["id", "name"],
                     include: [
                       {
                         model: PRODI,
                         as: "prodi",
+                        attributes: ["id", "name"],
+                        where: { id: user.prodi_id },
                       },
                     ],
                   },
                 ],
               },
             ],
+            order: [["createdAt", "DESC"]],
           }
         );
         console.log("setelah update");

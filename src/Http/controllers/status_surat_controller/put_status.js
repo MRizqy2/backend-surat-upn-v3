@@ -66,7 +66,7 @@ const putStatus = async (req, res) => {
       });
     }
 
-    if (req.body.from) {
+    if (req.body.from == "tampilan_surat_controller") {
       //diproses/dibaca
       reqStatus = {
         body: {
@@ -75,6 +75,17 @@ const putStatus = async (req, res) => {
           latestStatus: status_surat.status,
           persetujuan: persetujuan,
           isSigned: req.body.isSigned,
+        },
+      };
+    } else if (req.body.from == "download_controller") {
+      reqStatus = {
+        body: {
+          jabatan_id: user.jabatan_id,
+          // isRead: req.body.dibaca,
+          latestStatus: status_surat.status,
+          // persetujuan: persetujuan,
+          // isSigned: req.body.isSigned,
+          isDownloadUnsigned: true,
         },
       };
     } else {

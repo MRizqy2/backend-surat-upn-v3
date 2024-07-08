@@ -7,6 +7,7 @@ const {
   PRODI,
 } = require("../../../models");
 const { StatusCodes } = require("http-status-codes");
+const { where } = require("sequelize");
 const app = express.Router();
 
 const getNotif = async (req, res) => {
@@ -58,7 +59,7 @@ const getNotif = async (req, res) => {
       notifikasi = await NOTIFIKASI.findAll({
         where: {
           jabatan_id_ke: user.jabatan_id,
-          "$surat.user.prodi.id$": user.prodi_id, // Menambahkan kondisi where berdasarkan prodi user
+          // "$surat.user.prodi.id$": user.prodi_id, // Menambahkan kondisi where berdasarkan prodi user
         },
         attributes: ["id", "pesan", "createdAt"],
         include: [
@@ -81,6 +82,7 @@ const getNotif = async (req, res) => {
                     model: PRODI,
                     as: "prodi",
                     attributes: ["id", "name"],
+                    where: { id: user.prodi_id },
                   },
                 ],
               },
