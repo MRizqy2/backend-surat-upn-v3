@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const putStatus = async (req, res) => {
   try {
-    let reqTampilan, updateStatus, reqStatus, reqNomorSuratRevisi;
+    let reqTampilan, updateStatus, reqStatus;
     const { persetujuan, status, indikator_id } = req.body;
     const { surat_id } = req.query;
 
@@ -131,6 +131,7 @@ const putStatus = async (req, res) => {
           jabatan_id_ke: user_surat.jabatan_id,
           isSign: false,
           persetujuan: persetujuan,
+          isRead: req.body.dibaca,
           from: `status_surat_controller/put_status`,
         },
       };

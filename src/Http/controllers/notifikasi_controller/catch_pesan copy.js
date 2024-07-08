@@ -2,7 +2,7 @@ const { JABATAN, USERS, DAFTAR_SURAT, PRODI } = require("../../../models");
 
 async function catchPesan(req, res) {
   try {
-    let { surat_id, jabatan_id, isSign, persetujuan, isRead } = req.body;
+    const { surat_id, jabatan_id, isSign, persetujuan, isRead } = req.body;
 
     if (!isRead) isRead = false;
     if (!persetujuan || persetujuan == "") persetujuan = "";
@@ -33,24 +33,25 @@ async function catchPesan(req, res) {
           ? jabatan_surat.name
           : prodi_surat.name
       }`,
-      `Surat diproses ${
-        jabatan_user && jabatan_user.name ? jabatan_user.name : ""
-      }`,
+      `Surat di ${jabatan_user && jabatan_user.name ? jabatan_user.name : ""}`,
       `Surat di ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
       `Surat ditolak ${jabatan_user.name}`,
       `Surat telah ditandatangani`,
     ];
 
     if (isSign) {
-      return isiPesan[4];
-    } else if (persetujuan) {
-      if (persetujuan.toLowerCase().includes(`disetujui`)) {
+      return isiPesan[3];
+    } else if (
+      !persetujuan ||
+      (persetujuan && persetujuan.toLowerCase().includes(`disetujui`))
+    ) {
+      if (persetujuan) {
         return isiPesan[2];
       } else {
-        return isiPesan[3];
+        return isiPesan[0];
       }
-    } else if (isRead) {
-      return isiPesan[1];
+    } else if (persetujuan && persetujuan.toLowerCase().includes(`ditolak`)) {
+      return isiPesan[2];
     } else {
       return isiPesan[0];
     }

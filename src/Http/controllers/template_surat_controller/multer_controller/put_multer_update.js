@@ -59,7 +59,6 @@ const putMulter = async function (req, res) {
         "../../../../../",
         decodeURIComponent(data_template_surat.path)
       );
-      console.log(filePath);
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error("Error:", err);
