@@ -26,39 +26,40 @@ const handleFileRequest = async (req, res) => {
       where: { jabatan_id: jabatan.id },
     });
 
-    if (permision.upload_tandatangan) {
+    if (permision.upload_tandatangan && filepath) {
       const surat = await DAFTAR_SURAT.findOne({
         where: { path: filepath },
       });
       const status_surat = await STATUS.findOne({
         where: { surat_id: surat.id },
       });
+      if (status_surat) {
+        const statusJ = status_surat.status.toLowerCase();
+        // console.log("posisi 1 ", status_surat.status);
+        const statusS = status_surat.status.toLowerCase();
+        // console.log("posisi 2 ", statusJ, statusS);
 
-      const statusJ = status_surat.status.toLowerCase();
+        if (
+          statusJ.includes(`${jabatan.name.toLowerCase()}`) &&
+          !statusS.includes(`bsre`)
+          //  || statusS.includes(`bsre`)
+        ) {
+          console.log("masuk");
+          const reqStatus = {
+            body: {
+              user: user,
+              from: "download_controller",
+            },
+            query: {
+              surat_id: surat.id,
+            },
+            token: {
+              id: req.token.id,
+            },
+          };
 
-      console.log("posisi 1 ", status_surat.status);
-      const statusS = status_surat.status.toLowerCase();
-      console.log("posisi 2 ", statusJ, statusS);
-
-      if (
-        statusJ.includes(`${jabatan.name.toLowerCase()}`) &&
-        !statusS.includes(`bsre`)
-      ) {
-        console.log("masuk");
-        const reqStatus = {
-          body: {
-            user: user,
-            from: "download_controller",
-          },
-          query: {
-            surat_id: surat.id,
-          },
-          token: {
-            id: req.token.id,
-          },
-        };
-
-        await putStatus(reqStatus);
+          await putStatus(reqStatus);
+        }
       }
     }
 
