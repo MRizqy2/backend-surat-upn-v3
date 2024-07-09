@@ -54,7 +54,7 @@ async function catchStatus(req, res) {
   ) {
     if (!latestStatus) {
       res = isiStatus[3];
-    } else if (isRead && !isSigned) {
+    } else if (isRead && !isSigned && !isDownloadUnsigned && !persetujuan) {
       res = isiStatus[2];
     } else if (persetujuan) {
       if (persetujuan.toLowerCase().includes(`disetujui`)) {

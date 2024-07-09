@@ -2,11 +2,19 @@ const { JABATAN, USERS, DAFTAR_SURAT, PRODI } = require("../../../models");
 
 async function catchPesan(req, res) {
   try {
-    let { surat_id, jabatan_id, isSign, persetujuan, isRead } = req.body;
+    let {
+      surat_id,
+      jabatan_id,
+      isSign,
+      persetujuan,
+      isRead,
+      isDownloadUnsigned,
+    } = req.body;
 
     if (!isRead) isRead = false;
     if (!persetujuan || persetujuan == "") persetujuan = "";
     if (!isSign) isSign = false;
+    if (!isDownloadUnsigned) isDownloadUnsigned = false;
 
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
@@ -38,22 +46,26 @@ async function catchPesan(req, res) {
       }`,
       `Surat di ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
       `Surat ditolak ${jabatan_user.name}`,
+      `Diproses ke BSRE ${jabatan_user.name}`,
       `Surat telah ditandatangani`,
     ];
 
     if (isSign) {
-      return isiPesan[4];
+      res = isiPesan[5];
+    } else if (isDownloadUnsigned) {
+      res = isiPesan[4];
     } else if (persetujuan) {
       if (persetujuan.toLowerCase().includes(`disetujui`)) {
-        return isiPesan[2];
+        res = isiPesan[2];
       } else {
-        return isiPesan[3];
+        res = isiPesan[3];
       }
     } else if (isRead) {
-      return isiPesan[1];
+      res = isiPesan[1];
     } else {
-      return isiPesan[0];
+      res = isiPesan[0];
     }
+    return res;
   } catch (error) {
     console.error("Error:", error);
     return "Terjadi kesalahan";

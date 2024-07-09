@@ -48,6 +48,7 @@ const handleFileRequest = async (req, res) => {
           const reqStatus = {
             body: {
               user: user,
+              isDownloadUnsigned: true,
               from: "download_controller",
             },
             query: {
@@ -68,6 +69,7 @@ const handleFileRequest = async (req, res) => {
     filepath = path.resolve(__dirname, "../../../../", filepath);
     filepath = filepath.replace(/\\/g, "/");
     if (!fs.existsSync(filepath)) {
+      console.log("oaocpm");
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "File not found" });
