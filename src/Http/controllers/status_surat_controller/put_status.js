@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const putStatus = async (req, res) => {
   try {
-    let reqTampilan, updateStatus, reqStatus, reqNomorSuratRevisi;
+    let reqTampilan, updateStatus, reqStatus;
     const { persetujuan, status, indikator_id } = req.body;
     const { surat_id } = req.query;
 
@@ -68,16 +68,18 @@ const putStatus = async (req, res) => {
 
     if (req.body.from == "tampilan_surat_controller") {
       //diproses/dibaca
+      console.log("posisi 1");
       reqStatus = {
         body: {
           jabatan_id: user.jabatan_id,
           isRead: req.body.dibaca,
           latestStatus: status_surat.status,
           persetujuan: persetujuan,
-          isSigned: req.body.isSigned,
+          isSigned: req.body.isSigned || null,
         },
       };
     } else if (req.body.from == "download_controller") {
+      console.log("posisi 2");
       reqStatus = {
         body: {
           jabatan_id: user.jabatan_id,
@@ -88,17 +90,34 @@ const putStatus = async (req, res) => {
           isDownloadUnsigned: true,
         },
       };
+    } else if (
+      req.body.from ==
+      "daftar_surat_controller/multer_controller/put_multer_ttd"
+    ) {
+      console.log("posisi 3", req.body.isSigned);
+      reqStatus = {
+        body: {
+          jabatan_id: jabatan.id,
+          // isRead: req.body.dibaca,
+          latestStatus: status_surat.status,
+          // persetujuan: persetujuan,
+          isSigned: req.body.isSigned || null,
+        },
+      };
     } else {
+      console.log("posisi 4");
       reqStatus = {
         body: {
           jabatan_id: jabatan.id,
           isRead: req.body.dibaca,
           latestStatus: status_surat.status,
           persetujuan: persetujuan,
+          // isSigned: req.body.isSigned || null,
         },
       };
     }
     const saveStatus = await catchStatus(reqStatus);
+    console.log("saveStatus", saveStatus);
 
     if (!persetujuan) {
       updateStatus = await STATUS.update(
@@ -131,6 +150,7 @@ const putStatus = async (req, res) => {
           jabatan_id_ke: user_surat.jabatan_id,
           isSign: false,
           persetujuan: persetujuan,
+          isRead: req.body.dibaca,
           from: `status_surat_controller/put_status`,
         },
       };

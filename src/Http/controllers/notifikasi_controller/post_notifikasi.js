@@ -7,8 +7,14 @@ const { socketEvent } = require("../socket/socketEvent");
 
 const postNotif = async (req, res) => {
   try {
-    const { surat_id, jabatan_id_dari, jabatan_id_ke, isSign, persetujuan } =
-      req.body;
+    const {
+      surat_id,
+      jabatan_id_dari,
+      jabatan_id_ke,
+      isSign,
+      persetujuan,
+      isRead,
+    } = req.body;
 
     const reqPesan = {
       body: {
@@ -16,6 +22,7 @@ const postNotif = async (req, res) => {
         jabatan_id: jabatan_id_dari,
         isSign,
         persetujuan,
+        isRead,
       },
     };
 
