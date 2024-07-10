@@ -17,7 +17,15 @@ const putTampilan = async (req, res) => {
     const jabatan = await JABATAN.findOne({
       where: { id: user.jabatan_id },
     });
-    const tampilan = await TAMPILAN.update(
+
+    const tampilan = await TAMPILAN.findOne({
+      where: {
+        surat_id: surat_id,
+        jabatan_id: user.jabatan_id,
+      },
+    });
+
+    const tampilanUpdate = await TAMPILAN.update(
       {
         pin: pin,
         dibaca: dibaca,
@@ -32,7 +40,7 @@ const putTampilan = async (req, res) => {
     );
 
     let saveStatus;
-    if (dibaca) {
+    if (dibaca && !tampilan.dibaca) {
       const reqStatus = {
         body: {
           dibaca: dibaca,
@@ -45,6 +53,9 @@ const putTampilan = async (req, res) => {
         token: req.token,
       };
       saveStatus = await putStatus(reqStatus);
+
+      console.log("tampilan qwerty");
+
       const surat = await DAFTAR_SURAT.findOne({
         where: { id: surat_id },
       });
@@ -53,7 +64,7 @@ const putTampilan = async (req, res) => {
       });
     }
     if (!req.body.from) {
-      res.status(StatusCodes.OK).json({ tampilan, saveStatus });
+      res.status(StatusCodes.OK).json({ tampilanUpdate, saveStatus });
     } else {
       return { tampilan, saveStatus };
     }

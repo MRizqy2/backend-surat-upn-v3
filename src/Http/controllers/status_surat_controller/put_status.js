@@ -34,15 +34,15 @@ app.use(express.urlencoded({ extended: true }));
 
 const putStatus = async (req, res) => {
   try {
-    let reqTampilan, updateStatus, reqStatus, reqNomorSuratRevisi;
+    let reqTampilan, updateStatus, reqStatus, reqNotif, reqSocket;
     const { persetujuan, status, indikator_id } = req.body;
     const { surat_id } = req.query;
 
-    const user = await USERS.findOne({
+    const token = await USERS.findOne({
       where: { id: req.token.id },
     });
-    const jabatan = await JABATAN.findOne({
-      where: { id: user.jabatan_id },
+    const token_jabatan = await JABATAN.findOne({
+      where: { id: token.jabatan_id },
     });
 
     const surat = await DAFTAR_SURAT.findOne({
@@ -68,37 +68,59 @@ const putStatus = async (req, res) => {
 
     if (req.body.from == "tampilan_surat_controller") {
       //diproses/dibaca
+      console.log("posisi 1");
       reqStatus = {
         body: {
-          jabatan_id: user.jabatan_id,
+          jabatan_id: token.jabatan_id,
           isRead: req.body.dibaca,
           latestStatus: status_surat.status,
           persetujuan: persetujuan,
-          isSigned: req.body.isSigned,
+          // isSigned: req.body.isSigned || null,
         },
       };
     } else if (req.body.from == "download_controller") {
+      //admin dekan download
+      console.log("posisi 2");
       reqStatus = {
         body: {
-          jabatan_id: user.jabatan_id,
+          jabatan_id: token.jabatan_id,
           // isRead: req.body.dibaca,
           latestStatus: status_surat.status,
           // persetujuan: persetujuan,
           // isSigned: req.body.isSigned,
-          isDownloadUnsigned: true,
+          isDownloadUnsigned: req.body.isDownloadUnsigned,
+        },
+      };
+    } else if (
+      req.body.from ==
+      "daftar_surat_controller/multer_controller/put_multer_ttd"
+    ) {
+      //admin dekan upload
+      console.log("posisi 3", req.body.isSigned);
+      reqStatus = {
+        body: {
+          jabatan_id: token_jabatan.id,
+          // isRead: req.body.dibaca,
+          latestStatus: status_surat.status,
+          // persetujuan: persetujuan,
+          isSigned: req.body.isSigned || null,
         },
       };
     } else {
+      // persetujuan
+      console.log("posisi 4");
       reqStatus = {
         body: {
-          jabatan_id: jabatan.id,
+          jabatan_id: token_jabatan.id,
           isRead: req.body.dibaca,
           latestStatus: status_surat.status,
           persetujuan: persetujuan,
+          // isSigned: req.body.isSigned || null,
         },
       };
     }
     const saveStatus = await catchStatus(reqStatus);
+    console.log("saveStatus", saveStatus);
 
     if (!persetujuan) {
       updateStatus = await STATUS.update(
@@ -123,24 +145,33 @@ const putStatus = async (req, res) => {
       );
     }
 
-    if (user_surat.jabatan_id != user.jabatan_id) {
-      const reqNotif = {
+    if (user_surat.jabatan_id != token.jabatan_id) {
+      // reqSocket = {
+      //   body: {
+      //     dataServer: token.jabatan_id,
+      //     api: "mail",
+      //   },
+      // };
+      // await socketEvent(reqSocket);
+      reqNotif = {
         body: {
           surat_id: surat_id,
-          jabatan_id_dari: jabatan.id,
+          jabatan_id_dari: token_jabatan.id,
           jabatan_id_ke: user_surat.jabatan_id,
-          isSign: false,
+          // isSign: false,
           persetujuan: persetujuan,
+          isRead: req.body.dibaca,
+          isDownloadUnsigned: req.body.isDownloadUnsigned,
           from: `status_surat_controller/put_status`,
         },
       };
-      await postNotif(reqNotif);
+      const saveNotif = await postNotif(reqNotif);
     }
     if (persetujuan && persetujuan.toLowerCase().includes("disetujui")) {
-      if (jabatan.jabatan_atas_id) {
+      if (token_jabatan.jabatan_atas_id) {
         reqTampilan = {
           body: {
-            jabatan_id: jabatan.jabatan_atas_id,
+            jabatan_id: token_jabatan.jabatan_atas_id,
             surat_id: surat_id,
             from: "status_surat_controller",
           },
@@ -150,26 +181,26 @@ const putStatus = async (req, res) => {
         reqAkses = {
           body: {
             surat_id: surat.id,
-            tambah_akses_id: jabatan.jabatan_atas_id || "",
+            tambah_akses_id: token_jabatan.jabatan_atas_id || "",
             from: `status_surat_controller/put_status.js`,
           },
         };
         await postAksesSurat(reqAkses);
-        const reqNotif2 = {
+        reqNotif = {
           body: {
             surat_id: surat_id,
-            jabatan_id_dari: jabatan.id,
-            jabatan_id_ke: jabatan.jabatan_atas_id,
+            jabatan_id_dari: token_jabatan.id,
+            jabatan_id_ke: token_jabatan.jabatan_atas_id,
             isSign: false,
             persetujuan: false,
             from: `status_surat_controller/put_status`,
           },
         };
-        await postNotif(reqNotif2);
+        await postNotif(reqNotif);
       }
 
       const permision = await PERMISION.findOne({
-        where: { jabatan_id: jabatan.id },
+        where: { jabatan_id: token_jabatan.id },
       });
       if (permision.generate_nomor_surat) {
         let surat_revisi = await REVISI.findOne({
@@ -215,10 +246,10 @@ const putStatus = async (req, res) => {
         };
         await postRepo(reqRepo);
       }
-      let reqSocket = {
+      reqSocket = {
         body: {
           api: "mail",
-          dataServer: jabatan.jabatan_atas_id,
+          dataServer: token_jabatan.jabatan_atas_id,
         },
       };
       await socketEvent(reqSocket);
