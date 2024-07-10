@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { DAFTAR_SURAT, USERS, JABATAN, STATUS } = require("../../../models");
-const catchStatus = require("../status_surat_controller/catch_status");
+const fs = require("fs");
 const { Op } = require("sequelize");
 const path = require("path");
 const { putStatus } = require("../status_surat_controller/put_status");
@@ -33,8 +33,17 @@ const downloadAllUnsigned = async (req, res) => {
       const fileName = await DAFTAR_SURAT.findOne({
         where: { path: file_path },
       });
+
+      const filePathFull = path.join(__dirname, `../../../../${file_path}`);
+
+      // Check if file exists
+      if (!fs.existsSync(filePathFull)) {
+        throw new Error(`File not found: ${filePathFull}`);
+      }
+
       const reqStatus = {
         body: {
+          isDownloadUnsigned: true,
           from: "download_controller",
         },
         query: {
@@ -55,7 +64,7 @@ const downloadAllUnsigned = async (req, res) => {
     res.header("Content-Type", "application/zip");
     res.zip({
       files: formattedPaths,
-      filename: "download.zip",
+      filename: "surat.zip",
     });
   } catch (error) {
     console.error("Error:", error);
