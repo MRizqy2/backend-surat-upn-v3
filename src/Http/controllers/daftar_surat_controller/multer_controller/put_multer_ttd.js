@@ -37,7 +37,7 @@ const upload = multer({ storage: storage });
 const putMulterTtd = async function (req, res) {
   try {
     const { surat_id } = req.query;
-    console.log("jpoakwd");
+
     if (!req.files["surat"][0]) {
       return res
         .status(StatusCodes.BAD_REQUEST)
@@ -83,7 +83,6 @@ const putMulterTtd = async function (req, res) {
       token: req.token,
     };
     const saveStatus = await putStatus(reqStatus);
-    console.log("saveStatus multer ttd: ");
 
     const reqNotif = {
       body: {

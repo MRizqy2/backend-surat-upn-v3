@@ -16,7 +16,6 @@ const handleFileRequest = async (req, res) => {
   try {
     let user = req.token.id;
     let { filepath } = req.query;
-    console.log("filepath: ", filepath);
 
     user = await USERS.findOne({ where: { id: user } });
     const jabatan = await JABATAN.findOne({
@@ -35,16 +34,13 @@ const handleFileRequest = async (req, res) => {
       });
       if (status_surat) {
         const statusJ = status_surat.status.toLowerCase();
-        // console.log("posisi 1 ", status_surat.status);
+
         const statusS = status_surat.status.toLowerCase();
-        // console.log("posisi 2 ", statusJ, statusS);
 
         if (
           statusJ.includes(`${jabatan.name.toLowerCase()}`) &&
           !statusS.includes(`bsre`)
-          //  || statusS.includes(`bsre`)
         ) {
-          console.log("masuk");
           const reqStatus = {
             body: {
               user: user,
@@ -69,7 +65,6 @@ const handleFileRequest = async (req, res) => {
     filepath = path.resolve(__dirname, "../../../../", filepath);
     filepath = filepath.replace(/\\/g, "/");
     if (!fs.existsSync(filepath)) {
-      console.log("oaocpm");
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "File not found" });

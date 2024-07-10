@@ -21,9 +21,7 @@ const ocrController =
 const downloadController = require("../Http/controllers/download_controller/download_controller");
 const sikojaController = require("../Http/controllers/sikoja_controller/sikoja_controller");
 const repoController = require("../Http/controllers/sikoja_controller/repo_controller/repo_controller");
-// const downloadExel = require("../Http/controllers/download_controller/download_excel_controller");
 const downloadAccess = require("../Http/controllers/download_controller/open_access_download");
-// const socketEvent = require("../Http/controllers/socket/socketEvent").app;
 
 const router = express.Router();
 
@@ -51,12 +49,9 @@ router.use("/status", authMiddleware, statusController);
 router.use("/komentar", authMiddleware, komentarController);
 router.use("/notifikasi", authMiddleware, notifikasiController);
 router.use("/download", authMiddleware, downloadController);
-// router.use("/progress-bar", authMiddleware, getProgressBar);
 router.use("/repo", authMiddleware, repoController);
 
 router.use("/sikoja", authMiddleware, sikojaController);
-// router.use("/excel", authMiddleware, downloadExel);
 router.use("/", downloadAccess);
-// router.use("/download-template", downloadTemplate);
 
 module.exports = router;

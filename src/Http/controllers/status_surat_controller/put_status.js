@@ -68,26 +68,20 @@ const putStatus = async (req, res) => {
 
     if (req.body.from == "tampilan_surat_controller") {
       //diproses/dibaca
-      console.log("posisi 1");
       reqStatus = {
         body: {
           jabatan_id: token.jabatan_id,
           isRead: req.body.dibaca,
           latestStatus: status_surat.status,
           persetujuan: persetujuan,
-          // isSigned: req.body.isSigned || null,
         },
       };
     } else if (req.body.from == "download_controller") {
       //admin dekan download
-      console.log("posisi 2");
       reqStatus = {
         body: {
           jabatan_id: token.jabatan_id,
-          // isRead: req.body.dibaca,
           latestStatus: status_surat.status,
-          // persetujuan: persetujuan,
-          // isSigned: req.body.isSigned,
           isDownloadUnsigned: req.body.isDownloadUnsigned,
         },
       };
@@ -96,31 +90,25 @@ const putStatus = async (req, res) => {
       "daftar_surat_controller/multer_controller/put_multer_ttd"
     ) {
       //admin dekan upload
-      console.log("posisi 3", req.body.isSigned);
       reqStatus = {
         body: {
           jabatan_id: token_jabatan.id,
-          // isRead: req.body.dibaca,
           latestStatus: status_surat.status,
-          // persetujuan: persetujuan,
           isSigned: req.body.isSigned || null,
         },
       };
     } else {
       // persetujuan
-      console.log("posisi 4");
       reqStatus = {
         body: {
           jabatan_id: token_jabatan.id,
           isRead: req.body.dibaca,
           latestStatus: status_surat.status,
           persetujuan: persetujuan,
-          // isSigned: req.body.isSigned || null,
         },
       };
     }
     const saveStatus = await catchStatus(reqStatus);
-    console.log("saveStatus", saveStatus);
 
     if (!persetujuan) {
       updateStatus = await STATUS.update(
@@ -146,19 +134,11 @@ const putStatus = async (req, res) => {
     }
 
     if (user_surat.jabatan_id != token.jabatan_id) {
-      // reqSocket = {
-      //   body: {
-      //     dataServer: token.jabatan_id,
-      //     api: "mail",
-      //   },
-      // };
-      // await socketEvent(reqSocket);
       reqNotif = {
         body: {
           surat_id: surat_id,
           jabatan_id_dari: token_jabatan.id,
           jabatan_id_ke: user_surat.jabatan_id,
-          // isSign: false,
           persetujuan: persetujuan,
           isRead: req.body.dibaca,
           isDownloadUnsigned: req.body.isDownloadUnsigned,

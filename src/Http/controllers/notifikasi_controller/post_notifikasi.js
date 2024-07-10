@@ -14,6 +14,7 @@ const postNotif = async (req, res) => {
       isSign,
       persetujuan,
       isRead,
+      isDownloadUnsigned,
     } = req.body;
 
     const reqPesan = {
@@ -23,6 +24,7 @@ const postNotif = async (req, res) => {
         isSign,
         persetujuan,
         isRead,
+        isDownloadUnsigned,
       },
     };
 
