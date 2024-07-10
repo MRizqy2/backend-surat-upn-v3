@@ -46,7 +46,7 @@ async function catchPesan(req, res) {
       }`,
       `Surat di ${jabatan_atas && jabatan_atas.name ? jabatan_atas.name : ""}`,
       `Surat ditolak ${jabatan_user.name}`,
-      `Diproses ke BSRE ${jabatan_user.name}`,
+      `Surat diproses ke BSRE ${jabatan_user.name}`,
       `Surat telah ditandatangani`,
     ];
 

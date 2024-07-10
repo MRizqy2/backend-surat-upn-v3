@@ -22,12 +22,12 @@ const getNotifSocket = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "User not found" });
     }
-    console.log("prodi user = ", user.prodi_id);
-    console.log("jabatan user = ", user.jabatan_id);
-    console.log("NAMA user = ", user.name);
+    // console.log("prodi user = ", user.prodi_id);
+    // console.log("jabatan user = ", user.jabatan_id);
+    // console.log("NAMA user = ", user.name);
 
     if (user.prodi_id === 1 || !user.prodi_id) {
-      console.log("jabatan bukan prodi");
+      // console.log("jabatan bukan prodi");
       notifikasi = await NOTIFIKASI.findAll({
         where: { jabatan_id_ke: user.jabatan_id, terkirim: false },
         attributes: ["id", "pesan", "createdAt"],
@@ -71,7 +71,7 @@ const getNotifSocket = async (req, res) => {
         );
       }
     } else {
-      console.log("jabatan adalah prodi");
+      // console.log("jabatan adalah prodi");
       notifikasi = await NOTIFIKASI.findAll({
         where: {
           // "$surat.user.prodi.id$": user.prodi_id,
@@ -108,9 +108,9 @@ const getNotifSocket = async (req, res) => {
         ],
         order: [["createdAt", "DESC"]],
       });
-      console.log("sebelum update1");
+      // console.log("sebelum update1");
       if (notifikasi.length > 0) {
-        console.log("error poasmcp, ");
+        // console.log("error poasmcp, ");
         await NOTIFIKASI.update(
           { terkirim: true },
           {
@@ -153,14 +153,14 @@ const getNotifSocket = async (req, res) => {
         console.log("setelah update");
       }
     }
-    console.log("update Notif: ");
+    // console.log("update Notif: ");
     if (notifikasi.length > 0) {
       res.status(StatusCodes.OK).json(notifikasi);
 
-      console.log("pmpad");
+      // console.log("pmpad");
     } else {
       res.status(StatusCodes.OK).json(0);
-      console.log("apsmdpw");
+      // console.log("apsmdpw");
     }
   } catch (error) {
     console.error("Error:", error);

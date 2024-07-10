@@ -14,6 +14,7 @@ const postNotif = async (req, res) => {
       isSign,
       persetujuan,
       isRead,
+      isDownloadUnsigned,
     } = req.body;
 
     const reqPesan = {
@@ -23,10 +24,12 @@ const postNotif = async (req, res) => {
         isSign,
         persetujuan,
         isRead,
+        isDownloadUnsigned,
       },
     };
 
     const savePesan = await catchPesan(reqPesan);
+    console.log("saveNotif", savePesan);
     const notifikasi = await NOTIFIKASI.create({
       surat_id: surat_id,
       jabatan_id_dari: jabatan_id_dari,
