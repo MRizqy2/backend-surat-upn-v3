@@ -11,9 +11,7 @@ const putResetPassword =
   async (req, res) => {
     try {
       const { user_id } = req.query;
-      // if (user_id == 1) {
-      //   res.json({ message: "Error : The User is Admin", user });
-      // }
+
       const password = crypto.randomBytes(10).toString("hex");
       const hashedPassword = await bcrypt.hash(password, 10);
       const updated = await USERS.update(

@@ -29,7 +29,6 @@ const postNotif = async (req, res) => {
     };
 
     const savePesan = await catchPesan(reqPesan);
-    console.log("saveNotif", savePesan);
     const notifikasi = await NOTIFIKASI.create({
       surat_id: surat_id,
       jabatan_id_dari: jabatan_id_dari,
