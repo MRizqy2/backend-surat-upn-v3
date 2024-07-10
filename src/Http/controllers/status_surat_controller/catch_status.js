@@ -38,7 +38,9 @@ async function catchStatus(req, res) {
   ];
 
   if (
-    latestStatus.toLowerCase().includes(`${jabatan.name.toLowerCase()}`) ||
+    latestStatus == isiStatus[1] ||
+    latestStatus == isiStatus[2] ||
+    latestStatus == isiStatus[7] ||
     !latestStatus
   ) {
     if (!latestStatus) {
