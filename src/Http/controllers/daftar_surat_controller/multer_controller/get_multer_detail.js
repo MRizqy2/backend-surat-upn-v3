@@ -31,7 +31,8 @@ const getDaftarSurat = async (req, res) => {
     return res.status(404).json("Surat not found");
   }
 
-  if (user.fakultas_id !== 1 || user.prodi !== 1) {
+  if (user.fakultas_id != 1 || user.prodi_id != 1) {
+    console.log("wpmv", user.fakultas_id, user.prodi);
     surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
       attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -103,6 +104,7 @@ const getDaftarSurat = async (req, res) => {
       order: [["id", "ASC"]],
     });
   } else {
+    console.log("mwb", user.fakultas_id, user.prodi);
     surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
       attributes: { exclude: ["createdAt", "updatedAt"] },
