@@ -14,7 +14,7 @@ const { postStatus } = require("../../status_surat_controller/post_status");
 const {
   postTampilan,
 } = require("../../tampilan_surat_controller/post_tampilan");
-const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
+// const { postNotif } = require("../../notifikasi_controller/post_notifikasi");
 const { send } = require("../send_controller");
 const { getProgressBar } = require("./get_progress_bar");
 const { socketEvent } = require("../../socket/socketEvent.js");
@@ -114,17 +114,17 @@ const postMulter = async function (req, res) {
     };
     await send(reqSend); //akses
 
-    const reqNotif = {
-      body: {
-        surat_id: daftar_surat.id,
-        jabatan_id_dari: jabatan.id,
-        jabatan_id_ke: jabatan.jabatan_atas_id,
-        isSign: null,
-        persetujuan: null,
-        from: `daftar_surat_controller/multer_controller/post_multer_upload`,
-      },
-    };
-    await postNotif(reqNotif);
+    // const reqNotif = {
+    //   body: {
+    //     surat_id: daftar_surat.id,
+    //     jabatan_id_dari: jabatan.id,
+    //     jabatan_id_ke: jabatan.jabatan_atas_id,
+    //     isSign: null,
+    //     persetujuan: null,
+    //     from: `daftar_surat_controller/multer_controller/post_multer_upload`,
+    //   },
+    // };
+    // await postNotif(reqNotif);
 
     const progressBarRes = await getProgressBar(
       {

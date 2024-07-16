@@ -43,7 +43,6 @@ const handleFileRequest = async (req, res) => {
         ) {
           const reqStatus = {
             body: {
-              user: user,
               isDownloadUnsigned: true,
               from: "download_controller",
             },

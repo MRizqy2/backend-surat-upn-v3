@@ -32,7 +32,7 @@ const getDaftarSurat = async (req, res) => {
   }
 
   if (user.fakultas_id != 1 || user.prodi_id != 1) {
-    console.log("wpmv", user.fakultas_id, user.prodi);
+    // console.log("wpmv", user.fakultas_id, user.prodi);
     surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
       attributes: { exclude: ["createdAt", "updatedAt"] },

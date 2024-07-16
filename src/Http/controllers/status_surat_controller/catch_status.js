@@ -20,7 +20,6 @@ async function catchStatus(req, res) {
     where: { id: jabatan_id },
   });
   const jabatan_atas = await JABATAN.findOne({
-    //TU
     where: { id: jabatan.jabatan_atas_id },
   });
   const isiStatus = [
@@ -57,9 +56,10 @@ async function catchStatus(req, res) {
       res = isiStatus[7];
     } else if (isSigned) {
       res = isiStatus[8];
-    } else {
-      res = latestStatus;
     }
+    // else {
+    //   res = latestStatus;
+    // }
   } else {
     res = latestStatus;
   }

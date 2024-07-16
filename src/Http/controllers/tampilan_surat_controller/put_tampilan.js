@@ -49,7 +49,7 @@ const putTampilan = async (req, res) => {
     if (dibaca && !tampilan.dibaca) {
       const reqStatus = {
         body: {
-          dibaca: dibaca,
+          isRead: dibaca,
           user: user,
           from: "tampilan_surat_controller",
         },

@@ -37,12 +37,6 @@ const putStatus = async (req, res) => {
     let reqTampilan, updateStatus, reqStatus, reqNotif, reqSocket;
     const { persetujuan, status, indikator_id } = req.body;
     const { surat_id } = req.query;
-    let { from, isRead, isDownloadUnsigned, isSigned } = req.body;
-
-    if (!from) from = "";
-    if (!isRead) isRead = false;
-    if (!isDownloadUnsigned) isDownloadUnsigned = false;
-    if (!isSigned) isSigned = false;
 
     const token = await USERS.findOne({
       where: { id: req.token.id },
@@ -60,35 +54,47 @@ const putStatus = async (req, res) => {
     const status_surat = await STATUS.findOne({
       where: { surat_id: surat.id },
     });
+    if (!status_surat) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        error: "Status not found",
+      });
+    }
 
-    if (from == "tampilan_surat_controller") {
+    if (!surat) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        error: "Daftar surat not found",
+      });
+    }
+
+    if (req.body.from == "tampilan_surat_controller") {
       //diproses/dibaca
       reqStatus = {
         body: {
           jabatan_id: token.jabatan_id,
-          isRead: isRead,
+          isRead: req.body.dibaca,
           latestStatus: status_surat.status,
           persetujuan: persetujuan,
         },
       };
-    } else if (from == "download_controller") {
+    } else if (req.body.from == "download_controller") {
       //admin dekan download
       reqStatus = {
         body: {
           jabatan_id: token.jabatan_id,
           latestStatus: status_surat.status,
-          isDownloadUnsigned: isDownloadUnsigned,
+          isDownloadUnsigned: req.body.isDownloadUnsigned,
         },
       };
     } else if (
-      from == "daftar_surat_controller/multer_controller/put_multer_ttd"
+      req.body.from ==
+      "daftar_surat_controller/multer_controller/put_multer_ttd"
     ) {
       //admin dekan upload
       reqStatus = {
         body: {
           jabatan_id: token_jabatan.id,
           latestStatus: status_surat.status,
-          isSigned: isSigned,
+          isSigned: req.body.isSigned || null,
         },
       };
     } else {
@@ -96,16 +102,25 @@ const putStatus = async (req, res) => {
       reqStatus = {
         body: {
           jabatan_id: token_jabatan.id,
-          isRead: isRead,
+          isRead: req.body.dibaca,
           latestStatus: status_surat.status,
           persetujuan: persetujuan,
         },
       };
     }
     const saveStatus = await catchStatus(reqStatus);
-    console.log("pmqw", saveStatus);
 
-    if (persetujuan) {
+    if (!persetujuan) {
+      updateStatus = await STATUS.update(
+        {
+          status: saveStatus || status || status_surat.status,
+        },
+        {
+          where: { surat_id: surat.id ? surat.id : surat_id },
+          returning: true,
+        }
+      );
+    } else {
       updateStatus = await STATUS.update(
         {
           persetujuan: persetujuan || status_surat.persetujuan || "",
@@ -116,32 +131,17 @@ const putStatus = async (req, res) => {
           returning: true,
         }
       );
-    } else {
-      updateStatus = await STATUS.update(
-        {
-          status: saveStatus || status || status_surat.status,
-        },
-        {
-          where: { surat_id: surat.id ? surat.id : surat_id },
-          returning: true,
-        }
-      );
     }
 
-    if (
-      (user_surat.jabatan_id != token.jabatan_id &&
-        !updateStatus[1][0].dataValues.status.includes("BSRE")) ||
-      status_surat.status.includes(`Diproses ${token_jabatan.name}`)
-    ) {
+    if (user_surat.jabatan_id != token.jabatan_id) {
       reqNotif = {
         body: {
           surat_id: surat_id,
           jabatan_id_dari: token_jabatan.id,
           jabatan_id_ke: user_surat.jabatan_id,
           persetujuan: persetujuan,
-          isRead: isRead,
-          isSigned: isSigned,
-          isDownloadUnsigned: isDownloadUnsigned,
+          isRead: req.body.dibaca,
+          isDownloadUnsigned: req.body.isDownloadUnsigned,
           from: `status_surat_controller/put_status`,
         },
       };
@@ -188,6 +188,8 @@ const putStatus = async (req, res) => {
         });
 
         let nomor_surat = null;
+        let i = 0,
+          j = 0;
         if (surat_revisi) {
           do {
             if (surat_revisi) {

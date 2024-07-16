@@ -5,7 +5,7 @@ async function catchPesan(req, res) {
     let {
       surat_id,
       jabatan_id,
-      isSign,
+      isSigned,
       persetujuan,
       isRead,
       isDownloadUnsigned,
@@ -13,7 +13,7 @@ async function catchPesan(req, res) {
 
     if (!isRead) isRead = false;
     if (!persetujuan || persetujuan == "") persetujuan = "";
-    if (!isSign) isSign = false;
+    if (!isSigned) isSigned = false;
     if (!isDownloadUnsigned) isDownloadUnsigned = false;
 
     const surat = await DAFTAR_SURAT.findOne({
@@ -50,7 +50,7 @@ async function catchPesan(req, res) {
       `Surat telah ditandatangani`,
     ];
 
-    if (isSign) {
+    if (isSigned) {
       res = isiPesan[5];
     } else if (isDownloadUnsigned) {
       res = isiPesan[4];

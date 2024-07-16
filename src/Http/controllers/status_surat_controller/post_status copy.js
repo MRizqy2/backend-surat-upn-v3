@@ -4,26 +4,18 @@ const router = express.Router();
 const { STATUS, DAFTAR_SURAT, USERS, JABATAN } = require("../../../models");
 const catchStatus = require("./catch_status");
 const { StatusCodes } = require("http-status-codes");
-const { postNotif } = require("../notifikasi_controller/post_notifikasi");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const postStatus = async (req, res) => {
   try {
-    let user_id;
     const { surat_id } = req.body;
-
-    if (req.body.user_id) {
-      user_id = req.body.user_id;
-    } else {
-      user_id = req.token.id;
-    }
     const surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
     });
     const user = await USERS.findOne({
-      where: { id: user_id },
+      where: { id: req.body.user_id || req.token.id },
     });
 
     const jabatan = await JABATAN.findOne({
@@ -50,21 +42,6 @@ const postStatus = async (req, res) => {
       persetujuan: "",
       status: saveStatus,
     });
-
-    const reqNotif = {
-      body: {
-        surat_id: surat.id,
-        jabatan_id_dari: user.jabatan_id,
-        jabatan_id_ke: jabatan.jabatan_atas_id,
-        from: "status_surat_controller/post_status",
-      },
-      query: {
-        surat_id: surat.id,
-      },
-      token: req.token,
-    };
-    await postNotif(reqNotif);
-
     if (!req.body.from) {
       res.status(StatusCodes.OK).json({ surat: surat_kesetujuan });
     } else {

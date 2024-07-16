@@ -7,21 +7,26 @@ const { socketEvent } = require("../socket/socketEvent");
 
 const postNotif = async (req, res) => {
   try {
-    const {
+    let {
       surat_id,
-      jabatan_id_dari,
-      jabatan_id_ke,
-      isSign,
+      jabatan_id_dari, //Admin dekan
+      jabatan_id_ke, //TU
+      isSigned,
       persetujuan,
       isRead,
       isDownloadUnsigned,
     } = req.body;
 
+    if (!isSigned) isSigned = false;
+    if (!persetujuan || persetujuan == "") persetujuan = "";
+    if (!isRead) isRead = false;
+    if (!isDownloadUnsigned) isDownloadUnsigned = false;
+
     const reqPesan = {
       body: {
         surat_id,
         jabatan_id: jabatan_id_dari,
-        isSign,
+        isSigned,
         persetujuan,
         isRead,
         isDownloadUnsigned,
