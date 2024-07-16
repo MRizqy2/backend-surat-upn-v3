@@ -42,20 +42,22 @@ async function catchStatus(req, res) {
     latestStatus == isiStatus[7] ||
     !latestStatus
   ) {
-    if (!latestStatus) {
-      res = isiStatus[3];
-    } else if (isRead && !isSigned && !isDownloadUnsigned && !persetujuan) {
-      res = isiStatus[2];
-    } else if (persetujuan) {
-      if (persetujuan.toLowerCase().includes(`disetujui`)) {
-        res = isiStatus[3];
-      } else if (persetujuan.toLowerCase().includes(`ditolak`)) {
-        res = isiStatus[5];
-      }
-    } else if (isDownloadUnsigned) {
-      res = isiStatus[7];
-    } else if (isSigned) {
+    if (isSigned) {
       res = isiStatus[8];
+    } else if (latestStatus != isiStatus[7]) {
+      if (isDownloadUnsigned) {
+        res = isiStatus[7];
+      } else if (persetujuan) {
+        if (persetujuan.toLowerCase().includes(`disetujui`)) {
+          res = isiStatus[3];
+        } else if (persetujuan.toLowerCase().includes(`ditolak`)) {
+          res = isiStatus[5];
+        }
+      } else if (isRead) {
+        res = isiStatus[2];
+      } else if (!latestStatus) {
+        res = isiStatus[3];
+      }
     }
     // else {
     //   res = latestStatus;
