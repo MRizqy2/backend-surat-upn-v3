@@ -41,6 +41,12 @@ PyMuPDFb 1.23.9
 #### development
 
 > npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
+> npx sequelize-cli seed:generate --name demo-user
+> npx sequelize-cli db:seed --seed 20240721153454-contoh.js
+
+> ALTER TABLE PUBLIC."CONTOH" ADD COLUMN terkirim BOOLEAN;
+> UPDATE PUBLIC."CONTOH" SET "terkirim" = true;
+
 > npx sequelize-cli db:drop
 > npx sequelize-cli db:migrate:undo --name nama-file-migrasi.js
 > npx sequelize-cli db:seed:undo --seed nama-file-migrasi.js
