@@ -32,7 +32,7 @@ const deleteAllNotifikasi = async (req, res) => {
       hapusNotifikasi = await NOTIFIKASI.destroy({
         where: {
           jabatan_id_ke: user.jabatan_id,
-          // "$surat.user.prodi.id$": user.prodi_id, // Menambahkan kondisi where berdasarkan prodi user
+          "$surat.user.prodi.id$": user.prodi_id, // Menambahkan kondisi where berdasarkan prodi user
         },
         include: [
           {
@@ -49,7 +49,7 @@ const deleteAllNotifikasi = async (req, res) => {
                     model: PRODI,
                     as: "prodi",
                     attributes: ["id", "name"],
-                    where: { id: user.prodi_id },
+                    // where: { id: user.prodi_id },
                   },
                 ],
               },
