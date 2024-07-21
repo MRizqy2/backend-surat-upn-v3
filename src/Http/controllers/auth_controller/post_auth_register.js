@@ -4,6 +4,12 @@ const { USERS, JABATAN, PRODI, FAKULTAS } = require("../../../models/index.js");
 
 const authMiddleware = require("../../middleware/authMiddleware.js");
 const express = require("express");
+const {
+  postHeaderRepo,
+} = require("../header_repo_controller/post_header_repo.js");
+const {
+  postHeaderDaftarSurat,
+} = require("../header_daftar_surat/post_header_daftar_surat.js");
 const router = express.Router();
 
 const postRegister =
@@ -65,6 +71,13 @@ const postRegister =
         fakultas_id: fakultas_user.id,
         aktif: true,
       });
+
+      const reqHeader = {
+        body: { user_id: user.id, from: "register" },
+      };
+
+      await postHeaderRepo(reqHeader);
+      await postHeaderDaftarSurat(reqHeader);
 
       res
         .status(StatusCodes.CREATED)

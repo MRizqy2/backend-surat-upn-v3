@@ -22,11 +22,16 @@ const downloadController = require("../Http/controllers/download_controller/down
 const sikojaController = require("../Http/controllers/sikoja_controller/sikoja_controller");
 const repoController = require("../Http/controllers/sikoja_controller/repo_controller/repo_controller");
 const downloadAccess = require("../Http/controllers/download_controller/open_access_download");
+const headerRepoController = require("../Http/controllers/header_repo_controller/header_repo_controller");
+const headerDaftarSuratController = require("../Http/controllers/header_daftar_surat/header_daftar_surat_controller");
 
 const router = express.Router();
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
+
+router.use("/header-repo", authMiddleware, headerRepoController);
+router.use("/header-daftar-surat", authMiddleware, headerDaftarSuratController);
 
 router.use("/akses-master", authMiddleware, aksesMasterController);
 router.use("/permision", authMiddleware, permisionController);
