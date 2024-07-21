@@ -32,7 +32,6 @@ const getDaftarSurat = async (req, res) => {
   }
 
   if (user.fakultas_id != 1 || user.prodi_id != 1) {
-    // console.log("wpmv", user.fakultas_id, user.prodi);
     surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
       attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -103,6 +102,77 @@ const getDaftarSurat = async (req, res) => {
       ],
       order: [["id", "ASC"]],
     });
+    if (!surat) {
+      surat = await DAFTAR_SURAT.findOne({
+        where: { id: surat_id, "$user.prodi.id$": user.prodi_id },
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: STATUS,
+            as: "status",
+            attributes: ["status", "persetujuan"],
+          },
+          {
+            model: TAMPILAN,
+            as: "tampilan",
+            attributes: ["pin", "dibaca"],
+            // where: { jabatan_id: user.jabatan_id },
+          },
+          {
+            model: JENIS_SURAT,
+            as: "jenis",
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+          },
+          {
+            model: KOMENTAR,
+            as: "komentar",
+            attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+            required: false,
+          },
+          {
+            model: PERBAIKAN,
+            as: "perbaikan",
+            attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+            required: false,
+          },
+          {
+            model: NOMOR_SURAT,
+            as: "nomor_surat",
+            attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+            required: false,
+            include: [
+              {
+                model: PERIODE,
+                as: "periode",
+                attributes: { exclude: ["createdAt", "updatedAt"] },
+              },
+            ],
+          },
+          {
+            model: USERS,
+            as: "user",
+            attributes: ["email", "name"],
+            include: [
+              {
+                model: PRODI,
+                as: "prodi",
+                attributes: ["id", "name"],
+              },
+              {
+                model: JABATAN,
+                as: "jabatan",
+                attributes: ["id", "name"],
+              },
+              {
+                model: FAKULTAS,
+                as: "fakultas",
+                attributes: ["id", "name"],
+              },
+            ],
+          },
+        ],
+      });
+    }
   } else {
     console.log("mwb", user.fakultas_id, user.prodi);
     surat = await DAFTAR_SURAT.findOne({
@@ -175,6 +245,7 @@ const getDaftarSurat = async (req, res) => {
       order: [["id", "ASC"]],
     });
   }
+  console.log("qwdsq");
   const revisi = await REVISI.findAll({
     where: { surat_id_baru: surat_id },
     attributes: [],
