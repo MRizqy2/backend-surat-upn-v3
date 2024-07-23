@@ -35,6 +35,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      // catatan: {
+      //   type: DataTypes.TEXT,
+      // },
     },
     {
       sequelize,
