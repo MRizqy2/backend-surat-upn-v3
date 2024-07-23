@@ -5,5 +5,5 @@ template_surat/*
 export/
 node_modules
 server.log
-src/database/seeders
+
 # src/database
