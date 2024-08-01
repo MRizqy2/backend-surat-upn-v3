@@ -35,9 +35,10 @@ app.use(express.urlencoded({ extended: true }));
 const putStatus = async (req, res) => {
   try {
     let reqTampilan, updateStatus, reqStatus, reqNotif, reqSocket;
-    const { persetujuan, status, indikator_id } = req.body;
+    const { persetujuan, status, indikator_id, catatanIKU } = req.body;
     const { surat_id } = req.query;
     let { from, isRead, isDownloadUnsigned, isSigned } = req.body;
+    console.log("kmmv ", catatanIKU);
 
     if (!from) from = "";
     if (!isRead) isRead = false;
@@ -215,10 +216,12 @@ const putStatus = async (req, res) => {
             .status(StatusCodes.BAD_REQUEST)
             .json({ error: "Indikator ID is required" });
         }
+        console.log("pmlwr", catatanIKU);
         const reqRepo = {
           body: {
             surat_id: surat_id,
             indikator_id: indikator_id,
+            catatan: catatanIKU,
             from: `status_surat_controller/put_status.js`,
           },
         };

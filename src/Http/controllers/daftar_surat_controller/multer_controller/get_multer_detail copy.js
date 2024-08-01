@@ -14,11 +14,9 @@ const {
   PERIODE,
   REVISI,
   TAMPILAN,
-  PERBAIKAN,
+  // PERBAIKAN,
 } = require("../../../../models");
-const {
-  getAll: allKomentarBySuratId,
-} = require("../../komentar_controller/get_komentar_all");
+const { loadPerbaikan } = require("./load_perbaikan");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -61,12 +59,12 @@ const getDaftarSurat = async (req, res) => {
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
           required: false,
         },
-        {
-          model: PERBAIKAN,
-          as: "perbaikan",
-          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-          required: false,
-        },
+        // {
+        //   model: PERBAIKAN,
+        //   as: "perbaikan",
+        //   attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+        //   required: false,
+        // },
         {
           model: NOMOR_SURAT,
           as: "nomor_surat",
@@ -132,12 +130,12 @@ const getDaftarSurat = async (req, res) => {
             attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
             required: false,
           },
-          {
-            model: PERBAIKAN,
-            as: "perbaikan",
-            attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-            required: false,
-          },
+          // {
+          //   model: PERBAIKAN,
+          //   as: "perbaikan",
+          //   attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+          //   required: false,
+          // },
           {
             model: NOMOR_SURAT,
             as: "nomor_surat",
@@ -203,12 +201,12 @@ const getDaftarSurat = async (req, res) => {
           attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
           required: false,
         },
-        {
-          model: PERBAIKAN,
-          as: "perbaikan",
-          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-          required: false,
-        },
+        // {
+        //   model: PERBAIKAN,
+        //   as: "perbaikan",
+        //   attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+        //   required: false,
+        // },
         {
           model: NOMOR_SURAT,
           as: "nomor_surat",
@@ -281,7 +279,14 @@ const getDaftarSurat = async (req, res) => {
     order: [["id", "ASC"]],
   });
 
-  res.status(200).json({ surat, revisi });
+  let reqRiwayat = {
+    body: {
+      surat_id,
+    },
+  };
+  let riwayat = await loadPerbaikan(reqRiwayat);
+
+  res.status(200).json({ surat, revisi, riwayat });
 };
 
 router.get("/", getDaftarSurat);

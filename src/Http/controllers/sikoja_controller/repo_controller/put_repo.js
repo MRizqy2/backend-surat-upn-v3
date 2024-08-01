@@ -9,7 +9,8 @@ const putRepo = async (req, res) => {
 
   const repo = await REPO.findOne({ where: { surat_id: surat_id } });
 
-  if (!catatan) catatan = "";
+  if (!catatan && !repo.catatan) catatan = "";
+  if (repo.catatan || repo.catatan != "") catatan = repo.catatan;
 
   const updatedRepo = await REPO.update(
     {

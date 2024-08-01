@@ -8,6 +8,8 @@ const postRepo = async (req, res) => {
   try {
     const { surat_id, indikator_id, catatan } = req.body;
 
+    console.log("onkfk", catatan);
+
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(6).toString("hex");
     const unix_code = `${randomString}${timestamp}`

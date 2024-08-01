@@ -99,7 +99,7 @@ const getDaftarSurat = async (req, res) => {
   ];
   console.log("wbrasd", user.fakultas_id, user.prodi_id);
   if (user.fakultas_id != 1 && user.prodi_id != 1) {
-    // console.log(" wevwe 1");
+    console.log(" wevwe 1");
     surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id, "$tampilan.jabatan_id$": user.jabatan_id },
       attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -108,7 +108,7 @@ const getDaftarSurat = async (req, res) => {
     });
 
     if (!surat) {
-      // console.log(" wevwe 3");
+      console.log(" wevwe 3");
       surat = await DAFTAR_SURAT.findOne({
         where: { id: surat_id, "$user.prodi.id$": user.prodi_id },
         attributes: { exclude: ["createdAt", "updatedAt"] },
@@ -116,15 +116,22 @@ const getDaftarSurat = async (req, res) => {
       });
     }
   } else {
-    // console.log("mwb", user.fakultas_id, user.prodi);
+    console.log("mwb", user.fakultas_id, user.prodi_id);
     surat = await DAFTAR_SURAT.findOne({
-      where: { id: surat_id },
+      where: { id: surat_id, "$tampilan.jabatan_id$": user.jabatan_id },
       attributes: { exclude: ["createdAt", "updatedAt"] },
       include: includeOpsi,
       order: [["id", "ASC"]],
     });
+    if (!surat) {
+      console.log(" wevwe 3");
+      surat = await DAFTAR_SURAT.findOne({
+        where: { id: surat_id },
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: includeOpsi,
+      });
+    }
   }
-  // console.log("qwdsq");
   const revisi = await REVISI.findAll({
     where: { surat_id_baru: surat_id },
     attributes: [],
