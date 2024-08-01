@@ -171,7 +171,7 @@ const handleExcelRequest = async (req, res) => {
       nomer_iku: row.indikator.id,
       indikator: row.indikator.name,
       deskripsi: row.surat.deskripsi,
-      catatan: row.catatan,
+      catatan: row.catatan ? row.catatan : "-",
       link: `${process.env.LINK}/${row.unix_code}`,
     });
     counter++;
