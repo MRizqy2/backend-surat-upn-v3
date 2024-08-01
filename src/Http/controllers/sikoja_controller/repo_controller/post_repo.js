@@ -6,7 +6,7 @@ const crypto = require("crypto");
 
 const postRepo = async (req, res) => {
   try {
-    const { surat_id, indikator_id } = req.body;
+    const { surat_id, indikator_id, catatan } = req.body;
 
     const timestamp = Date.now();
     const randomString = crypto.randomBytes(6).toString("hex");
@@ -18,6 +18,7 @@ const postRepo = async (req, res) => {
     const repo = await REPO.create({
       surat_id,
       unix_code,
+      catatan,
       indikator_id,
     });
 

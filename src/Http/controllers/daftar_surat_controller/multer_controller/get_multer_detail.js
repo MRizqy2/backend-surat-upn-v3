@@ -14,8 +14,9 @@ const {
   PERIODE,
   REVISI,
   TAMPILAN,
-  PERBAIKAN,
+  // PERBAIKAN,
 } = require("../../../../models");
+const { loadPerbaikan } = require("./load_perbaikan");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,221 +32,99 @@ const getDaftarSurat = async (req, res) => {
     return res.status(404).json("Surat not found");
   }
 
-  if (user.fakultas_id != 1 || user.prodi_id != 1) {
-    surat = await DAFTAR_SURAT.findOne({
-      where: { id: surat_id },
+  const includeOpsi = [
+    {
+      model: STATUS,
+      as: "status",
+      attributes: ["status", "persetujuan"],
+    },
+    {
+      model: TAMPILAN,
+      as: "tampilan",
+      attributes: ["pin", "dibaca"],
+      // where: { jabatan_id: user.jabatan_id },
+    },
+    {
+      model: JENIS_SURAT,
+      as: "jenis",
       attributes: { exclude: ["createdAt", "updatedAt"] },
+    },
+    {
+      model: KOMENTAR,
+      as: "komentar",
+      attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+      required: false,
+    },
+    // {
+    //   model: PERBAIKAN,
+    //   as: "perbaikan",
+    //   attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+    //   required: false,
+    // },
+    {
+      model: NOMOR_SURAT,
+      as: "nomor_surat",
+      attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
+      required: false,
       include: [
         {
-          model: STATUS,
-          as: "status",
-          attributes: ["status", "persetujuan"],
-        },
-        {
-          model: TAMPILAN,
-          as: "tampilan",
-          attributes: ["pin", "dibaca"],
-          where: { jabatan_id: user.jabatan_id },
-        },
-        {
-          model: JENIS_SURAT,
-          as: "jenis",
+          model: PERIODE,
+          as: "periode",
           attributes: { exclude: ["createdAt", "updatedAt"] },
         },
+      ],
+    },
+    {
+      model: USERS,
+      as: "user",
+      attributes: ["email", "name"],
+      include: [
         {
-          model: KOMENTAR,
-          as: "komentar",
-          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-          required: false,
+          model: PRODI,
+          as: "prodi",
+          attributes: ["id", "name"],
         },
         {
-          model: PERBAIKAN,
-          as: "perbaikan",
-          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-          required: false,
+          model: JABATAN,
+          as: "jabatan",
+          attributes: ["id", "name"],
         },
         {
-          model: NOMOR_SURAT,
-          as: "nomor_surat",
-          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-          required: false,
-          include: [
-            {
-              model: PERIODE,
-              as: "periode",
-              attributes: { exclude: ["createdAt", "updatedAt"] },
-            },
-          ],
-        },
-        {
-          model: USERS,
-          as: "user",
-          attributes: ["email", "name"],
-          include: [
-            {
-              model: PRODI,
-              as: "prodi",
-              attributes: ["id", "name"],
-            },
-            {
-              model: JABATAN,
-              as: "jabatan",
-              attributes: ["id", "name"],
-            },
-            {
-              model: FAKULTAS,
-              as: "fakultas",
-              attributes: ["id", "name"],
-            },
-          ],
+          model: FAKULTAS,
+          as: "fakultas",
+          attributes: ["id", "name"],
         },
       ],
+    },
+  ];
+  console.log("wbrasd", user.fakultas_id, user.prodi_id);
+  if (user.fakultas_id != 1 && user.prodi_id != 1) {
+    // console.log(" wevwe 1");
+    surat = await DAFTAR_SURAT.findOne({
+      where: { id: surat_id, "$tampilan.jabatan_id$": user.jabatan_id },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      include: includeOpsi,
       order: [["id", "ASC"]],
     });
+
     if (!surat) {
+      // console.log(" wevwe 3");
       surat = await DAFTAR_SURAT.findOne({
         where: { id: surat_id, "$user.prodi.id$": user.prodi_id },
         attributes: { exclude: ["createdAt", "updatedAt"] },
-        include: [
-          {
-            model: STATUS,
-            as: "status",
-            attributes: ["status", "persetujuan"],
-          },
-          {
-            model: TAMPILAN,
-            as: "tampilan",
-            attributes: ["pin", "dibaca"],
-            // where: { jabatan_id: user.jabatan_id },
-          },
-          {
-            model: JENIS_SURAT,
-            as: "jenis",
-            attributes: { exclude: ["createdAt", "updatedAt"] },
-          },
-          {
-            model: KOMENTAR,
-            as: "komentar",
-            attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-            required: false,
-          },
-          {
-            model: PERBAIKAN,
-            as: "perbaikan",
-            attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-            required: false,
-          },
-          {
-            model: NOMOR_SURAT,
-            as: "nomor_surat",
-            attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-            required: false,
-            include: [
-              {
-                model: PERIODE,
-                as: "periode",
-                attributes: { exclude: ["createdAt", "updatedAt"] },
-              },
-            ],
-          },
-          {
-            model: USERS,
-            as: "user",
-            attributes: ["email", "name"],
-            include: [
-              {
-                model: PRODI,
-                as: "prodi",
-                attributes: ["id", "name"],
-              },
-              {
-                model: JABATAN,
-                as: "jabatan",
-                attributes: ["id", "name"],
-              },
-              {
-                model: FAKULTAS,
-                as: "fakultas",
-                attributes: ["id", "name"],
-              },
-            ],
-          },
-        ],
+        include: includeOpsi,
       });
     }
   } else {
-    console.log("mwb", user.fakultas_id, user.prodi);
+    // console.log("mwb", user.fakultas_id, user.prodi);
     surat = await DAFTAR_SURAT.findOne({
       where: { id: surat_id },
       attributes: { exclude: ["createdAt", "updatedAt"] },
-      include: [
-        {
-          model: STATUS,
-          as: "status",
-          attributes: ["status", "persetujuan"],
-        },
-        {
-          model: TAMPILAN,
-          as: "tampilan",
-          attributes: ["pin", "dibaca"],
-        },
-        {
-          model: JENIS_SURAT,
-          as: "jenis",
-          attributes: { exclude: ["createdAt", "updatedAt"] },
-        },
-        {
-          model: KOMENTAR,
-          as: "komentar",
-          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-          required: false,
-        },
-        {
-          model: PERBAIKAN,
-          as: "perbaikan",
-          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-          required: false,
-        },
-        {
-          model: NOMOR_SURAT,
-          as: "nomor_surat",
-          attributes: { exclude: ["surat_id", "createdAt", "updatedAt"] },
-          required: false,
-          include: [
-            {
-              model: PERIODE,
-              as: "periode",
-              attributes: { exclude: ["createdAt", "updatedAt"] },
-            },
-          ],
-        },
-        {
-          model: USERS,
-          as: "user",
-          attributes: ["email", "name"],
-          include: [
-            {
-              model: PRODI,
-              as: "prodi",
-              attributes: ["id", "name"],
-            },
-            {
-              model: JABATAN,
-              as: "jabatan",
-              attributes: ["id", "name"],
-            },
-            {
-              model: FAKULTAS,
-              as: "fakultas",
-              attributes: ["id", "name"],
-            },
-          ],
-        },
-      ],
+      include: includeOpsi,
       order: [["id", "ASC"]],
     });
   }
-  console.log("qwdsq");
+  // console.log("qwdsq");
   const revisi = await REVISI.findAll({
     where: { surat_id_baru: surat_id },
     attributes: [],
@@ -278,7 +157,14 @@ const getDaftarSurat = async (req, res) => {
     order: [["id", "ASC"]],
   });
 
-  res.status(200).json({ surat, revisi });
+  let reqRiwayat = {
+    body: {
+      surat_id,
+    },
+  };
+  let riwayat = await loadPerbaikan(reqRiwayat);
+
+  res.status(200).json({ surat, revisi, riwayat });
 };
 
 router.get("/", getDaftarSurat);

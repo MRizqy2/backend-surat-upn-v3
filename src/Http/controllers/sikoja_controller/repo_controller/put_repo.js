@@ -5,11 +5,15 @@ const { REPO } = require("../../../../models");
 
 const putRepo = async (req, res) => {
   const { surat_id } = req.query;
+  let { catatan } = req.query;
 
   const repo = await REPO.findOne({ where: { surat_id: surat_id } });
 
+  if (!catatan) catatan = "";
+
   const updatedRepo = await REPO.update(
     {
+      catatan,
       visible: true,
     },
     {

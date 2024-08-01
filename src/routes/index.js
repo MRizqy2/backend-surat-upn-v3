@@ -24,11 +24,15 @@ const repoController = require("../Http/controllers/sikoja_controller/repo_contr
 const downloadAccess = require("../Http/controllers/download_controller/open_access_download");
 const headerRepoController = require("../Http/controllers/header_repo_controller/header_repo_controller");
 const headerDaftarSuratController = require("../Http/controllers/header_daftar_surat/header_daftar_surat_controller");
+const test =
+  require("../Http/controllers/daftar_surat_controller/multer_controller/load_perbaikan").router;
 
 const router = express.Router();
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
+
+router.use("/test", test);
 
 router.use("/header-repo", authMiddleware, headerRepoController);
 router.use("/header-daftar-surat", authMiddleware, headerDaftarSuratController);

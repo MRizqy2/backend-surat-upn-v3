@@ -144,11 +144,13 @@ const handleExcelRequest = async (req, res) => {
     { header: "PROGRAM STUDI", key: "program_studi", width: 30 },
     { header: "NOMOR IKU", key: "nomer_iku", width: 16 },
     { header: "INDIKATOR", key: "indikator", width: 60 },
+    { header: "DESKRIPSI", key: "deskripsi", width: 30 },
     { header: "CATATAN", key: "catatan", width: 30 },
     { header: "LINK", key: "link", width: 35 },
   ];
 
   // isi data
+  console.log("emco", repo[0]);
   repo.forEach((row, index) => {
     let timestamp = new Date(row.createdAt);
     timestamp = `${timestamp.getDate().toString().padStart(2, "0")}/${(
@@ -168,7 +170,8 @@ const handleExcelRequest = async (req, res) => {
           : row.surat.user.jabatan.name,
       nomer_iku: row.indikator.id,
       indikator: row.indikator.name,
-      catatan: row.surat.deskripsi,
+      deskripsi: row.surat.deskripsi,
+      catatan: row.catatan,
       link: `${process.env.LINK}/${row.unix_code}`,
     });
     counter++;
