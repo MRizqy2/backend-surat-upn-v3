@@ -96,7 +96,7 @@ const getDaftarSurat = async (req, res) => {
         {
           model: STATUS,
           as: "status",
-          attributes: ["status", "persetujuan"],
+          attributes: ["status", "persetujuan", "updatedAt"],
         },
         {
           model: JENIS_SURAT,
@@ -182,7 +182,7 @@ const getDaftarSurat = async (req, res) => {
         {
           model: STATUS,
           as: "status",
-          attributes: ["status", "persetujuan"],
+          attributes: ["status", "persetujuan", "updatedAt"],
         },
         {
           model: TAMPILAN,
@@ -287,7 +287,7 @@ const getDaftarSurat = async (req, res) => {
         {
           model: STATUS,
           as: "status",
-          attributes: ["status", "persetujuan"],
+          attributes: ["status", "persetujuan", "updatedAt"],
         },
         // {
         // model: TAMPILAN,
